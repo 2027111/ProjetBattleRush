@@ -10,6 +10,7 @@ public class VoiturePhysique : MonoBehaviour
     [SerializeField] public GameObject modelCar;
 
     [SerializeField] public LayerMask lm;
+    [SerializeField] public bool control = false;
 
     public Rigidbody rb;
 
@@ -32,6 +33,41 @@ public class VoiturePhysique : MonoBehaviour
         ev.Enter();
     }
 
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.GetComponent<VoiturePhysique>())
+        {
+            VoiturePhysique touchedCar = collision.gameObject.GetComponent<VoiturePhysique>();
+
+
+            if(touchedCar != this)
+            {
+                if(touchedCar.etatActuel.GetType() == typeof(EtatVoitureMouvement))
+                {
+
+                if(etatActuel.GetType() == typeof(EtatVoitureMouvement))
+                {
+                    if(!(etatActuel as EtatVoitureMouvement).ralenting)
+                    {
+                        touchedCar.Strike(transform.position, (etatActuel as EtatVoitureMouvement).accelerating);
+
+                    }
+
+                    
+                    
+                }
+
+                }
+            }
+        }
+    }
+
+    private void Strike(Vector3 position, bool accelerating)
+    {
+        Debug.Log(this.name + " was hit!");
+        ChangerState(new EtatVoitureFrapper(this.gameObject, position, accelerating));
+    }
 
     // Update is called once per frame
     void Update()

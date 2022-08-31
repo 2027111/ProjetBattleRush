@@ -4,20 +4,41 @@ using UnityEngine;
 
 public class EtatVoitureFrapper : EtatVoiture
 {
+    Vector3 temp = new Vector3(0, 0, 0);
     public EtatVoitureFrapper(GameObject joueur) : base(joueur)
     {
     }
 
+    public EtatVoitureFrapper(GameObject joueur, Vector3 position, bool acceler) : this(joueur)
+    {
+
+        Vector3 diff = Voiture.transform.position - position;
+        diff.Normalize();
+        diff += Vector3.up;
+        diff *= 0.65f;
+        if (acceler)
+        {
+            diff *= 1.1f;
+        }
+
+
+        temp = diff;
+
+
+    }
+
     Vector3 Rotation = Vector3.zero;
+
     public override void Enter()
     {
-        Vector3 temp = new Vector3(Random.Range(-2, 2), 1, Random.Range(0, 2));
+        Voiture.rb.constraints = RigidbodyConstraints.None;
         Voiture.rb.AddForce(temp * 10, ForceMode.Impulse);
         Rotation = new Vector3(Random.Range(0.5f, 2), Random.Range(0.5f, 2), Random.Range(0.5f, 2));
     }
 
     public override void Exit()
     {
+        Voiture.rb.constraints = RigidbodyConstraints.FreezeRotation;
         Voiture.gameObject.transform.forward = Voiture.direction;
 
     }
