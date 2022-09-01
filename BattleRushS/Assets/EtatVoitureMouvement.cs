@@ -20,6 +20,7 @@ public class EtatVoitureMouvement : EtatVoiture
 
     public override void Exit()
     {
+        Voiture.attack.SetActive(false);
 
     }
 
@@ -55,8 +56,48 @@ public class EtatVoitureMouvement : EtatVoiture
 
 
         }
-        Voiture.rb.velocity = (Vector3.Normalize(Voiture.direction) * Voiture.speed * accel) + (Voiture.transform.right * 3 * x);
+        Voiture.rb.velocity = (Vector3.Normalize(Voiture.direction) * Voiture.speed * accel) + (Voiture.transform.right * 3 * (Voiture.speed/4) * accel *x);
 
+        Vector3 dir = Voiture.rb.velocity;
+        dir.y = 0;
+        dir.Normalize();
+        float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
+        Voiture.modelCar.transform.rotation = Quaternion.AngleAxis(angle, Vector3.up);
+
+        Vector3 rotation = Voiture.modelCar.transform.rotation.eulerAngles;
+        Voiture.attack.transform.rotation = Quaternion.Euler(90, 0, -rotation.y);
+
+        if (accelerating)
+        {
+            Voiture.attack.SetActive(true);
+            float temp = Voiture.camProxy.fieldOfView;
+            if (temp < 80)
+            {
+                temp += Time.deltaTime * 15;
+                Voiture.camProxy.fieldOfView = temp;
+            }
+            else
+            {
+                Voiture.camProxy.fieldOfView = 80;
+
+            }
+
+        }
+        else
+        {
+            Voiture.attack.SetActive(false);
+            float temp = Voiture.camProxy.fieldOfView;
+            if (temp > 60)
+            {
+                temp -= Time.deltaTime * 15;
+                Voiture.camProxy.fieldOfView = temp;
+            }
+            else
+            {
+
+                Voiture.camProxy.fieldOfView = 60;
+            }
+        }
 
     }
 

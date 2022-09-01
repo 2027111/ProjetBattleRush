@@ -8,7 +8,8 @@ public class VoiturePhysique : MonoBehaviour
     [SerializeField] public float speed = 10;
     [SerializeField] public Vector3 direction = new Vector3(0, 0, 1);
     [SerializeField] public GameObject modelCar;
-
+    [SerializeField] public GameObject attack;
+    [SerializeField] public Camera camProxy;
     [SerializeField] public LayerMask lm;
     [SerializeField] public bool control = false;
 
@@ -18,8 +19,7 @@ public class VoiturePhysique : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {
-
+    { 
         rb = GetComponent<Rigidbody>();
         ChangerState(new EtatVoitureMouvement(this.gameObject));
     }
@@ -34,31 +34,16 @@ public class VoiturePhysique : MonoBehaviour
     }
 
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider collision)
     {
-        if (collision.gameObject.GetComponent<VoiturePhysique>())
+        if (collision.gameObject.GetComponent<AttackZone>())
         {
-            VoiturePhysique touchedCar = collision.gameObject.GetComponent<VoiturePhysique>();
+            AttackZone attacked = collision.gameObject.GetComponent<AttackZone>();
+            VoiturePhysique attackerCar = attacked.gameObject.transform.parent.gameObject.GetComponent<VoiturePhysique>();
 
-
-            if(touchedCar != this)
+            if(attacked != attack)
             {
-                if(touchedCar.etatActuel.GetType() == typeof(EtatVoitureMouvement))
-                {
-
-                if(etatActuel.GetType() == typeof(EtatVoitureMouvement))
-                {
-                    if(!(etatActuel as EtatVoitureMouvement).ralenting)
-                    {
-                        touchedCar.Strike(transform.position, (etatActuel as EtatVoitureMouvement).accelerating);
-
-                    }
-
-                    
-                    
-                }
-
-                }
+                Strike(attackerCar.transform.position, (attackerCar.etatActuel as EtatVoitureMouvement).accelerating);
             }
         }
     }
@@ -72,6 +57,13 @@ public class VoiturePhysique : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (control)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                //Instantiate();
+            }
+        }
         etatActuel.Handle();
     }
 }

@@ -5,6 +5,8 @@ using UnityEngine;
 public class EtatVoitureFrapper : EtatVoiture
 {
     Vector3 temp = new Vector3(0, 0, 0);
+
+    float time = 0.3f;
     public EtatVoitureFrapper(GameObject joueur) : base(joueur)
     {
     }
@@ -31,6 +33,7 @@ public class EtatVoitureFrapper : EtatVoiture
 
     public override void Enter()
     {
+        Voiture.attack.SetActive(false);
         Voiture.rb.constraints = RigidbodyConstraints.None;
         Voiture.rb.AddForce(temp * 10, ForceMode.Impulse);
         Rotation = new Vector3(Random.Range(0.5f, 2), Random.Range(0.5f, 2), Random.Range(0.5f, 2));
@@ -46,7 +49,8 @@ public class EtatVoitureFrapper : EtatVoiture
 
     public override void Handle()
     {
-        if(Physics.Raycast(Voiture.transform.position,Vector3.down, out RaycastHit hit,  0.51f, Voiture.lm))
+        time -= Time.deltaTime;
+        if(Physics.Raycast(Voiture.transform.position,Vector3.down, out RaycastHit hit,  0.51f, Voiture.lm) && time <= 0)
         {
             Voiture.modelCar.transform.forward = Voiture.gameObject.transform.forward;
             Voiture.ChangerState(new EtatVoitureMouvement(Voiture.gameObject));
