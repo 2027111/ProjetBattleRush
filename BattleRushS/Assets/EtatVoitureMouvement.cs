@@ -14,7 +14,6 @@ public class EtatVoitureMouvement : EtatVoiture
 
     public override void Enter()
     {
-        Voiture.gameObject.transform.forward = Voiture.direction;
 
     }
 
@@ -29,6 +28,11 @@ public class EtatVoitureMouvement : EtatVoiture
 
     public override void Handle()
     {
+        if (!Physics.Raycast(Voiture.transform.position, Vector3.down, out RaycastHit hit, 0.51f, Voiture.lm))
+        {
+            Voiture.attack.SetActive(false);
+            Voiture.ChangerState(new EtatVoitureFrapper(Voiture.gameObject));
+        }
         float accel = 1;
         float x = 0;
         if (Voiture.control)
@@ -56,7 +60,15 @@ public class EtatVoitureMouvement : EtatVoiture
 
 
         }
-        Voiture.rb.velocity = (Vector3.Normalize(Voiture.direction) * Voiture.speed * accel) + (Voiture.transform.right * 3 * (Voiture.speed/4) * accel *x);
+        else
+        {
+
+            accel = 1.4f;
+            accelerating = true; ralenting = false;
+        }
+        Vector3 vel = (Vector3.Normalize(Voiture.transform.forward) * Voiture.speed * accel) + (Voiture.transform.right * 3 * (Voiture.speed / 4) * accel * x);
+
+        Voiture.rb.velocity = new Vector3(vel.x, Voiture.rb.velocity.y, vel.z);
 
         Vector3 dir = Voiture.rb.velocity;
         dir.y = 0;
@@ -73,7 +85,7 @@ public class EtatVoitureMouvement : EtatVoiture
             float temp = Voiture.camProxy.fieldOfView;
             if (temp < 80)
             {
-                temp += Time.deltaTime * 15;
+                temp += Time.deltaTime * 25;
                 Voiture.camProxy.fieldOfView = temp;
             }
             else
@@ -89,7 +101,7 @@ public class EtatVoitureMouvement : EtatVoiture
             float temp = Voiture.camProxy.fieldOfView;
             if (temp > 60)
             {
-                temp -= Time.deltaTime * 15;
+                temp -= Time.deltaTime * 25;
                 Voiture.camProxy.fieldOfView = temp;
             }
             else

@@ -17,16 +17,24 @@ public class EtatVoitureFrapper : EtatVoiture
         Vector3 diff = Voiture.transform.position - position;
         diff.Normalize();
         diff += Vector3.up;
-        diff *= 0.65f;
-        if (acceler)
-        {
-            diff *= 1.1f;
-        }
+        diff *= 0.15f;
 
 
         temp = diff;
 
+    }
 
+    public EtatVoitureFrapper(GameObject joueur, VoiturePhysique voiturePhysique) : this(joueur)
+    {
+
+        Vector3 diff = Voiture.transform.position - voiturePhysique.transform.position;
+        diff.Normalize();
+        diff *= 0.15f;
+        diff += Vector3.up;
+
+
+        temp = diff;
+        
     }
 
     Vector3 Rotation = Vector3.zero;
@@ -34,9 +42,16 @@ public class EtatVoitureFrapper : EtatVoiture
     public override void Enter()
     {
         Voiture.attack.SetActive(false);
-        Voiture.rb.constraints = RigidbodyConstraints.None;
-        Voiture.rb.AddForce(temp * 10, ForceMode.Impulse);
-        Rotation = new Vector3(Random.Range(0.5f, 2), Random.Range(0.5f, 2), Random.Range(0.5f, 2));
+        Voiture.rb.AddForce(temp * 0.35f * Voiture.damage, ForceMode.Impulse);
+        if(temp == Vector3.zero)
+        {
+            Rotation = Vector3.one;
+        }
+        else
+        {
+
+            Rotation = new Vector3(Random.Range(0.1f, 1), Random.Range(0.1f, 1), Random.Range(0.1f, 1));
+        }
     }
 
     public override void Exit()
@@ -59,6 +74,11 @@ public class EtatVoitureFrapper : EtatVoiture
         {
             Voiture.modelCar.transform.Rotate(Rotation * 10);
         }
+
+        float x = Input.GetAxis("Horizontal");
+        float y = Input.GetAxis("Vertical");
+        Vector3 vel = (Vector3.Normalize(Voiture.transform.forward * 4 * y + Voiture.transform.right * 4 * x));
+        Voiture.rb.AddForce(vel);
     }
     
 }

@@ -18,7 +18,10 @@ public abstract class EtatVoiture
         get;
     }
 
-
+    public System.Type GetRealState()
+    {
+        return this.GetType();
+    }
     public EtatVoiture(GameObject joueur)
     {
         Voiture = joueur.GetComponent<VoiturePhysique>();

@@ -10,12 +10,27 @@ public class VoiturePhysique : MonoBehaviour
     [SerializeField] public GameObject modelCar;
     [SerializeField] public GameObject attack;
     [SerializeField] public Camera camProxy;
+    [SerializeField] public GameObject camHolder;
     [SerializeField] public LayerMask lm;
     [SerializeField] public bool control = false;
+    public float damage = 0;
+    public VoiturePhysique lastHit = null;
+
+
+    int points = 0;
+
 
     public Rigidbody rb;
 
     EtatVoiture etatActuel;
+
+
+
+    public bool GetAccel()
+    {
+        return (etatActuel as EtatVoitureMouvement).accelerating;
+    }
+
 
     // Start is called before the first frame update
     void Start()
@@ -40,28 +55,105 @@ public class VoiturePhysique : MonoBehaviour
         {
             AttackZone attacked = collision.gameObject.GetComponent<AttackZone>();
             VoiturePhysique attackerCar = attacked.gameObject.transform.parent.gameObject.GetComponent<VoiturePhysique>();
-
-            if(attacked != attack)
+                if (attacked != attack)
+                {
+                float d = UnityEngine.Random.Range(4, 9);
+                damage += d;
+                Strike(attackerCar);
+                }
+            
+        }else if (collision.gameObject.name == "Temp")
+        {
+            ChangeDirection(collision.gameObject.transform.forward);
+        }else if (collision.gameObject.GetComponent<DeathZone>())
+        {
+            if (lastHit)
             {
-                Strike(attackerCar.transform.position, (attackerCar.etatActuel as EtatVoitureMouvement).accelerating);
+                lastHit.points += collision.gameObject.GetComponent<DeathZone>().pointsByKills;
             }
+            else
+            {
+
+                points -= collision.gameObject.GetComponent<DeathZone>().suicidePenality;
+            }
+
+            transform.rotation = Quaternion.Euler(Vector3.zero);
+            rb.velocity = Vector3.zero;
+            transform.position = GameObject.Find("Spawn").transform.position;
+            damage = 0;
         }
     }
 
-    private void Strike(Vector3 position, bool accelerating)
+
+    private void Strike(VoiturePhysique attackerCar)
     {
         Debug.Log(this.name + " was hit!");
-        ChangerState(new EtatVoitureFrapper(this.gameObject, position, accelerating));
+        lastHit = attackerCar;
+        ChangerState(new EtatVoitureFrapper(this.gameObject, attackerCar));
+    }
+    public void ChangeDirection(Vector3 dir)
+    {
+        if(direction == dir)
+        {
+            return;
+        }
+        else
+        {
+            Debug.Log("Changing direction to " + dir);
+            direction = dir;
+            StartCoroutine(changeDir());
+        }
+    }
+    IEnumerator changeDir()
+    {
+        float t = 0;
+        Vector3 temp = transform.forward;
+        temp.y = 0;
+        temp.Normalize();
+        while (t < 1)
+        {
+            transform.forward = Vector3.Lerp(temp, direction, t);
+            t+= Time.deltaTime;
+            yield return null;
+        }
+
+
+
+        yield return null;
     }
 
     // Update is called once per frame
     void Update()
     {
+
+     
         if (control)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 //Instantiate();
+                Vector3 rot = camHolder.transform.localRotation.eulerAngles;
+
+                if (rot.y == 180)
+                {
+                    rot.y = 0;
+                }
+                else
+                {
+
+                    rot.y = 180;
+                }
+                camHolder.transform.localRotation = Quaternion.Euler(rot);
+            }
+
+            if (Input.GetKeyDown(KeyCode.J))
+            {
+                ChangeDirection(direction + (Vector3.right * 0.5f));
+            }
+
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                ChangeDirection(direction + (Vector3.right * -0.5f));
             }
         }
         etatActuel.Handle();
