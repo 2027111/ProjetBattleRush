@@ -31,7 +31,7 @@ public class EtatVoitureMouvement : EtatVoiture
 
     public override void Handle()
     {
-        if (!Physics.Raycast(Voiture.transform.position, Vector3.down, out RaycastHit hit, 0.51f, Voiture.lm))
+        if (!Physics.BoxCast(Voiture.transform.position, Voiture.GetComponent<BoxCollider>().size / 2, Vector3.down, Voiture.transform.rotation, 0.51f, Voiture.lm))
         {
             Voiture.attack.SetActive(false);
             Voiture.ChangerState(new EtatVoitureFrapper(Voiture.gameObject));

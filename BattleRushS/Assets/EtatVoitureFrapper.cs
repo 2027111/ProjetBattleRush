@@ -65,7 +65,7 @@ public class EtatVoitureFrapper : EtatVoiture
     public override void Handle()
     {
         time -= Time.deltaTime;
-        if(Physics.Raycast(Voiture.transform.position,Vector3.down, out RaycastHit hit,  0.51f, Voiture.lm) && time <= 0)
+        if (Physics.BoxCast(Voiture.transform.position, Voiture.GetComponent<BoxCollider>().size / 2, Vector3.down, Voiture.transform.rotation, 0.51f, Voiture.lm) && time <= 0)
         {
             Voiture.modelCar.transform.forward = Voiture.gameObject.transform.forward;
             Voiture.ChangerState(new EtatVoitureMouvement(Voiture.gameObject));

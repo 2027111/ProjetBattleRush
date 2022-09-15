@@ -24,8 +24,7 @@ public class VoiturePhysique : MonoBehaviour
     public Rigidbody rb;
 
     EtatVoiture etatActuel;
-
-
+    public static Dictionary<ushort, VoiturePhysique> list = new Dictionary<ushort, VoiturePhysique>();
 
     public bool GetAccel()
     {
@@ -38,6 +37,7 @@ public class VoiturePhysique : MonoBehaviour
     { 
         rb = GetComponent<Rigidbody>();
         ChangerState(new EtatVoitureMouvement(this.gameObject));
+        direction = transform.forward;
     }
     public void ChangerState(EtatVoiture ev)
     {
@@ -63,7 +63,7 @@ public class VoiturePhysique : MonoBehaviour
                 Strike(attackerCar);
                 }
             
-        }else if (collision.gameObject.name == "Temp")
+        }else if (collision.gameObject.tag == "DirectionZone")
         {
             ChangeDirection(collision.gameObject.transform.forward);
         }else if (collision.gameObject.GetComponent<DeathZone>())
@@ -113,8 +113,8 @@ public class VoiturePhysique : MonoBehaviour
         temp.Normalize();
         while (t < 1)
         {
-            transform.forward = Vector3.Lerp(temp, direction, t);
-            t+= Time.deltaTime;
+            transform.forward = Vector3.Slerp(temp, direction, t);
+            t+= 3 * Time.deltaTime;
             yield return null;
         }
 
@@ -147,15 +147,6 @@ public class VoiturePhysique : MonoBehaviour
                 camHolder.transform.localRotation = Quaternion.Euler(rot);
             }
 
-            if (Input.GetKeyDown(KeyCode.J))
-            {
-                ChangeDirection(direction + (Vector3.right * 0.5f));
-            }
-
-            if (Input.GetKeyDown(KeyCode.L))
-            {
-                ChangeDirection(direction + (Vector3.right * -0.5f));
-            }
         }
         etatActuel.Handle();
     }
