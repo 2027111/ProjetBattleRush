@@ -14,11 +14,14 @@ public class EtatVoitureMouvement : EtatVoiture
 
     public override void Enter()
     {
+        Voiture.flightburst.SetActive(false);
+        Voiture.attack.SetActive(false);
 
     }
 
     public override void Exit()
     {
+        Voiture.flightburst.SetActive(false);
         Voiture.attack.SetActive(false);
 
     }
@@ -39,9 +42,11 @@ public class EtatVoitureMouvement : EtatVoiture
         {
 
 
-        if (Input.GetKey(KeyCode.W))
+        if (Input.GetKey(KeyCode.W) && Voiture.boostamount > 0)
         {
-            accel = 1.4f;
+
+                Voiture.boostamount -=  30 * Time.deltaTime;
+                accel = 1.4f;
             accelerating = true; ralenting = false;
 
         }
@@ -51,6 +56,7 @@ public class EtatVoitureMouvement : EtatVoiture
         }
         else
         {
+            Voiture.boostamount += 20 * Time.deltaTime;
             accel = 1;
             accelerating = false; ralenting = false;
         }
@@ -59,6 +65,10 @@ public class EtatVoitureMouvement : EtatVoiture
         x = Input.GetAxis("Horizontal");
 
 
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                Voiture.ChangerState(new EtatVoitureJump(Voiture.gameObject));
+            }
         }
         else
         {
@@ -66,6 +76,8 @@ public class EtatVoitureMouvement : EtatVoiture
             accel = 1.4f;
             accelerating = true; ralenting = false;
         }
+
+
         Vector3 vel = (Vector3.Normalize(Voiture.transform.forward) * Voiture.speed * accel) + (Voiture.transform.right * 3 * (Voiture.speed / 4) * accel * x);
 
         Voiture.rb.velocity = new Vector3(vel.x, Voiture.rb.velocity.y, vel.z);

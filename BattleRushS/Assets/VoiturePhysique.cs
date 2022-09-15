@@ -9,13 +9,14 @@ public class VoiturePhysique : MonoBehaviour
     [SerializeField] public Vector3 direction = new Vector3(0, 0, 1);
     [SerializeField] public GameObject modelCar;
     [SerializeField] public GameObject attack;
+    [SerializeField] public GameObject flightburst;
     [SerializeField] public Camera camProxy;
     [SerializeField] public GameObject camHolder;
     [SerializeField] public LayerMask lm;
     [SerializeField] public bool control = false;
     public float damage = 0;
     public VoiturePhysique lastHit = null;
-
+    public float boostamount = 100;
 
     int points = 0;
 

@@ -6,6 +6,7 @@ public class EtatVoitureFrapper : EtatVoiture
 {
     Vector3 temp = new Vector3(0, 0, 0);
 
+    Vector3 Rotation = Vector3.zero;
     float time = 0.3f;
     public EtatVoitureFrapper(GameObject joueur) : base(joueur)
     {
@@ -29,20 +30,17 @@ public class EtatVoitureFrapper : EtatVoiture
 
         Vector3 diff = Voiture.transform.position - voiturePhysique.transform.position;
         diff.Normalize();
-        diff *= 0.15f;
-        diff += Vector3.up;
-
-
+        diff += Vector3.up * 3;
         temp = diff;
         
     }
 
-    Vector3 Rotation = Vector3.zero;
 
     public override void Enter()
     {
         Voiture.attack.SetActive(false);
-        Voiture.rb.AddForce(temp * 0.35f * Voiture.damage, ForceMode.Impulse);
+        Voiture.flightburst.SetActive(true);
+        Voiture.rb.AddForce(temp * 3, ForceMode.Impulse);
         if(temp == Vector3.zero)
         {
             Rotation = Vector3.one;
@@ -58,6 +56,8 @@ public class EtatVoitureFrapper : EtatVoiture
     {
         Voiture.rb.constraints = RigidbodyConstraints.FreezeRotation;
         Voiture.gameObject.transform.forward = Voiture.direction;
+        Voiture.flightburst.SetActive(false);
+        Voiture.attack.SetActive(false);
 
     }
 
