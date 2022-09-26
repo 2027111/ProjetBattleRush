@@ -5,6 +5,7 @@ const flash = require("express-flash");
 const bcrypt = require('bcryptjs');
 var app = express();
 const keys = require('./config/keys');
+var List = require("collections/list");
 // pour activer le module ejs
 app.set("view engine", "ejs");
 
@@ -20,14 +21,7 @@ app.use(express.static("images"));
 // pour activer le module express-flash
 app.use(flash());
 
-var playerQueue = {};
-var queueFound = false;  
-var serverQueue = null;
 
-
-var RplayerQueue = {};
-var RqueueFound = false;  
-var RserverQueue = null;
 
 
 
@@ -76,83 +70,10 @@ res.send(response);
 
 });
 
+/* Queue */
 
 
-app.post("/queue/leave", async (req, res)=>{
-	console.log("accessing queue");
-	var response= {};
-	const oken = req.body.token;
-	var TokenObject = await Token.findOne({tokenId : oken});
-	if(TokenObject){
-		
-		var userFound = await User.findOne({_id : TokenObject.userId});
-		if(userFound){
-			if(playerQueue.playerOne != undefined){
-				if(playerQueue.playerOne.username == userFound.username){
-					playerQueue.playerOne = undefined;
-					console.log(userFound.username + " has left the online queue as Player One");
-					response.code = 0;
-					response.message = "user left queue";
-					res.send(response);
-					return;
-				}
-			}
-			else if(playerQueue.playerTwo != undefined){
-				if(playerQueue.playerTwo.username == userFound.username){
-					playerQueue.playerTwo = undefined;
-					console.log(userFound.username + " has left the online queue as Player Two");
-					response.code = 0;
-					response.message = "user left queue";
-					res.send(response);
-					return;
-				}
-			}else if(RplayerQueue.playerOne != undefined){
-				if(RplayerQueue.playerOne.username == userFound.username){
-					RplayerQueue.playerOne = undefined;
-					console.log(userFound.username + " has left the online queue as Player One");
-					response.code = 0;
-					response.message = "user left queue";
-					res.send(response);
-					return;
-				}
-			}
-			else if(RplayerQueue.playerTwo != undefined){
-				if(RplayerQueue.playerTwo.username == userFound.username){
-					RplayerQueue.playerTwo = undefined;
-					console.log(userFound.username + " has left the online queue as Player Two");
-					response.code = 0;
-					response.message = "user left queue";
-					res.send(response);
-					return;
-				}
-			}else{
-
-				response.code = 3;
-				response.message = "user wasnt in queue";
-				res.send(response);
-				return;
-			}
-
-			
-		}else{
-			
-			response.code = -9;
-			response.message = userFound.username + "user doesnt exist.";
-			res.send(response);
-			return;
-		}
-		}else{
-	
-			response.code = -9;
-			response.message = "user isnt connected.";
-			res.send(response);
-			return;
-		}
-
-
-
-}); 
-app.post("/queue/casual/join", async (req, res)=>{
+app.post("/queue/join", async (req, res)=>{
 
 	console.log("accessing queue");
 	var response= {};
@@ -162,256 +83,70 @@ app.post("/queue/casual/join", async (req, res)=>{
 	var time = 0;
 
 
-	if(TokenObject){
+	if(!TokenObject){
+	
+		response.code = -9;
+		response.message = userFound.username + "user isnt connected.";
+		res.send(response);
+	}
 		
 	var userFound = await User.findOne({_id : TokenObject.userId});
-	if(userFound){
-		
-
-	if(playerQueue.playerOne != undefined){
-			
-	if(playerQueue.playerOne.username == userFound.username){
-		response.code = 2;
-		response.msg = "Already in queue";
-		res.send(response);
-		return;
-	}
-	
-	}
-	if(playerQueue.playerTwo != undefined){
-			
-	if(playerQueue.playerTwo.username == userFound.username){
-		response.code = 2;
-		response.msg = "Already in queue";
-		res.send(response);
-		return;
-	}
-	}
-	if(queueFound){
-				
-		var waitForOpenQueue = setInterval(function() {
-			if (!queueFound){
-				clearInterval(waitForOpenQueue);
-
-
-			}
-		}, 5000); // retry every 5 seconds
-	}
-
-	if(playerQueue.playerTwo != undefined && playerQueue.playerOne != undefined){
-				
-			var waitForFreeLobby = setInterval(function() {
-				if (playerQueue.playerTwo == undefined || playerQueue.playerOne == undefined){
-					clearInterval(waitForFreeLobby);
-
-
-				}
-			}, 5000); // retry every 5 seconds
-	}
-		
-		if(playerQueue.playerTwo == undefined || playerQueue.playerOne == undefined){
-			if(playerQueue.playerOne == undefined) {
-				console.log(userFound.username + " has joined the online queue as Player One");
-				playerQueue.playerOne = userFound;
-			}else if(playerQueue.playerTwo == undefined){
-				
-				console.log(userFound.username + " has joined the online queue as Player Two");
-				playerQueue.playerTwo = userFound;
-			}
-
-			var wait = setInterval(async function() {
-				if(playerQueue.playerTwo != undefined && playerQueue.playerOne != undefined){
-							queueFound = true;
-				}
-				if (queueFound == true){
-					
-					if(serverQueue == null){
-
-						serverQueue = await Server.findOne({playerConnected : 0, lobbyStatus : "Open"});
-						serverQueue.lobbyType = "Casual";
-						serverQueue.save();
-						serverQueue = JSON.stringify(serverQueue);
-						}
-				
-					clearInterval(wait);
-					response.code = 0;
-					response.msg="Send server";
-					response.data = serverQueue;
-
-					
-					if(playerQueue.playerOne == userFound){
-						playerQueue.playerOne = undefined;
-					}
-					if(playerQueue.playerTwo == userFound){
-
-						playerQueue.playerTwo = undefined;
-					}
-
-					if(playerQueue.playerTwo == undefined && playerQueue.playerOne == undefined){
-					playerQueue = {};
-					queueFound = false;
-					serverQueue = null;
-					}
-					
-					res.send(response);
-					
-						
-				}
-			}, 1000);
-			
-		}
-		
-	}else{
+	if(!userFound){
 		
 		response.code = -9;
 		response.message = userFound.username + "user doesnt exist.";
 		res.send(response);
 	}
-	}else{
+	serverQueue = null;
+	queueList = [];
+	maxed = false;
 
-		response.code = -9;
-		response.message = userFound.username + "user isnt connected.";
-		res.send(response);
-	}
+	
+	var wait = setInterval(async function() {
+	if(serverQueue == null){
 
-
-
-
-});
-app.post("/queue/ranked/join", async (req, res)=>{
-
-	console.log("accessing queue");
-	var response= {};
-	const oken = req.body.token;
-	var TokenObject = await Token.findOne({tokenId : oken});
-
-	var time = 0;
-
-
-	if(TokenObject){
-		
-	var userFound = await User.findOne({_id : TokenObject.userId});
-	if(userFound){
-		
-
-	if(RplayerQueue.playerOne != undefined){
-			
-	if(RplayerQueue.playerOne.username == userFound.username){
-		response.code = 2;
-		response.msg = "Already in queue";
-		res.send(response);
-		return;
+		serverQueue = await Server.findOne({playerConnected : 0, lobbyStatus : "Open"});
+		serverQueue.lobbyType = "Casual";
+		serverQueue.save();
+		serverQueue = JSON.stringify(serverQueue);
 	}
 	
-	}
-	if(RplayerQueue.playerTwo != undefined){
-			
-	if(RplayerQueue.playerTwo.username == userFound.username){
-		response.code = 2;
-		response.msg = "Already in queue";
-		res.send(response);
-		return;
-	}
-	}
-	if(RqueueFound){
-				
-		var waitForOpenQueue = setInterval(function() {
-			if (!RqueueFound){
-				clearInterval(waitForOpenQueue);
-
-
+	if(queueList.length == serverQueue.maxPlayer && maxed == false){
+		maxed = true;
+			console.log("Bof");
+			queueList.delete(userFound);
+			clearInterval(wait);
+			if(queueList.length == 0){
+				serverQueue = null;
+				maxed = false;
 			}
-		}, 5000); // retry every 5 seconds
-	}
-
-	if(RplayerQueue.playerTwo != undefined && RplayerQueue.playerOne != undefined){
-				
-			var waitForFreeLobby = setInterval(function() {
-				if (RplayerQueue.playerTwo == undefined || RplayerQueue.playerOne == undefined){
-					clearInterval(waitForFreeLobby);
-
-
-				}
-			}, 5000); // retry every 5 seconds
-	}
-		
-		if(RplayerQueue.playerTwo == undefined || RplayerQueue.playerOne == undefined){
-			if(RplayerQueue.playerOne == undefined) {
-				console.log(userFound.username + " has joined the online queue as Player One");
-				RplayerQueue.playerOne = userFound;
-			}else if(RplayerQueue.playerTwo == undefined){
-				
-				console.log(userFound.username + " has joined the online queue as Player Two");
-				RplayerQueue.playerTwo = userFound;
-			}
-
-			var wait = setInterval(async function() {
-				if(RplayerQueue.playerTwo != undefined && RplayerQueue.playerOne != undefined){
-							RqueueFound = true;
-				}
-				if (RqueueFound == true){
-					
-					if(RserverQueue == null){
-
-						RserverQueue = await Server.findOne({playerConnected : 0, lobbyStatus : "Open"});
-						RserverQueue.lobbyType = "Ranked";
-						RserverQueue.save();
-						RserverQueue = JSON.stringify(RserverQueue);
-						}
-				
-					clearInterval(wait);
-					response.code = 0;
-					response.msg="Send server";
-					response.data = RserverQueue;
-
-					
-					if(RplayerQueue.playerOne == userFound){
-						RplayerQueue.playerOne = undefined;
-					}
-					if(RplayerQueue.playerTwo == userFound){
-
-						RplayerQueue.playerTwo = undefined;
-					}
-
-					if(RplayerQueue.playerTwo == undefined && RplayerQueue.playerOne == undefined){
-					RplayerQueue = {};
-					RqueueFound = false;
-					RserverQueue = null;
-					}
-					
-					res.send(response);
-					
-						
-				}
-			}, 1000);
 			
-		}
-		
-	}else{
-		
-		response.code = -9;
-		response.message = "user doesnt exist.";
-		res.send(response);
-	}
-	}else{
+			response.code = 0;
+			response.msg="Send server";
+			response.data = serverQueue;
+			res.send(response);
+	}else if(maxed == false && queueList.length != serverQueue.maxPlayer){
+			queueList.add(userFound);
 
-		response.code = -9;
-		response.message = "user isnt connected.";
-		res.send(response);
 	}
 
 
-
+}, 1000);
 
 });
-       
+
+/* Queue */
+
 /* Login And Registrations */
+
+
+
 app.post("/account/login", async (req, res)=>{
 
 	var response= {};
-	console.log("Connection Attempt...");
 	const rUsername = req.body.rUsername;
 	const rPassword = req.body.rPassword;
+	console.log("Connection Attempt on account : " + rUsername);
 	if(rUsername == null || rPassword==null){
 		
 	response.code = 1;
@@ -420,7 +155,7 @@ app.post("/account/login", async (req, res)=>{
 		return;
 	}
 
-	var userAccount = await User.findOne({username: rUsername}, 'username password wins losses goldcoins');
+	var userAccount = await User.findOne({username: {'$regex': `^${rUsername}$`, $options: 'i'}}, 'username password wins losses goldcoins');
 	if(userAccount != null){
 		
 		if(await bcrypt.compare(rPassword, userAccount.password)){
@@ -446,7 +181,7 @@ app.post("/account/login", async (req, res)=>{
 					response.msg = "Successful Connection";
 					response.token = tempToken.tokenId;
 					response.data =(({username, wins, losses, goldcoins}) => ({username, wins, losses, goldcoins}))(userAccount);
-					console.log("Retrieving account...");
+					console.log(userAccount.username + " has successfully connected to the Master Server");
 					res.send(response);
 			return;
 		}
@@ -472,7 +207,7 @@ app.post("/account/create", async (req, res)=>{
 	res.send(response);
 		return;
 	}
-	var userAccount = await User.findOne({username: rUsername});
+	var userAccount = await User.findOne({username: {'$regex': `^${rUsername}$`, $options: 'i'}});
 	if(userAccount == null){
 		var emailAccount = await User.findOne({email : rEmail});
 		if(emailAccount == null){
@@ -508,7 +243,7 @@ app.post("/account/create", async (req, res)=>{
 /* Login And Registrations */
 
 
-
+/* Math Methods */
 
 const getrand = () => {
 	return Math.random().toString(36).substr(2);
@@ -530,85 +265,43 @@ async function GenerateToken (req, res){
 	return tk;
 }
 
-/* Items shop and lists */
+/* Math Methods */
 
-/* Debug Stuff
-app.get("/createItem/:name", async (req, res)=>{
+app.post("/server/On", async (req, res) =>{
+	var response= {};
 
+		var port = req.body.port;
 
-character = await Character.findOne({name : req.params.name});
+		console.log("Server hosting attempt using port : " + port);
+	if(await Server.findOne({port : port})){
 
-if(character == null){
+		response.code = -1;
+		response.msg = "ServerWithPort already on";
+		res.send(response);
+		console.log("Server with open ports : " + port + " already exists.")
+		return;
 
-	thischaracter = new Character({
-		name: req.params.name,
-	})
-
-
-	await thischaracter.save();
-
-	res.send(thischaracter)
-}});
-
-app.get("/move", async(req, res)=>{
-
-	var response = {};
-	var moveList = await Move.find({});
-	var testuser = await User.findOne({username : "Diamax"});
-
-	
-	moveList.forEach(async thismove  => {
-		existingmove = await OwnedMoves.findOne({ownerid : testuser._id, moveid : thismove._id});
-
-
-
-	if(existingmove == null){
-		
-		thischaracter = new OwnedMoves({
-			moveid : thismove._id,
-			ownerid : testuser._id,
-		})
-		await thischaracter.save();
-		response.code = 0;
-		response.msg = "Item was bought";
-	}else{
-		
-		existingmove.amount = existingmove.amount + 1;
-		
-		existingmove.save();
-		response.code = 0;
-		response.msg = "Item was bought";
 
 	}
-	});
-	res.send(response);
-})
-
-
-app.get("/createMove/:name", async (req, res)=>{
-
-
-	move = await Move.findOne({name : req.params.name});
-	
-	if(move == null){
-		var temp = await Character.findOne({});
-		thismove = new Move({
-			name: req.params.name,
-			characterName : temp.name,
-			moveType : "Special",
-			moveRarity : "Common"
-
-		})
-	
-	
-		await thismove.save();
-	
-		res.send(thismove)
-	}});
-*/
 
 
 
+	const thisserv = new Server({
+
+		ip: req.body.ip,
+		port: req.body.port,
+		playerConnected:req.body.playerConnected,
+		maxPlayer: req.body.maxPlayer,
+		lobbyStatus : req.body.lobbystate,
+ 		});
+
+ 	await thisserv.save();
+	 response.code = 0;
+	 response.msg = "Server On";
+	 res.send(response);
+	 console.log("Server with open ports : " + port + " has successfully been created and connected to the Master Server.")
+
+});
 
 
 app.post("/server/Off", async (req, res) =>{
@@ -616,7 +309,7 @@ app.post("/server/Off", async (req, res) =>{
 	var response= {};
 	servport = req.body.port;
 	await Server.findOneAndDelete({port : servport});
-
+	console.log("Server using port " + servport + " has successfully closed");
 	res.send(response);
 });
 
@@ -637,6 +330,7 @@ app.post("/server/update", async (req, res) =>{
 	
 	
 		 await thisserv.save();
+		 console.log("Updated info on server using ports : " + thisserv.port)
 		 res.send(response);
 
 
@@ -704,37 +398,6 @@ app.post("/server", async (req, res) =>{
 
 });
 
-app.post("/server/On", async (req, res) =>{
-	var response= {};
-
-		var port = req.body.port;
-	if(await Server.findOne({port : port})){
-
-		response.code = -1;
-		response.msg = "ServerWithPort already on";
-		res.send(response);
-		return;
-
-
-	}
-
-
-
-	const thisserv = new Server({
-
-		ip: req.body.ip,
-		port: req.body.port,
-		playerConnected:req.body.playerConnected,
-		maxPlayer: req.body.maxPlayer,
-		lobbyStatus : req.body.lobbystate,
- 		});
-
- 	await thisserv.save();
-	 response.code = 0;
-	 response.msg = "Server On";
-	 res.send(response);
-
-});
 
 app.post("/deconnexion", async (req, res) => {
 	var response= {};
@@ -743,27 +406,24 @@ app.post("/deconnexion", async (req, res) => {
 	if(ConTok != null){
 
 		var userFound = await User.findOne({_id : ConTok.userId});
+
+
+
+
 		if(userFound){
 			
-		if(playerQueue.playerOne != undefined){
-			if(playerQueue.playerOne.username == userFound.username){
-				playerQueue.playerOne = undefined;
-			}
-		}
-		else if(playerQueue.playerTwo != undefined){
-			if(playerQueue.playerTwo.username == userFound.username){
-				playerQueue.playerTwo = undefined;
-			}
-		}
+		
+			response.msg = userFound.username +" has disconnected";
+			console.log(userFound.username +" has successfully disconnected from the Master Server");
+	}else{
+		console.log("Unidentifiable user has disconnected");
 	}
 		await Token.findOneAndDelete({tokenId : tokenid});
 		response.code = 0;
-		response.msg = userFound.Username +" has disconnected";
 	}else{
 		response.code = -1;
 		response.msg = "Connection non-existant";
 	}
-	console.log(userFound.Username +" has disconnected");
 	res.send("pozz");
 });
 

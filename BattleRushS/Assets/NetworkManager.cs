@@ -357,6 +357,7 @@ public class NetworkManager : MonoBehaviour
         else
         {
             Debug.Log("Server start failed");
+            Application.Quit();
         }
         yield return null;
     }

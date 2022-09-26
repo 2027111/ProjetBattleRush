@@ -26,24 +26,23 @@ public class GameManager : MonoBehaviour
 
 
     public GameObject PlayerPrefab => playerPrefab;
+    public GameObject LocalPlayerPrefab => localplayerPrefab;
+
 
     [Header("Prefabs")]
     [SerializeField] private GameObject playerPrefab;
-    [SerializeField] public Transform LeftSpawn;
-    [SerializeField] public Transform RightSpawn;
+    [SerializeField] private GameObject localplayerPrefab;
 
 
+
+
+    //[SerializeField] BattleUI bui;
+    //bui.Setup(localPlayer, enemyplayer);
 
 
 
     private void Awake()
     {
         Singleton = this;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
