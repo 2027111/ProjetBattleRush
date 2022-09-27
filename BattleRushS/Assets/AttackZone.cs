@@ -5,10 +5,10 @@ using UnityEngine;
 public class AttackZone : MonoBehaviour
 {
 
-    VoiturePhysique vp;
+    Player vp;
 
 
-    public void Setup(VoiturePhysique v)
+    public void Setup(Player v)
     {
         vp = v;
     }

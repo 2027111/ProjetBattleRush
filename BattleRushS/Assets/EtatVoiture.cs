@@ -6,7 +6,7 @@ public abstract class EtatVoiture
 {
 
 
-    protected VoiturePhysique Voiture
+    protected Player Voiture
     {
         get;
         set;
@@ -24,7 +24,7 @@ public abstract class EtatVoiture
     }
     public EtatVoiture(GameObject joueur)
     {
-        Voiture = joueur.GetComponent<VoiturePhysique>();
+        Voiture = joueur.GetComponent<Player>();
         Animateur = joueur.GetComponent<Animator>();
     }
 

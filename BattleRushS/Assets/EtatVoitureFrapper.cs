@@ -25,10 +25,10 @@ public class EtatVoitureFrapper : EtatVoiture
 
     }
 
-    public EtatVoitureFrapper(GameObject joueur, VoiturePhysique voiturePhysique) : this(joueur)
+    public EtatVoitureFrapper(GameObject joueur, Player Player) : this(joueur)
     {
 
-        Vector3 diff = Voiture.transform.position - voiturePhysique.transform.position;
+        Vector3 diff = Voiture.transform.position - Player.transform.position;
         diff.Normalize();
         diff += Vector3.up * 3;
         temp = diff;

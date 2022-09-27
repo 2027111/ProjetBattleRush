@@ -60,8 +60,13 @@ public class NetworkManager : MonoBehaviour
 
 
 
-    internal RiptideNetworking.Server Server { get; private set; }
 
+    public void ConnectTo(Server s)
+    {
+        this.ip = s.ip;
+        this.port = s.port;
+        StartCoroutine(Connection());
+    }
 
     [SerializeField] private string ip;
     [SerializeField] private string port;
@@ -99,14 +104,7 @@ public class NetworkManager : MonoBehaviour
     {
         Client.Connect($"{ip}:{port}");
     }
-    internal void StartHost()
-    {
-        Debug.Log("WORKING");
-        Server.Start(02496, 2);
-        Client.Connect($"127.0.0.1:{02496}");
-        isHosting = true;
-        StartCoroutine(StartBattle());
-    }
+
     public void Connect(string ip, string port)
     {
         this.ip = ip;
@@ -116,55 +114,12 @@ public class NetworkManager : MonoBehaviour
     }
 
 
-    private IEnumerator StartBattle()
-    {
-        //Send Who's left and who's right.
-        //
-
-        Debug.Log("WORKING");
-
-        float t = 0;
-        while (t < 1)
-        {
-
-            t += Time.deltaTime;
-            yield return null;
-
-        }
-
-
-
-
-        for (int i = 0; i < 3; i++)
-        {
-            Debug.Log("WORKING");
-            SendTimeStart(i);
-            yield return new WaitForSeconds(1f);
-
-        }
-
-
-        SendTimeStart(3);
-        started = true;
-    }
-
-
-
-    private void SendTimeStart(int threeminusi)
-    {
-        Message message = Message.Create(MessageSendMode.unreliable, ServerToClientId.timeTillStart);
-        message.AddFloat(3 - threeminusi);
-        Server.SendToAll(message);
-    }
- 
-
-
 
 
 
     private IEnumerator Connection()
     {
-        string playscene = "BattleScene";
+        string playscene = "GameScene";
 
         SceneManager.LoadScene(playscene);
         while (SceneManager.GetActiveScene().name != playscene)
@@ -212,16 +167,11 @@ public class NetworkManager : MonoBehaviour
 
     private void DidDisconnect(object sender, EventArgs e)
     {
-        if (Server.IsRunning)
-        {
-            Server.Stop();
-        }
         foreach (Player player in Player.list.Values)
         {
             Destroy(player.gameObject);
         }
 
-        Server?.Stop();
         SceneManager.LoadScene("MenuScene");
     }
 
@@ -240,10 +190,7 @@ public class NetworkManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (Server.IsRunning)
-        {
-            Server.Tick();
-        }
+      
         Client.Tick();
     }
 

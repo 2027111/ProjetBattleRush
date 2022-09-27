@@ -422,7 +422,7 @@ public class NetworkManager : MonoBehaviour
     {
         Server.DisconnectClient(id);
 
-        if (VoiturePhysique.list.TryGetValue(id, out VoiturePhysique player))
+        if (Player.list.TryGetValue(id, out Player player))
         {
             Destroy(player.gameObject);
         }
@@ -437,7 +437,7 @@ public class NetworkManager : MonoBehaviour
 
     private void PlayerLeft(object sender, ClientDisconnectedEventArgs e)
     {
-        if (VoiturePhysique.list.TryGetValue(e.Id, out VoiturePhysique player))
+        if (Player.list.TryGetValue(e.Id, out Player player))
         {
             Destroy(player.gameObject);
         }

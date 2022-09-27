@@ -322,7 +322,7 @@
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/VSSettingsProvider.ref.dll"
--analyzer:"Assets/Scripts/RiptideNetworking.dll"
+"Assets/MatchMakingManager.cs"
 "Assets/Scripts/AttackZone.cs"
 "Assets/Scripts/DeathZone.cs"
 "Assets/Scripts/DescResponse.cs"
@@ -334,8 +334,11 @@
 "Assets/Scripts/PlayerAccount.cs"
 "Assets/Scripts/Responses/CreateResponse.cs"
 "Assets/Scripts/Responses/LoginResponse.cs"
+"Assets/Scripts/Responses/Server.cs"
+"Assets/Scripts/Responses/ServerResponse.cs"
 "Assets/Scripts/ServerTalker.cs"
 "Assets/Scripts/SimpleJSON.cs"
+"Assets/Scripts/UIManager.cs"
 -langversion:8.0
 
 /deterministic
