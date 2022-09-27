@@ -1,3 +1,4 @@
+using RiptideNetworking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,7 +26,66 @@ public class Player : MonoBehaviour
 
 
 
+    private void OnDestroy()
+    {
+        list.Remove(Id);
+    }
 
+
+    public static void Spawn(ushort id, string username, Vector3 position)
+    {
+        Player player;
+        if (id == NetworkManager.Singleton.Client.Id)
+        {
+            player = Instantiate(GameLogic.Singleton.LocalPlayerPrefab, position, Quaternion.identity).GetComponent<Player>();
+            player.IsLocal = true;
+        }
+        else
+        {
+            player = Instantiate(GameLogic.Singleton.PlayerPrefab, position, Quaternion.identity).GetComponent<Player>();
+            player.IsLocal = false;
+            // Debug.Log(choice);
+            //
+        }
+        player.name = $"Player {id} {(string.IsNullOrEmpty(username) ? "Guest" : username)}";
+        player.Id = id;
+        player.Username = username;
+        list.Add(id, player);
+    }
+
+    [MessageHandler((ushort)ServerToClientId.playerMovement)]
+    private static void PlayerMovement(Message message)
+    {
+        if (list.TryGetValue(message.GetUShort(), out Player player))
+        {
+                    player.Move(message.GetVector3());
+
+        }
+    }
+
+    [MessageHandler((ushort)ServerToClientId.playerSpawned)]
+    private static void SpawnPlayer(Message message)
+    {
+        ushort playeid = message.GetUShort();
+        Spawn(playeid, message.GetString(), message.GetVector3());
+    }
+
+ 
+    private Message AddSpawnData(Message message)
+    {
+
+        message.AddUShort(Id);
+        //
+
+        message.AddString(Username);
+        message.AddVector3(transform.position);
+        return message;
+    }
+
+    private void Move(Vector3 vector3)
+    {
+        transform.position = vector3;
+    }
 
     // Start is called before the first frame update
     void Start()

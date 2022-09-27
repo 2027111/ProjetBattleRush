@@ -5,30 +5,23 @@ using UnityEngine.Networking;
 
 public class MatchMakingManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
+    [SerializeField] GameObject LoadingUI;
     public void StartMatchMaking()
     {
         //Activer le layout de chargement,
+        LoadingUI.SetActive(true);
         //Commencer MatchMaking
         StartCoroutine(AttemptConnectToServer());
     }
+
     IEnumerator AttemptConnectToServer()
     {
 
         WWWForm form = new WWWForm();
-        form.AddField("tokenid", PlayerAccount.connectionToken);
-        UnityWebRequest request = UnityWebRequest.Post($"{ServerTalker.mainAddress}servers", form);
+        form.AddField("token", PlayerAccount.connectionToken);
+        UnityWebRequest request = UnityWebRequest.Post($"{ServerTalker.mainAddress}queue/join", form);
         var handler = request.SendWebRequest();
         float startTime = 0;
         while (!handler.isDone)
@@ -52,6 +45,7 @@ public class MatchMakingManager : MonoBehaviour
             {
                 case 0:
                     Server s = response.data;
+                    Debug.Log(s);
                     NetworkManager.Singleton.ConnectTo(s);
                     break;
 

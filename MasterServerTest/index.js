@@ -5,7 +5,6 @@ const flash = require("express-flash");
 const bcrypt = require('bcryptjs');
 var app = express();
 const keys = require('./config/keys');
-var List = require("collections/list");
 // pour activer le module ejs
 app.set("view engine", "ejs");
 
@@ -30,6 +29,7 @@ const User = require("./models/user");
 const Server = require("./models/server");
 const Token = require("./models/connectionToken");
 const { response } = require("express");
+const user = require("./models/user");
 
 
 
@@ -83,20 +83,21 @@ app.post("/queue/join", async (req, res)=>{
 	var time = 0;
 
 
-	if(!TokenObject){
+	if(TokenObject == null){
 	
 		response.code = -9;
-		response.message = userFound.username + "user isnt connected.";
+		response.message = "user isnt connected.";
 		res.send(response);
 	}
 		
 	var userFound = await User.findOne({_id : TokenObject.userId});
-	if(!userFound){
+	if(userFound == null){
 		
 		response.code = -9;
 		response.message = userFound.username + "user doesnt exist.";
 		res.send(response);
 	}
+	console.log("User : " + userFound.username + " is accessing online MatchMaking.")
 	serverQueue = null;
 	queueList = [];
 	maxed = false;
@@ -114,7 +115,7 @@ app.post("/queue/join", async (req, res)=>{
 	if(queueList.length == serverQueue.maxPlayer && maxed == false){
 		maxed = true;
 			console.log("Bof");
-			queueList.delete(userFound);
+			queueList.remove(userFound);
 			clearInterval(wait);
 			if(queueList.length == 0){
 				serverQueue = null;
@@ -126,7 +127,11 @@ app.post("/queue/join", async (req, res)=>{
 			response.data = serverQueue;
 			res.send(response);
 	}else if(maxed == false && queueList.length != serverQueue.maxPlayer){
-			queueList.add(userFound);
+			if(!queueList.includes(userFound)){
+				queueList.push(userFound);
+				console.log("User : " + userFound.username + " has been added to the queue");
+				console.log(queueList);
+			}
 
 	}
 

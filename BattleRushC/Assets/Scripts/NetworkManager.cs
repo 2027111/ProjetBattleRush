@@ -61,12 +61,6 @@ public class NetworkManager : MonoBehaviour
 
 
 
-    public void ConnectTo(Server s)
-    {
-        this.ip = s.ip;
-        this.port = s.port;
-        StartCoroutine(Connection());
-    }
 
     [SerializeField] private string ip;
     [SerializeField] private string port;
@@ -99,6 +93,12 @@ public class NetworkManager : MonoBehaviour
 
 
 
+    public void ConnectTo(Server s)
+    {
+        this.ip = s.ip;
+        this.port = s.port;
+        StartCoroutine(Connection());
+    }
 
     public void Connect()
     {
