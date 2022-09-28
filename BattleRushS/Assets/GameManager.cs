@@ -26,12 +26,12 @@ public class GameManager : MonoBehaviour
 
 
     public GameObject PlayerPrefab => playerPrefab;
-    public GameObject LocalPlayerPrefab => localplayerPrefab;
+    public GameObject SpawnPoint => spawnPoint;
 
 
     [Header("Prefabs")]
     [SerializeField] private GameObject playerPrefab;
-    [SerializeField] private GameObject localplayerPrefab;
+    [SerializeField] private GameObject spawnPoint;
 
 
 

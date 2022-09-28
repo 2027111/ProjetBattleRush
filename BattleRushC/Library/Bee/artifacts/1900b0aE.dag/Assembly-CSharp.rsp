@@ -322,11 +322,13 @@
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/VSSettingsProvider.ref.dll"
+"Assets/Prefabs/PlayerController.cs"
 "Assets/Scripts/AlwaysRotate.cs"
 "Assets/Scripts/AttackZone.cs"
 "Assets/Scripts/DeathZone.cs"
 "Assets/Scripts/DescResponse.cs"
 "Assets/Scripts/GameLogic.cs"
+"Assets/Scripts/Interpolator.cs"
 "Assets/Scripts/JsonHelper.cs"
 "Assets/Scripts/MatchMakingManager.cs"
 "Assets/Scripts/MenuPreset.cs"
@@ -340,6 +342,7 @@
 "Assets/Scripts/Responses/ServerResponse.cs"
 "Assets/Scripts/ServerTalker.cs"
 "Assets/Scripts/SimpleJSON.cs"
+"Assets/Scripts/TransformUpdates.cs"
 "Assets/Scripts/UIManager.cs"
 -langversion:8.0
 

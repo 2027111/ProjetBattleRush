@@ -8,9 +8,12 @@ using UnityEngine.Networking;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System.Net;
+using System;
+
 public enum ServerToClientId : ushort
 {
-    playerSpawned = 1,
+    sync = 1,
+    playerSpawned,
     playerMovement,
     animations,
     damage,
@@ -46,8 +49,8 @@ public class NetworkManager : MonoBehaviour
     [SerializeField] private static string mainAddress = "http://127.0.0.1:5500/";
 
 
-    [Range(63577, 64000)]
-    int serverPort;
+   [Range(63577, 64000)]
+    int serverPort = 63577;
 
 
     private static NetworkManager _singleton;
@@ -74,6 +77,8 @@ public class NetworkManager : MonoBehaviour
     public CurrentLobbyType currentLobbyType = CurrentLobbyType.Casual;
 
     public Server Server { get; private set; }
+
+    public uint  CurrentTick { get; private set; } = 0;
 
 
     [SerializeField] private ushort port;
@@ -135,7 +140,7 @@ public class NetworkManager : MonoBehaviour
 
     private void PlayerJoined(object sender, ServerClientConnectedEventArgs e)
     {
-        if (Server.ClientCount == 2)
+        if (Server.ClientCount == Server.MaxClientCount)
         {
             currentServerState = CurrentServerState.InGame;
             StartCoroutine(StartBattle());
@@ -190,7 +195,7 @@ public class NetworkManager : MonoBehaviour
 
     private void GetFreePort()
     {
-        serverPort = Random.Range(63577, 64000);
+        //serverPort = Random.Range(63577, 64000);
     }
 
 
@@ -305,7 +310,7 @@ public class NetworkManager : MonoBehaviour
         {
             return;
         }
-        GetFreePort();
+       GetFreePort();
         StartCoroutine(TryStartServer());
     }
 
@@ -413,11 +418,26 @@ public class NetworkManager : MonoBehaviour
         {
             Server.Tick();
 
+            if (CurrentTick % 200 == 0)
+            {
+                SendSync();
+            }
+
+            CurrentTick++;
+
         }
 
 
 
     }
+
+    private void SendSync()
+    {
+        Message message = Message.Create(MessageSendMode.unreliable, (ushort)ServerToClientId.sync);
+        message.Add(CurrentTick);
+        Server.SendToAll(message);
+    }
+
     public void KickPlayer(ushort id)
     {
         Server.DisconnectClient(id);

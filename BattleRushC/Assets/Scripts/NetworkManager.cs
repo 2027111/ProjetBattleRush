@@ -9,7 +9,8 @@ using UnityEngine.Networking;
 
 public enum ServerToClientId : ushort
 {
-    playerSpawned = 1,
+    sync = 1,
+    playerSpawned,
     playerMovement,
     animations,
     damage,
@@ -53,6 +54,32 @@ public class NetworkManager : MonoBehaviour
     public bool isHosting = false;
     public bool started = false;
 
+    private uint _serverTick;
+    public uint ServerTick
+    {
+        get => _serverTick;
+        private set
+        {
+            _serverTick = value;
+            InterpolationTick = (value - TicksBetweenPositionUpdates);
+        }
+    }
+
+
+    public uint InterpolationTick { get; private set; }
+    public uint _ticksBetweenPositionUpdates = 2;
+    public uint TicksBetweenPositionUpdates
+    {
+        get => _ticksBetweenPositionUpdates;
+        private set
+        {
+            _ticksBetweenPositionUpdates = value;
+            InterpolationTick = (ushort)(ServerTick - value);
+        }
+    }
+
+    [Space(10)]
+    [SerializeField] private ushort tickDivergenceTolerance = 1;
     public Client Client
     {
         get; private set;
@@ -89,6 +116,7 @@ public class NetworkManager : MonoBehaviour
         Client.ConnectionFailed += OnFailedToConnect;
         Client.ClientDisconnected += PlayerLeft;
         Client.Disconnected += DidDisconnect;
+        ServerTick = 2;
     }
 
 
@@ -105,7 +133,7 @@ public class NetworkManager : MonoBehaviour
         Client.Connect($"{ip}:{port}");
     }
 
-    public void Connect(string ip, string port)
+    public void ConnectTo(string ip, string port)
     {
         this.ip = ip;
         this.port = port;
@@ -172,7 +200,7 @@ public class NetworkManager : MonoBehaviour
             Destroy(player.gameObject);
         }
 
-        SceneManager.LoadScene("MenuScene");
+        SceneManager.LoadScene("MainMenuScene");
     }
 
     public void SendName()
@@ -192,6 +220,7 @@ public class NetworkManager : MonoBehaviour
     {
       
         Client.Tick();
+        ServerTick++;
     }
 
     private void OnApplicationQuit()
@@ -242,7 +271,19 @@ public class NetworkManager : MonoBehaviour
 
 
 
-
+    private void SetTick(ushort serverTick)
+    {
+        if(Mathf.Abs(ServerTick - serverTick) > tickDivergenceTolerance)
+        {
+            Debug.Log($"Client tick : {ServerTick} -> {serverTick}");
+            ServerTick = serverTick;
+        }
+    }
+    [MessageHandler((ushort)ServerToClientId.sync)]
+    public static void Sync(Message message)
+    {
+        Singleton.SetTick(message.GetUShort());
+    }
 
 
 }

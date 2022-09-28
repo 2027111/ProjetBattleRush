@@ -1,3 +1,4 @@
+using RiptideNetworking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,6 +7,13 @@ using UnityEngine;
 public class Player : MonoBehaviour
 
 {
+
+
+
+    public static Dictionary<ushort, Player> list = new Dictionary<ushort, Player>();
+    public ushort Id { get; private set; }
+    public bool IsLocal { get; private set; }
+
     [SerializeField] public float speed = 10;
     [SerializeField] public Vector3 direction = new Vector3(0, 0, 1);
     [SerializeField] public GameObject modelCar;
@@ -18,14 +26,25 @@ public class Player : MonoBehaviour
     public float damage = 0;
     public Player lastHit = null;
     public float boostamount = 100;
-
     int points = 0;
 
+    public bool[] inputs = new bool[7];
+
+
+
+    public string[] inputchar = { "W", "A", "S", "D", "P", "O", "SPACE" };
 
     public Rigidbody rb;
 
     EtatVoiture etatActuel;
-    public static Dictionary<ushort, Player> list = new Dictionary<ushort, Player>();
+
+
+    public string Username { get; private set; }
+
+    private void OnDestroy()
+    {
+        list.Remove(Id);
+    }
 
     public bool GetAccel()
     {
@@ -131,7 +150,7 @@ public class Player : MonoBehaviour
      
         if (control)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (inputs[4])
             {
                 //Instantiate();
                 Vector3 rot = camHolder.transform.localRotation.eulerAngles;
@@ -150,5 +169,73 @@ public class Player : MonoBehaviour
 
         }
         etatActuel.Handle();
+        SendMovement();
+    }
+
+
+    [MessageHandler((ushort)ClientToServerId.input)]
+    private static void Input(ushort fromClientId, Message message)
+    {
+        if (list.TryGetValue(fromClientId, out Player player))
+        {
+            player.SetInput(message.GetBools(6));
+        }
+    }
+    [MessageHandler((ushort)ClientToServerId.name)]
+    private static void Name(ushort fromClientId, Message message)
+    {
+        Spawn(fromClientId, message.GetString());
+
+    }
+    private void SetInput(bool[] vs)
+    {
+        inputs = vs;
+    }
+    private Message AddSpawnData(Message message)
+    {
+
+        message.AddUShort(Id);
+        message.AddString(Username);
+        message.AddVector3(transform.position);
+        return message;
+    }
+    private void SendSpawned()
+    {
+
+        NetworkManager.Singleton.Server.SendToAll(AddSpawnData(Message.Create(MessageSendMode.reliable, ServerToClientId.playerSpawned)));
+    }
+
+    private void SendSpawned(ushort toClientid)
+    {
+
+        NetworkManager.Singleton.Server.Send(AddSpawnData(Message.Create(MessageSendMode.reliable, ServerToClientId.playerSpawned)), toClientid);
+    }
+    private static void Spawn(ushort id, string username)
+    {
+        foreach (Player otherPlayer in list.Values)
+        {
+            otherPlayer.SendSpawned(id);
+        }
+        Player player = Instantiate(GameManager.Singleton.PlayerPrefab, GameManager.Singleton.SpawnPoint.transform.position, Quaternion.identity).GetComponent<Player>();
+       
+        player.name = $"Player {id} {(string.IsNullOrEmpty(username) ? "Guest" : username)}";
+        player.Id = id;
+        player.Username = string.IsNullOrEmpty(username) ? $"Guest {id}" : username;
+        player.SendSpawned();
+        list.Add(id, player);
+    }
+    private void SendMovement()
+    {
+        if(NetworkManager.Singleton.CurrentTick % 2 != 0)
+        {
+            return;
+        }
+        Message message = Message.Create(MessageSendMode.unreliable, ServerToClientId.playerMovement);
+        message.AddUShort(Id);
+        message.AddUInt(NetworkManager.Singleton.CurrentTick);
+        message.AddVector3(transform.position);
+        message.AddQuaternion(transform.rotation);
+        message.AddQuaternion(modelCar.transform.rotation);
+        NetworkManager.Singleton.Server.SendToAll(message);
     }
 }

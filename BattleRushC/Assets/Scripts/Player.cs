@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
     public static Dictionary<ushort, Player> list = new Dictionary<ushort, Player>();
     public ushort Id { get; set; }
 
-    public bool IsLocal { get; set; }
+    public bool IsLocal { get; set; } = false;
 
 
     public string Username { get; set; }
@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
     [SerializeField] public GameObject flightburst;
     [SerializeField] public Camera camProxy;
     [SerializeField] public GameObject camHolder;
+    [SerializeField] public Interpolator interpolater;
 
     int points = 0;
 
@@ -35,17 +36,11 @@ public class Player : MonoBehaviour
     public static void Spawn(ushort id, string username, Vector3 position)
     {
         Player player;
+        player = Instantiate(GameLogic.Singleton.PlayerPrefab, position, Quaternion.identity).GetComponent<Player>();
         if (id == NetworkManager.Singleton.Client.Id)
         {
-            player = Instantiate(GameLogic.Singleton.LocalPlayerPrefab, position, Quaternion.identity).GetComponent<Player>();
             player.IsLocal = true;
-        }
-        else
-        {
-            player = Instantiate(GameLogic.Singleton.PlayerPrefab, position, Quaternion.identity).GetComponent<Player>();
-            player.IsLocal = false;
-            // Debug.Log(choice);
-            //
+            player.gameObject.AddComponent<PlayerController>();
         }
         player.name = $"Player {id} {(string.IsNullOrEmpty(username) ? "Guest" : username)}";
         player.Id = id;
@@ -58,7 +53,7 @@ public class Player : MonoBehaviour
     {
         if (list.TryGetValue(message.GetUShort(), out Player player))
         {
-                    player.Move(message.GetVector3());
+            player.Move(message.GetUInt(), message.GetVector3(), message.GetQuaternion(), message.GetQuaternion()) ;
 
         }
     }
@@ -82,9 +77,12 @@ public class Player : MonoBehaviour
         return message;
     }
 
-    private void Move(Vector3 vector3)
+    private void Move(uint tick, Vector3 newPosition, Quaternion carRot, Quaternion modelCarRot)
     {
-        transform.position = vector3;
+        interpolater.NewUpdate(tick, newPosition); //Configurer système d'interpolation de mouvement pour rendre les changements de positions plus fluide.
+        transform.position = newPosition;
+        transform.rotation = carRot;
+        modelCar.transform.rotation = modelCarRot;
     }
 
     // Start is called before the first frame update

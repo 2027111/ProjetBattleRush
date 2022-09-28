@@ -7,7 +7,15 @@ public class MatchMakingManager : MonoBehaviour
 {
 
 
+
     [SerializeField] GameObject LoadingUI;
+    
+    
+    public void DebugConnectToDefaultServer()
+    {
+        NetworkManager.Singleton.ConnectTo("127.0.0.1", "63577");
+    }
+
     public void StartMatchMaking()
     {
         //Activer le layout de chargement,

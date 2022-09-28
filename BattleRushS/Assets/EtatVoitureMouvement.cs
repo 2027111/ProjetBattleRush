@@ -42,7 +42,7 @@ public class EtatVoitureMouvement : EtatVoiture
         {
 
 
-        if (Input.GetKey(KeyCode.W) && Voiture.boostamount > 0)
+        if (Voiture.inputs[0] && Voiture.boostamount > 0)
         {
 
                 Voiture.boostamount -=  30 * Time.deltaTime;
@@ -50,7 +50,8 @@ public class EtatVoitureMouvement : EtatVoiture
             accelerating = true; ralenting = false;
 
         }
-        else if (Input.GetKey(KeyCode.S)){
+        else if (Voiture.inputs[2])
+            {
             accel = 0.5f;
             accelerating = false; ralenting = true;
         }
@@ -62,7 +63,15 @@ public class EtatVoitureMouvement : EtatVoiture
         }
 
 
-        x = Input.GetAxis("Horizontal");
+            x = 0;
+
+            if (Voiture.inputs[1])
+            {
+                x--;
+            }
+            else if(Voiture.inputs[3]){
+                x++;
+            }
 
 
             if (Input.GetKeyDown(KeyCode.Mouse0))
