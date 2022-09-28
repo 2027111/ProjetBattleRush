@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4577988168447143482}
   - component: {fileID: 4577988168447143483}
+  - component: {fileID: 2062000172}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -45,5 +46,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isHosting: 0
   started: 0
-  ip: 
-  port: 0
+  _ticksBetweenPositionUpdates: 2
+  tickDivergenceTolerance: 1
+  ip: 127.0.0.1
+  port: 1234
+--- !u!114 &2062000172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4577988168447143480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0166e8361e4acb144a8575ff6b29b230, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 2124240668806114927, guid: dcb63ec4fe4959f4fade77685c5a70dd, type: 3}
+  localplayerPrefab: {fileID: 0}

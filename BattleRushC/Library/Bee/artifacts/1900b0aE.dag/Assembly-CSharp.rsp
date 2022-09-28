@@ -347,6 +347,7 @@
 "Assets/Scripts/SimpleJSON.cs"
 "Assets/Scripts/TransformUpdates.cs"
 "Assets/Scripts/UIManager.cs"
+"Assets/TextAnimator.cs"
 -langversion:8.0
 
 /deterministic

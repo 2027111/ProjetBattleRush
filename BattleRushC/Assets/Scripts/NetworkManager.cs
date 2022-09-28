@@ -12,7 +12,7 @@ public enum ServerToClientId : ushort
     sync = 1,
     playerSpawned,
     playerMovement,
-    animations,
+    messageText,
     damage,
     startPositions,
     timeTillStart,
@@ -286,5 +286,14 @@ public class NetworkManager : MonoBehaviour
         Singleton.SetTick(message.GetUShort());
     }
 
+    [MessageHandler((ushort)ServerToClientId.messageText)]
+    public static void Text(Message message)
+    {
+        string m = message.GetString();
+        GameObject messageObject = Instantiate(GameLogic.Singleton.message, GameObject.Find("Canvas").transform);
+        messageObject.GetComponent<TextAnimator>().SetText(m);
+
+
+    }
 
 }

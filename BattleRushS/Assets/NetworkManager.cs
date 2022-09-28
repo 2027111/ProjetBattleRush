@@ -15,7 +15,7 @@ public enum ServerToClientId : ushort
     sync = 1,
     playerSpawned,
     playerMovement,
-    animations,
+    messageText,
     damage,
     startPositions,
     timeTillStart,
@@ -157,6 +157,7 @@ public class NetworkManager : MonoBehaviour
     {
         //Send Who's left and who's right.
         //
+        SendTextNotif("Game will start soon!");
         for(int i = 0; i < 3; i++)
         {
             yield return new WaitForSeconds(1f);
@@ -165,9 +166,10 @@ public class NetworkManager : MonoBehaviour
 
         for (int i = 0; i < 5; i++)
         {
+            SendTextNotif(""+ (5-i));
             yield return new WaitForSeconds(1f);
         }
-
+        SendTextNotif("Go!");
         foreach (KeyValuePair<ushort, Player> car in Player.list)
         {
             car.Value.ChangerState(new EtatVoitureMouvement(car.Value.gameObject));
@@ -427,6 +429,13 @@ public class NetworkManager : MonoBehaviour
     {
         Message message = Message.Create(MessageSendMode.unreliable, (ushort)ServerToClientId.sync);
         message.Add(CurrentTick);
+        Server.SendToAll(message);
+    }
+
+    private void SendTextNotif(string s)
+    {
+        Message message = Message.Create(MessageSendMode.unreliable, (ushort)ServerToClientId.messageText);
+        message.AddString(s);
         Server.SendToAll(message);
     }
 
