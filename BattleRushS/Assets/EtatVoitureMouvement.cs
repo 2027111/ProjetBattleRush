@@ -67,10 +67,10 @@ public class EtatVoitureMouvement : EtatVoiture
 
             if (Voiture.inputs[1])
             {
-                x--;
+                x -= 0.4f;
             }
             else if(Voiture.inputs[3]){
-                x++;
+                x += 0.4f;
             }
 
 

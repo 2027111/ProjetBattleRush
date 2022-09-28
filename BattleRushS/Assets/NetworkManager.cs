@@ -157,29 +157,21 @@ public class NetworkManager : MonoBehaviour
     {
         //Send Who's left and who's right.
         //
-
-
-        float t = 0;
-        while (t < 1)
+        for(int i = 0; i < 3; i++)
         {
-
-            t += Time.deltaTime;
-            yield return null;
-
-        }
-
-
-
-
-        for (int i = 0; i < 3; i++)
-        {
-            SendTimeStart(i);
             yield return new WaitForSeconds(1f);
-
         }
 
 
-        SendTimeStart(3);
+        for (int i = 0; i < 5; i++)
+        {
+            yield return new WaitForSeconds(1f);
+        }
+
+        foreach (KeyValuePair<ushort, Player> car in Player.list)
+        {
+            car.Value.ChangerState(new EtatVoitureMouvement(car.Value.gameObject));
+        }
         currentServerState = CurrentServerState.Battle;
     }
 

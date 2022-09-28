@@ -28,11 +28,11 @@ public class Player : MonoBehaviour
     public float boostamount = 100;
     int points = 0;
 
-    public bool[] inputs = new bool[7];
+    public bool[] inputs = new bool[6];
 
 
 
-    public string[] inputchar = { "W", "A", "S", "D", "P", "O", "SPACE" };
+    public string[] inputchar = { "W", "A", "S", "D", "SPACE", "SHIFT"};
 
     public Rigidbody rb;
 
@@ -56,7 +56,7 @@ public class Player : MonoBehaviour
     void Start()
     { 
         rb = GetComponent<Rigidbody>();
-        ChangerState(new EtatVoitureMouvement(this.gameObject));
+        ChangerState(new EtatVoitureDebutPartie(this.gameObject));
         direction = transform.forward;
     }
     public void ChangerState(EtatVoiture ev)
@@ -197,6 +197,7 @@ public class Player : MonoBehaviour
         message.AddUShort(Id);
         message.AddString(Username);
         message.AddVector3(transform.position);
+        message.AddQuaternion(GameManager.Singleton.SpawnPoint.transform.rotation);
         return message;
     }
     private void SendSpawned()
@@ -216,7 +217,10 @@ public class Player : MonoBehaviour
         {
             otherPlayer.SendSpawned(id);
         }
-        Player player = Instantiate(GameManager.Singleton.PlayerPrefab, GameManager.Singleton.SpawnPoint.transform.position, Quaternion.identity).GetComponent<Player>();
+
+        Vector3 pos = GameManager.Singleton.SpawnPoint.transform.position;
+        pos += GameManager.Singleton.SpawnPoint.transform.right * 2 * (NetworkManager.Singleton.Server.ClientCount - 1);
+        Player player = Instantiate(GameManager.Singleton.PlayerPrefab, pos, GameManager.Singleton.SpawnPoint.transform.rotation).GetComponent<Player>();
        
         player.name = $"Player {id} {(string.IsNullOrEmpty(username) ? "Guest" : username)}";
         player.Id = id;

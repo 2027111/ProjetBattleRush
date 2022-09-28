@@ -191,6 +191,7 @@ public class NetworkManager : MonoBehaviour
 
     private void OnFailedToConnect(object sender, EventArgs e)
     {
+        SceneManager.LoadScene("MainMenuScene");
     }
 
     private void DidDisconnect(object sender, EventArgs e)

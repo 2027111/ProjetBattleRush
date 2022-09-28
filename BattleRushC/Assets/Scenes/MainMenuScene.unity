@@ -3322,7 +3322,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2062000171}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 509a2023b58564a4488b454414cc7b19, type: 3}
+  m_Script: {fileID: 11500000, guid: 0166e8361e4acb144a8575ff6b29b230, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 2124240668806114927, guid: dcb63ec4fe4959f4fade77685c5a70dd, type: 3}

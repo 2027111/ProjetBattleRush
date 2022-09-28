@@ -33,14 +33,19 @@ public class Player : MonoBehaviour
     }
 
 
-    public static void Spawn(ushort id, string username, Vector3 position)
+    public static void Spawn(ushort id, string username, Vector3 position, Quaternion rot)
     {
         Player player;
-        player = Instantiate(GameLogic.Singleton.PlayerPrefab, position, Quaternion.identity).GetComponent<Player>();
+        player = Instantiate(GameLogic.Singleton.PlayerPrefab, position, rot).GetComponent<Player>();
         if (id == NetworkManager.Singleton.Client.Id)
         {
             player.IsLocal = true;
             player.gameObject.AddComponent<PlayerController>();
+            FollowLocalPlayer.SetPlayer(player.gameObject);
+        }
+        else
+        {
+            Destroy(player.camProxy);
         }
         player.name = $"Player {id} {(string.IsNullOrEmpty(username) ? "Guest" : username)}";
         player.Id = id;
@@ -62,7 +67,7 @@ public class Player : MonoBehaviour
     private static void SpawnPlayer(Message message)
     {
         ushort playeid = message.GetUShort();
-        Spawn(playeid, message.GetString(), message.GetVector3());
+        Spawn(playeid, message.GetString(), message.GetVector3(), message.GetQuaternion());
     }
 
  
@@ -79,7 +84,9 @@ public class Player : MonoBehaviour
 
     private void Move(uint tick, Vector3 newPosition, Quaternion carRot, Quaternion modelCarRot)
     {
-        interpolater.NewUpdate(tick, newPosition); //Configurer système d'interpolation de mouvement pour rendre les changements de positions plus fluide.
+        //interpolater.NewUpdate(tick, newPosition); //Configurer système d'interpolation de mouvement pour rendre les changements de positions plus fluide.
+        Vector3 currentpos = transform.position;
+        //transform.position = Vector3.LerpUnclamped(currentpos, newPosition, 0.025f);
         transform.position = newPosition;
         transform.rotation = carRot;
         modelCar.transform.rotation = modelCarRot;

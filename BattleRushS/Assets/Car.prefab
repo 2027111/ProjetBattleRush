@@ -243,7 +243,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -14744,6 +14744,14 @@ MonoBehaviour:
   damage: 0
   lastHit: {fileID: 0}
   boostamount: 100
+  inputs: 000000000000
+  inputchar:
+  - W
+  - A
+  - S
+  - D
+  - SPACE
+  - SHIFT
   rb: {fileID: 0}
 --- !u!65 &2124240668806114924
 BoxCollider:
