@@ -78,8 +78,6 @@ public class Player : MonoBehaviour
             Player attackerCar = attacked.gameObject.transform.parent.gameObject.GetComponent<Player>();
                 if (attacked != attack)
                 {
-                float d = UnityEngine.Random.Range(4, 9);
-                damage += d;
                 Strike(attackerCar);
                 }
             
@@ -91,16 +89,20 @@ public class Player : MonoBehaviour
             if (lastHit)
             {
                 lastHit.points += collision.gameObject.GetComponent<DeathZone>().pointsByKills;
+                lastHit.SendStats();
+
             }
             else
             {
 
                 points -= collision.gameObject.GetComponent<DeathZone>().suicidePenality;
+                SendStats();
             }
 
             transform.rotation = Quaternion.Euler(Vector3.zero);
             rb.velocity = Vector3.zero;
             transform.position = GameObject.Find("Spawn").transform.position;
+            lastHit = null;
             damage = 0;
         }
     }
@@ -187,6 +189,16 @@ public class Player : MonoBehaviour
         Spawn(fromClientId, message.GetString());
 
     }
+
+    public void SendStats()
+    {
+        Message message = Message.Create(MessageSendMode.unreliable, ServerToClientId.stats);
+        message.AddUShort(Id);
+        message.AddInt(points);
+        NetworkManager.Singleton.Server.SendToAll(message);
+
+    }
+
     private void SetInput(bool[] vs)
     {
         inputs = vs;

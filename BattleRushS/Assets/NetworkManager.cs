@@ -19,6 +19,7 @@ public enum ServerToClientId : ushort
     damage,
     startPositions,
     timeTillStart,
+    stats,
 }
 public enum ClientToServerId : ushort
 {
@@ -74,7 +75,7 @@ public class NetworkManager : MonoBehaviour
     }
 
     public CurrentServerState currentServerState = CurrentServerState.Open;
-    public CurrentLobbyType currentLobbyType = CurrentLobbyType.Casual;
+    public CurrentLobbyType currentLobbyType = CurrentLobbyType.Ranked;
 
     public Server Server { get; private set; }
 

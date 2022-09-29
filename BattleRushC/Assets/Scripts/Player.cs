@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+public delegate void Evenement();
 public class Player : MonoBehaviour
 
 {
@@ -22,9 +22,13 @@ public class Player : MonoBehaviour
     [SerializeField] public Camera camProxy;
     [SerializeField] public GameObject camHolder;
     [SerializeField] public Interpolator interpolater;
+    public event Evenement EvenementHandler;
+    public int points
+    {
 
-    int points = 0;
-
+        get;
+        private set;
+    } = 0;
 
 
     private void OnDestroy()
@@ -69,18 +73,20 @@ public class Player : MonoBehaviour
         ushort playeid = message.GetUShort();
         Spawn(playeid, message.GetString(), message.GetVector3(), message.GetQuaternion());
     }
-
- 
-    private Message AddSpawnData(Message message)
+    [MessageHandler((ushort)ServerToClientId.stats)]
+    private static void RecieveStats(Message message)
     {
 
-        message.AddUShort(Id);
-        //
-
-        message.AddString(Username);
-        message.AddVector3(transform.position);
-        return message;
+        if (list.TryGetValue(message.GetUShort(), out Player player))
+        {
+            int points = message.GetInt();
+            player.points = points;
+            player.EvenementHandler();
+        }
+    
     }
+
+
 
     private void Move(uint tick, Vector3 newPosition, Quaternion carRot, Quaternion modelCarRot)
     {
@@ -92,17 +98,14 @@ public class Player : MonoBehaviour
         modelCar.transform.rotation = modelCarRot;
     }
 
+    
+
     // Start is called before the first frame update
     void Start()
-    { 
-      
-    }
-
-
-    // Update is called once per frame
-    void Update()
     {
 
-     
+        UIManager.Singleton.SetSBCard(this);
     }
+
+
 }

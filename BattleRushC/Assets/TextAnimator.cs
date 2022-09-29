@@ -39,6 +39,5 @@ public class TextAnimator : MonoBehaviour
     public void SetText(string t)
     {
         text.text = t;
-        Debug.Log(t);
     }
 }

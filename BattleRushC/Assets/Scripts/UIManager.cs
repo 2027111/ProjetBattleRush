@@ -30,6 +30,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private MenuPreset[] menus;
     [SerializeField] private Text usernameText;
     [SerializeField] private Text goldAmountText;
+    [SerializeField] private Transform scoreBoardParent;
+    [SerializeField] public GameObject scoreBoardCard;
+    bool GameScene = false;
 
     private void Awake()
     {
@@ -45,7 +48,12 @@ public class UIManager : MonoBehaviour
     }
 
 
+    public void SetSBCard(Player player)
+    {
 
+        GameObject sbc = Instantiate(scoreBoardCard, scoreBoardParent);
+        sbc.GetComponent<ScoreBoardCard>().Affiliate(player);
+    }
 
     public void LeaveGame()
     {
@@ -53,17 +61,6 @@ public class UIManager : MonoBehaviour
     }
 
 
-    public void TurnOffAll(MenuPreset thisM)
-    {
-        foreach(MenuPreset mp in menus)
-        {
-
-            if(mp != thisM)
-            {
-                mp.OnHoverExit();
-            }
-        }
-    }
 
     public void UpdateParameters()
     {

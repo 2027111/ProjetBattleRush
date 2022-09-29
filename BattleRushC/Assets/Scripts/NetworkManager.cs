@@ -16,6 +16,7 @@ public enum ServerToClientId : ushort
     damage,
     startPositions,
     timeTillStart,
+    stats,
 
 }
 public enum ClientToServerId : ushort

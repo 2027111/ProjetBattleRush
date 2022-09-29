@@ -33,6 +33,9 @@ const user = require("./models/user");
 
 
 
+queueList = [];
+serverQueue = null;
+maxed = false;
 
 app.get("/users", async (req, res) =>{
 
@@ -80,7 +83,6 @@ app.post("/queue/join", async (req, res)=>{
 	const oken = req.body.token;
 	var TokenObject = await Token.findOne({tokenId : oken});
 
-	var time = 0;
 
 
 	if(TokenObject == null){
@@ -97,35 +99,31 @@ app.post("/queue/join", async (req, res)=>{
 		response.message = userFound.username + "user doesnt exist.";
 		res.send(response);
 	}
+
+	if(maxed){
+				
+		var waitForOpenQueue = setInterval(function() {
+			if (!maxed){
+				clearInterval(waitForOpenQueue);
+
+
+			}
+		}, 5000); // retry every 5 seconds
+	}
+
 	console.log("User : " + userFound.username + " is accessing online MatchMaking.")
-	serverQueue = null;
-	queueList = [];
-	maxed = false;
 
 	
 	var wait = setInterval(async function() {
+		console.log("Server is maxed = " + maxed);
 	if(serverQueue == null){
 
 		serverQueue = await Server.findOne({playerConnected : 0, lobbyStatus : "Open"});
-		serverQueue.lobbyType = "Casual";
-		serverQueue.save();
-		serverQueue = JSON.stringify(serverQueue);
-	}
-	
+	}else{
+		
 	if(queueList.length == serverQueue.maxPlayer && maxed == false){
+		console.log("Queue is full for server size");
 		maxed = true;
-			console.log("Bof");
-			queueList.remove(userFound);
-			clearInterval(wait);
-			if(queueList.length == 0){
-				serverQueue = null;
-				maxed = false;
-			}
-			
-			response.code = 0;
-			response.msg="Send server";
-			response.data = serverQueue;
-			res.send(response);
 	}else if(maxed == false && queueList.length != serverQueue.maxPlayer){
 			if(!queueList.includes(userFound)){
 				queueList.push(userFound);
@@ -135,7 +133,23 @@ app.post("/queue/join", async (req, res)=>{
 
 	}
 
+	if(maxed){
+		
+		response.code = 0;
+		response.msg="Send server";
+		response.data = serverQueue;
+		if(queueList.length == 0){
+			serverQueue = null;
+			maxed = false;
+			queueList = [];
+			clearInterval(wait);
+		}
+		res.send(response);
+	
+	}
 
+
+}
 }, 1000);
 
 });

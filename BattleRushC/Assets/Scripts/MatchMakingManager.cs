@@ -35,7 +35,7 @@ public class MatchMakingManager : MonoBehaviour
         while (!handler.isDone)
         {
             startTime += Time.deltaTime;
-            if (startTime >= 10.0f)
+            if (startTime >= 100.0f)
             {
                 break;
             }
@@ -48,7 +48,7 @@ public class MatchMakingManager : MonoBehaviour
         {
 
             ServerResponse response = JsonUtility.FromJson<ServerResponse>(request.downloadHandler.text);
-
+            Debug.Log(response);
             switch (response.code)
             {
                 case 0:
@@ -70,7 +70,7 @@ public class MatchMakingManager : MonoBehaviour
         }
         else
         {
-            PlayerAccount.Disconnected();
+            LoadingUI.SetActive(false);
         }
     }
 }

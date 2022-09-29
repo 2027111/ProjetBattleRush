@@ -14,6 +14,7 @@ public class EtatVoitureMouvement : EtatVoiture
 
     public override void Enter()
     {
+        Voiture.lastHit = null;
         Voiture.flightburst.SetActive(false);
         Voiture.attack.SetActive(false);
 
