@@ -74,6 +74,38 @@ res.send(response);
 });
 
 /* Queue */
+app.post("/queue/leave", async (req, res)=>{
+
+	console.log("accessing queue");
+	var response= {};
+	const oken = req.body.token;
+	var TokenObject = await Token.findOne({tokenId : oken});
+
+
+
+	if(TokenObject == null){
+	
+		response.code = -9;
+		response.message = "user isnt connected.";
+		res.send(response);
+	}
+		
+	var userFound = await User.findOne({_id : TokenObject.userId});
+	if(userFound == null){
+		
+		response.code = -9;
+		response.message = userFound.username + "user doesnt exist.";
+		res.send(response);
+	}
+
+	
+	
+	if(queueList.includes(userFound)){
+		queueList.push(userFound);
+		console.log("User : " + userFound.username + " has been added to the queue");
+		console.log(queueList);
+	}
+});
 
 
 app.post("/queue/join", async (req, res)=>{

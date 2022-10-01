@@ -190,7 +190,7 @@ public class NetworkManager : MonoBehaviour
 
     private void GetFreePort()
     {
-        //serverPort = Random.Range(63577, 64000);
+        serverPort = UnityEngine.Random.Range(63577, 64000);
     }
 
 
