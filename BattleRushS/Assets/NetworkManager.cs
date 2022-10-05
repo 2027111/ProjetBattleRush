@@ -51,7 +51,7 @@ public class NetworkManager : MonoBehaviour
 
 
    [Range(63577, 64000)]
-    int serverPort = 63577;
+    int serverPort = 63578;
 
 
     private static NetworkManager _singleton;
@@ -190,7 +190,7 @@ public class NetworkManager : MonoBehaviour
 
     private void GetFreePort()
     {
-        serverPort = UnityEngine.Random.Range(63577, 64000);
+       // serverPort = UnityEngine.Random.Range(63577, 64000);
     }
 
 

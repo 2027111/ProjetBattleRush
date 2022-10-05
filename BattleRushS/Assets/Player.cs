@@ -29,9 +29,6 @@ public class Player : MonoBehaviour
     int points = 0;
 
     public bool[] inputs = new bool[6];
-
-
-
     public string[] inputchar = { "W", "A", "S", "D", "SPACE", "SHIFT"};
 
     public Rigidbody rb;

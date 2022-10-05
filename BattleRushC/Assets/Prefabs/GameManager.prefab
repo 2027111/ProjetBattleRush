@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3568176325846825004
+--- !u!1 &4172411788097038064
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,9 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3568176325846825006}
-  - component: {fileID: 3568176325846825005}
-  - component: {fileID: 3568176325846825007}
+  - component: {fileID: 4172411788097038066}
+  - component: {fileID: 463630594210867428}
+  - component: {fileID: 463630594834073802}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -18,46 +18,49 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3568176325846825006
+--- !u!4 &4172411788097038066
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3568176325846825004}
+  m_GameObject: {fileID: 4172411788097038064}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -11.249972, y: 7.066379, z: -9.814182}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3568176325846825005
+--- !u!114 &463630594210867428
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3568176325846825004}
+  m_GameObject: {fileID: 4172411788097038064}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1ec47c4bd6067f42a31c33e3cece22b, type: 3}
+  m_Script: {fileID: 11500000, guid: 0166e8361e4acb144a8575ff6b29b230, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 2124240668806114927, guid: dcb63ec4fe4959f4fade77685c5a70dd, type: 3}
+  message: {fileID: 658069778056959786, guid: 88b2d371eaac5bf4f8c9ad53fe82cbe1, type: 3}
+--- !u!114 &463630594834073802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4172411788097038064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 551fcfd1adb839d4a8ade238691607b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isHosting: 0
+  started: 0
+  _ticksBetweenPositionUpdates: 2
+  tickDivergenceTolerance: 1
   ip: 127.0.0.1
-  port: 6784
---- !u!114 &3568176325846825007
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3568176325846825004}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5e17f4709de51742a568bfcd084c53a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  WeaponDropObject: {fileID: 0}
-  playerPrefab: {fileID: 7320964960709251923, guid: 6d1c0ada1b36ed34bab706dc03ad36e7, type: 3}
-  LocalplayerPrefab: {fileID: 7320964960709251923, guid: e27f9eeeddba0b24cb03a9f07f8ab72c, type: 3}
+  port: 63557

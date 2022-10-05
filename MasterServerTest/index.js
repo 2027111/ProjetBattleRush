@@ -45,8 +45,6 @@ app.get("/users", async (req, res) =>{
 res.send(users);
 
 });
-
-
 app.post("/user", async (req, res) =>{
 	var tokenid = req.body.tokenid;
 
@@ -185,13 +183,9 @@ app.post("/queue/join", async (req, res)=>{
 }, 1000);
 
 });
-
 /* Queue */
 
 /* Login And Registrations */
-
-
-
 app.post("/account/login", async (req, res)=>{
 
 	var response= {};
@@ -291,11 +285,37 @@ app.post("/account/create", async (req, res)=>{
 	return;
 
 });
+app.post("/deconnexion", async (req, res) => {
+	var response= {};
+	const tokenid = req.body.tokenid;
+	const ConTok = await Token.findOne({tokenId : tokenid});
+	if(ConTok != null){
+
+		var userFound = await User.findOne({_id : ConTok.userId});
+
+
+
+
+		if(userFound){
+			
+		
+			response.msg = userFound.username +" has disconnected";
+			console.log(userFound.username +" has successfully disconnected from the Master Server");
+	}else{
+		console.log("Unidentifiable user has disconnected");
+	}
+		await Token.findOneAndDelete({tokenId : tokenid});
+		response.code = 0;
+	}else{
+		response.code = -1;
+		response.msg = "Connection non-existant";
+	}
+	res.send("pozz");
+});
 /* Login And Registrations */
 
 
 /* Math Methods */
-
 const getrand = () => {
 	return Math.random().toString(36).substr(2);
 };
@@ -315,9 +335,9 @@ async function GenerateToken (req, res){
 	}
 	return tk;
 }
-
 /* Math Methods */
 
+/*Server*/
 app.post("/server/On", async (req, res) =>{
 	var response= {};
 
@@ -353,8 +373,6 @@ app.post("/server/On", async (req, res) =>{
 	 console.log("Server with open ports : " + port + " has successfully been created and connected to the Master Server.")
 
 });
-
-
 app.post("/server/Off", async (req, res) =>{
 	
 	var response= {};
@@ -363,8 +381,6 @@ app.post("/server/Off", async (req, res) =>{
 	console.log("Server using port " + servport + " has successfully closed");
 	res.send(response);
 });
-
-
 app.post("/server/update", async (req, res) =>{
 
 	var response= {};
@@ -386,8 +402,6 @@ app.post("/server/update", async (req, res) =>{
 
 
 });
-
-
 app.post("/servers", async (req, res) =>{
 	var response= {};
 	const tokenTemp = req.body.tokenid;
@@ -448,35 +462,9 @@ app.post("/server", async (req, res) =>{
 
 
 });
+/*Server*/
 
 
-app.post("/deconnexion", async (req, res) => {
-	var response= {};
-	const tokenid = req.body.tokenid;
-	const ConTok = await Token.findOne({tokenId : tokenid});
-	if(ConTok != null){
-
-		var userFound = await User.findOne({_id : ConTok.userId});
-
-
-
-
-		if(userFound){
-			
-		
-			response.msg = userFound.username +" has disconnected";
-			console.log(userFound.username +" has successfully disconnected from the Master Server");
-	}else{
-		console.log("Unidentifiable user has disconnected");
-	}
-		await Token.findOneAndDelete({tokenId : tokenid});
-		response.code = 0;
-	}else{
-		response.code = -1;
-		response.msg = "Connection non-existant";
-	}
-	res.send("pozz");
-});
 
 
 // Connexion à MongoDB
