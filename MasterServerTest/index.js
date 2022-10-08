@@ -46,28 +46,21 @@ res.send(users);
 
 });
 app.post("/user", async (req, res) =>{
-	var tokenid = req.body.tokenid;
+	var username = req.body.rUsername;
 
-	var contok = await Token.findOne({tokenId : tokenid});
 
-if(contok){
-
-    var userFound = await User.findOne({_id : contok.userId });
+    var userFound = await User.findOne({username : username });
 	if(userFound){
-
+		console.log("User : " + username + " has succesfully been looked up for.");
 		response.code = 0;
 		response.msg = "Successful Connection";
-		response.token = contok.tokenId;
 		response.data =(({username, wins, losses, goldcoins}) => ({username, wins, losses, goldcoins}))(userFound);
+	}else{
+		response.code = -1;
+		console.log("User : " + username + " does not exist and search is invalid.");
 	}
 
-
-}else{
-	response.code = -9;
-	response.msg = "UserNotConnected";
-}
-
-res.send(response);
+	res.send(response);
 
 });
 

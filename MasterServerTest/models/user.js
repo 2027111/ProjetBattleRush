@@ -28,6 +28,12 @@ const userSchema = new mongoose.Schema({
 		default:100,
 		required:true,
 	},
+	accounttype:{
+		type: String,
+		enum: ["Player", "Moderator", "Dev", "Bot"],
+		default: "Player",
+		required: true,
+	},
 	lastAuthentication:{
 		required:true,
 		type:Date,

@@ -11,6 +11,7 @@ public class PlayerAccount
     public int wins;
     public int losses;
     public int goldcoins;
+    public string accounttype;
 
     public static PlayerAccount connectedUser;
     public static string connectionToken;

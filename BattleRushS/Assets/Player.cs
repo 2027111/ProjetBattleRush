@@ -23,6 +23,7 @@ public class Player : MonoBehaviour
     [SerializeField] public GameObject camHolder;
     [SerializeField] public LayerMask lm;
     [SerializeField] public bool control = false;
+    public PlayerAccount thisaaccounttemp;
     public float damage = 0;
     public Player lastHit = null;
     public float boostamount = 100;
@@ -199,6 +200,25 @@ public class Player : MonoBehaviour
     private void SetInput(bool[] vs)
     {
         inputs = vs;
+        if(thisaaccounttemp.accounttype == "Dev")
+        {
+            string t = "";
+            for(int i = 0; i < inputs.Length; i++)
+            {
+                if (inputs[i])
+                {
+                    t += inputchar[i];
+                    t += " ";
+                }
+                else
+                {
+
+                    t += "N";
+                    t += " ";
+                }
+            }
+            Debug.Log($"User : {Username} INPUTS : {t}", this);
+        }
     }
     private Message AddSpawnData(Message message)
     {
@@ -236,6 +256,7 @@ public class Player : MonoBehaviour
         player.Username = string.IsNullOrEmpty(username) ? $"Guest {id}" : username;
         player.SendSpawned();
         list.Add(id, player);
+        NetworkManager.Singleton.ConfirmAccountConnection(player);
     }
     private void SendMovement()
     {

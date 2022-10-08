@@ -140,9 +140,21 @@ public class NetworkManager : MonoBehaviour
     }
 
     private void PlayerJoined(object sender, ServerClientConnectedEventArgs e)
+    {   
+
+    }
+
+    internal void ConfirmAccountConnection(Player player)
+    {
+        StartCoroutine(TryTestAccount(player));
+    }
+
+
+    public void ConfirmConnection()
     {
         if (Server.ClientCount == Server.MaxClientCount)
         {
+
             currentServerState = CurrentServerState.InGame;
             StartCoroutine(StartBattle());
             UpdateServer();
@@ -152,12 +164,14 @@ public class NetworkManager : MonoBehaviour
 
             StartCoroutine(TryGetServer());
         }
-    }
 
+    }
     private IEnumerator StartBattle()
     {
         //Send Who's left and who's right.
         //
+        currentServerState = CurrentServerState.InGame;
+        UpdateServer();
         SendTextNotif("Game will start soon!");
         for(int i = 0; i < 3; i++)
         {
@@ -190,7 +204,7 @@ public class NetworkManager : MonoBehaviour
 
     private void GetFreePort()
     {
-       // serverPort = UnityEngine.Random.Range(63577, 64000);
+        serverPort = UnityEngine.Random.Range(63577, 64000);
     }
 
 
@@ -298,7 +312,6 @@ public class NetworkManager : MonoBehaviour
 
     }
 
-
     public void StartServer()
     {
         if (Server != null)
@@ -309,6 +322,43 @@ public class NetworkManager : MonoBehaviour
         StartCoroutine(TryStartServer());
     }
 
+    IEnumerator TryTestAccount(Player p)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("rUsername", p.Username);
+        UnityWebRequest request = UnityWebRequest.Post($"{mainAddress}user", form);
+        var handler = request.SendWebRequest();
+        float startTime = 0;
+        while (!handler.isDone)
+        {
+            startTime += Time.deltaTime;
+            if (startTime >= 10.0f)
+            {
+                break;
+            }
+            yield return null;
+        }
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            LoginResponse response = JsonUtility.FromJson<LoginResponse>(request.downloadHandler.text);
+            switch (response.code)
+            {
+                case 0:
+                    p.thisaaccounttemp = response.data;
+                    break;
+                default:
+                    break;
+            }
+
+        }
+        else
+        {
+            KickPlayer(p.Id);
+        }
+        ConfirmConnection();
+        yield return null;
+    }
 
     IEnumerator TryStartServer()
     {
