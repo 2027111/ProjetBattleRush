@@ -32,6 +32,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text goldAmountText;
     [SerializeField] private Transform scoreBoardParent;
     [SerializeField] public GameObject scoreBoardCard;
+    [SerializeField] public GameObject disconnect;
+    [SerializeField] public Timer timer;
     bool GameScene = false;
 
     private void Awake()
@@ -40,7 +42,13 @@ public class UIManager : MonoBehaviour
 
     }
 
-
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            disconnect.SetActive(!disconnect.activeSelf);
+        }
+    }
 
     private void Start()
     {
@@ -60,7 +68,10 @@ public class UIManager : MonoBehaviour
         Application.Quit();
     }
 
-
+    public void SetTimerAmount(string t)
+    {
+        timer.Amountis(t);
+    }
 
     public void UpdateParameters()
     {
@@ -71,5 +82,12 @@ public class UIManager : MonoBehaviour
 
             goldAmountText.text = PlayerAccount.connectedUser.goldcoins.ToString();
         }
+    }
+
+
+
+    public void ServerDIsconnect()
+    {
+        NetworkManager.Singleton?.Disconnect();
     }
 }

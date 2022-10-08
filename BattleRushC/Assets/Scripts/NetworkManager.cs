@@ -17,6 +17,7 @@ public enum ServerToClientId : ushort
     startPositions,
     timeTillStart,
     stats,
+    time,
 
 }
 public enum ClientToServerId : ushort
@@ -184,12 +185,18 @@ public class NetworkManager : MonoBehaviour
     public void Disconnect()
     {
         Client.Disconnect();
+        OnServerDeco();
+    }
+
+        public void OnServerDeco()
+        {
+
         foreach (Player player in Player.list.Values)
         {
             Destroy(player.gameObject);
         }
+        SceneManager.LoadScene("MainMenuScene");
     }
-
     private void OnFailedToConnect(object sender, EventArgs e)
     {
         SceneManager.LoadScene("MainMenuScene");
@@ -197,12 +204,8 @@ public class NetworkManager : MonoBehaviour
 
     private void DidDisconnect(object sender, EventArgs e)
     {
-        foreach (Player player in Player.list.Values)
-        {
-            Destroy(player.gameObject);
-        }
+        OnServerDeco();
 
-        SceneManager.LoadScene("MainMenuScene");
     }
 
     public void SendName()
@@ -285,6 +288,16 @@ public class NetworkManager : MonoBehaviour
     public static void Sync(Message message)
     {
         Singleton.SetTick(message.GetUShort());
+    }
+    [MessageHandler((ushort)ServerToClientId.time)]
+    public static void setTime(Message message)
+    {
+        Singleton.UpdateTime(message.GetString());
+    }
+
+    private void UpdateTime(string timer)
+    {
+        UIManager.Singleton.SetTimerAmount(timer);
     }
 
     [MessageHandler((ushort)ServerToClientId.messageText)]

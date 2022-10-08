@@ -19,8 +19,6 @@ public class Player : MonoBehaviour
     [SerializeField] public GameObject modelCar;
     [SerializeField] public GameObject attack;
     [SerializeField] public GameObject flightburst;
-    [SerializeField] public Camera camProxy;
-    [SerializeField] public GameObject camHolder;
     [SerializeField] public LayerMask lm;
     [SerializeField] public bool control = false;
     public PlayerAccount thisaaccounttemp;
@@ -96,10 +94,11 @@ public class Player : MonoBehaviour
                 points -= collision.gameObject.GetComponent<DeathZone>().suicidePenality;
                 SendStats();
             }
-
+            //RespawnMethod();
             transform.rotation = Quaternion.Euler(Vector3.zero);
             rb.velocity = Vector3.zero;
             transform.position = GameObject.Find("Spawn").transform.position;
+            ForceChangeDir(GameObject.Find("Spawn").transform.forward);
             lastHit = null;
             damage = 0;
         }
@@ -108,7 +107,6 @@ public class Player : MonoBehaviour
 
     private void Strike(Player attackerCar)
     {
-        Debug.Log(this.name + " was hit!");
         lastHit = attackerCar;
         ChangerState(new EtatVoitureFrapper(this.gameObject, attackerCar));
     }
@@ -120,11 +118,17 @@ public class Player : MonoBehaviour
         }
         else
         {
-            Debug.Log("Changing direction to " + dir);
             direction = dir;
             StartCoroutine(changeDir());
         }
     }
+
+    void ForceChangeDir(Vector3 forward)
+    {
+        direction = forward;
+        transform.forward = forward;
+    }
+
     IEnumerator changeDir()
     {
         float t = 0;
@@ -147,27 +151,6 @@ public class Player : MonoBehaviour
     void Update()
     {
 
-     
-        if (control)
-        {
-            if (inputs[4])
-            {
-                //Instantiate();
-                Vector3 rot = camHolder.transform.localRotation.eulerAngles;
-
-                if (rot.y == 180)
-                {
-                    rot.y = 0;
-                }
-                else
-                {
-
-                    rot.y = 180;
-                }
-                camHolder.transform.localRotation = Quaternion.Euler(rot);
-            }
-
-        }
         etatActuel.Handle();
         SendMovement();
     }
@@ -225,7 +208,7 @@ public class Player : MonoBehaviour
 
         message.AddUShort(Id);
         message.AddString(Username);
-        message.AddVector3(transform.position);
+        message.AddVector3(transform.position); 
         message.AddQuaternion(GameManager.Singleton.SpawnPoint.transform.rotation);
         return message;
     }

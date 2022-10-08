@@ -36,7 +36,24 @@ public class Player : MonoBehaviour
         list.Remove(Id);
     }
 
+    public void RotateCam()
+    {
 
+            //Instantiate();
+            Vector3 rot = camHolder.transform.localRotation.eulerAngles;
+
+            if (rot.y == 180)
+            {
+                rot.y = 0;
+            }
+            else
+            {
+
+                rot.y = 180;
+            }
+            camHolder.transform.localRotation = Quaternion.Euler(rot);
+        
+    }
     public static void Spawn(ushort id, string username, Vector3 position, Quaternion rot)
     {
         Player player;

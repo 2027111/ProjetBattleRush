@@ -54,7 +54,7 @@ app.post("/user", async (req, res) =>{
 		console.log("User : " + username + " has succesfully been looked up for.");
 		response.code = 0;
 		response.msg = "Successful Connection";
-		response.data =(({username, wins, losses, goldcoins}) => ({username, wins, losses, goldcoins}))(userFound);
+		response.data =(({username, wins, losses, goldcoins, accounttype}) => ({username, wins, losses, goldcoins, accounttype}))(userFound);
 	}else{
 		response.code = -1;
 		console.log("User : " + username + " does not exist and search is invalid.");

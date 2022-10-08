@@ -104,33 +104,14 @@ public class EtatVoitureMouvement : EtatVoiture
         if (accelerating)
         {
             Voiture.attack.SetActive(true);
-            float temp = Voiture.camProxy.fieldOfView;
-            if (temp < 80)
-            {
-                temp += Time.deltaTime * 25;
-                Voiture.camProxy.fieldOfView = temp;
-            }
-            else
-            {
-                Voiture.camProxy.fieldOfView = 80;
 
-            }
+            
 
         }
         else
         {
             Voiture.attack.SetActive(false);
-            float temp = Voiture.camProxy.fieldOfView;
-            if (temp > 60)
-            {
-                temp -= Time.deltaTime * 25;
-                Voiture.camProxy.fieldOfView = temp;
-            }
-            else
-            {
-
-                Voiture.camProxy.fieldOfView = 60;
-            }
+            
         }
 
     }

@@ -20,6 +20,7 @@ public enum ServerToClientId : ushort
     startPositions,
     timeTillStart,
     stats,
+    time,
 }
 public enum ClientToServerId : ushort
 {
@@ -52,6 +53,9 @@ public class NetworkManager : MonoBehaviour
 
    [Range(63577, 64000)]
     int serverPort = 63578;
+    float timer = 300;
+    int lasttime = 300;
+    [SerializeField] float maxTime = 120;
 
 
     private static NetworkManager _singleton;
@@ -75,7 +79,7 @@ public class NetworkManager : MonoBehaviour
     }
 
     public CurrentServerState currentServerState = CurrentServerState.Open;
-    public CurrentLobbyType currentLobbyType = CurrentLobbyType.Ranked;
+    public CurrentLobbyType currentLobbyType = CurrentLobbyType.Casual;
 
     public Server Server { get; private set; }
 
@@ -126,12 +130,18 @@ public class NetworkManager : MonoBehaviour
         {
             StartServer();
         }
+
     }
     #region Server Starting
     public void ProcessServerStart()
     {
         port = (ushort)serverPort;
-        RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);
+        timer = maxTime;
+
+
+        currentServerState = CurrentServerState.Open;
+        currentLobbyType = CurrentLobbyType.Casual;
+    RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);
 
         Server = new Server();
         Server.Start(port, maxClientCount);
@@ -490,6 +500,14 @@ public class NetworkManager : MonoBehaviour
         Server.SendToAll(message);
     }
 
+    private void SendTime(string time)
+    {
+        Message message = Message.Create(MessageSendMode.unreliable, (ushort)ServerToClientId.time);
+        message.AddString(time);
+        Server.SendToAll(message);
+    }
+
+
     public void KickPlayer(ushort id)
     {
         Server.DisconnectClient(id);
@@ -500,21 +518,73 @@ public class NetworkManager : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if(currentServerState == CurrentServerState.Battle)
+        {
+            timer -= Time.deltaTime;
+            amountofTimeLeft();
+            if(timer <= 0)
+            {
+                EndGame();
+            }
+        }
+    }
+
+
+    string amountofTimeLeft()
+    {
+        float minutes = Mathf.Floor(timer / 60);
+        float seconds = timer % 60;
+        int truesec = Mathf.RoundToInt(seconds);
+
+        string t = "";
+        t = minutes < 10 ? t += "0" + minutes : t += minutes;
+        t+=":";
+        t = truesec < 10 ? t+="0" + truesec : t+=truesec;
+        if (lasttime > truesec)
+        {
+            SendTime(t);
+        }
+        lasttime = truesec;
+
+
+        return t;
+    }
+    private void EndGame()
+    {
+
+        //Send to Master Server Who Wins or loses
+        //Kick Players
+        foreach(KeyValuePair<ushort, Player> t in Player.list)
+        {
+            KickPlayer(t.Key);
+        }
+
+        RestartServer();
+    }
 
     private void OnApplicationQuit()
     {
         StopServer();
     }
 
-
+    
     private void PlayerLeft(object sender, ClientDisconnectedEventArgs e)
     {
         if (Player.list.TryGetValue(e.Id, out Player player))
         {
             Destroy(player.gameObject);
         }
+        if(Server.ClientCount == 0)
+        {
+            RestartServer();
+        }
+        else
+        {
 
             UpdateServer();
+        }
 
     }
 
@@ -523,6 +593,7 @@ public class NetworkManager : MonoBehaviour
 
         currentServerState = CurrentServerState.Open;
         currentLobbyType = CurrentLobbyType.Casual;
+        timer = maxTime;
         UpdateServer();
     }
 
