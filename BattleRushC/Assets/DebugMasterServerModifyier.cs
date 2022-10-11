@@ -17,6 +17,7 @@ public class DebugMasterServerModifyier : MonoBehaviour
 
         ipInput.text = "127.0.0.1";
         portInput.text = "5500";
+        SetMasterAddress();
     }
 
     public void SetMasterAddress()
