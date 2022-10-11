@@ -24,6 +24,7 @@ public class DebugMasterServerModifyier : MonoBehaviour
     {
 
         ServerTalker.mainAddress = $"http://{ipInput.text}:{portInput.text}/";
+        ipcurrent.text = ServerTalker.mainAddress;
     }
 
 
