@@ -27,6 +27,9 @@ public class ServerTalker : MonoBehaviour
     [SerializeField] TextMeshProUGUI ralertText;
 
 
+ 
+
+
 
     [HideInInspector] public static string mainAddress = "http://127.0.0.1:5500/";
     // Start is called before the first frame update
@@ -37,7 +40,6 @@ public class ServerTalker : MonoBehaviour
     }
     void Start()
     {
-
     }
 
 

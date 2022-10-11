@@ -34,7 +34,18 @@ public class Player : MonoBehaviour
 
     EtatVoiture etatActuel;
 
-
+    protected static void WriteAt(string s, int x, int y)
+    {
+        try
+        {
+            Console.SetCursorPosition(0 + x, 14 - y);
+            Console.Write(s);
+        }
+        catch (ArgumentOutOfRangeException e)
+        {
+            Console.WriteLine(e.Message);
+        }
+    }
     public string Username { get; private set; }
 
     private void OnDestroy()
@@ -200,7 +211,7 @@ public class Player : MonoBehaviour
                     t += " ";
                 }
             }
-            Debug.Log($"User : {Username} INPUTS : {t}", this);
+            WriteAt($"User : {Username} INPUTS : {t}", 0, Id);
         }
     }
     private Message AddSpawnData(Message message)

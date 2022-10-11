@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private bool[] down = { false, false, false, false, true, false };
     private KeyCode[] inp = { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.Space, KeyCode.LeftShift};
 
+
     // Start is called before the first frame update
     void Start()
     {

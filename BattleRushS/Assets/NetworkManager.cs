@@ -147,6 +147,8 @@ public class NetworkManager : MonoBehaviour
         Server.Start(port, maxClientCount);
         Server.ClientConnected += PlayerJoined;
         Server.ClientDisconnected += PlayerLeft;
+        Console.Clear();
+        Debug.Log("SERVER HAS SUCESSFULLY OPEN ON PORTS : " + port);
     }
 
     private void PlayerJoined(object sender, ServerClientConnectedEventArgs e)
