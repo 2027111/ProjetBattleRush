@@ -80,6 +80,13 @@ public class Player : MonoBehaviour
         if (list.TryGetValue(message.GetUShort(), out Player player))
         {
             player.Move(message.GetUInt(), message.GetVector3(), message.GetQuaternion(), message.GetQuaternion()) ;
+            if (player.IsLocal)
+            {
+
+                UIManager.Singleton.SetSpeed(message.GetVector3());
+                UIManager.Singleton.SetBoost(message.GetFloat());
+            }
+            
 
         }
     }

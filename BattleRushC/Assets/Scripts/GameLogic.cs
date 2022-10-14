@@ -1,3 +1,4 @@
+using RiptideNetworking;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -30,10 +31,15 @@ public class GameLogic : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] public GameObject message;
+    [SerializeField] GameObject[] particleList;
 
 
 
-
+    public void SpawnParticle(Vector3 pos, int index)
+    {
+        Debug.Log("Spawned " + index);
+        Instantiate(particleList[index], pos, Quaternion.identity);
+    }
 
     private void Awake()
     {
@@ -44,5 +50,16 @@ public class GameLogic : MonoBehaviour
     void Update()
     {
         
+    }
+
+    [MessageHandler((ushort)ServerToClientId.part)]
+    public static void HandleSpawnPart(Message message)
+    {
+
+        int index = message.GetInt();
+        Vector3 pos = message.GetVector3();
+        Singleton.SpawnParticle(pos, index);
+
+
     }
 }

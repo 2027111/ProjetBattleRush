@@ -10110,6 +10110,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Free Racing Car Purple Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 317404525374922250, guid: 98c57f100a7d7684dba02b8725bbc5d8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 809794695439113609, guid: 98c57f100a7d7684dba02b8725bbc5d8, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -10169,7 +10173,7 @@ PrefabInstance:
     - target: {fileID: 3394179089029811524, guid: 98c57f100a7d7684dba02b8725bbc5d8, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 69b6e8fa160b23c42a4052f818eb166c, type: 2}
+      objectReference: {fileID: 2100000, guid: 07f44fe3e9c462146a7769b976c50ec4, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 98c57f100a7d7684dba02b8725bbc5d8, type: 3}
 --- !u!1 &2093600924478958849 stripped

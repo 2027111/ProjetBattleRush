@@ -18,6 +18,7 @@ public enum ServerToClientId : ushort
     timeTillStart,
     stats,
     time,
+    part,
 
 }
 public enum ClientToServerId : ushort

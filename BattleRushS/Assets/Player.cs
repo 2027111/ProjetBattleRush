@@ -25,6 +25,7 @@ public class Player : MonoBehaviour
     public float damage = 0;
     public Player lastHit = null;
     public float boostamount = 100;
+    public bool canboost = true;
     int points = 0;
 
     public bool[] inputs = new bool[6];
@@ -76,10 +77,45 @@ public class Player : MonoBehaviour
         ev.Enter();
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag == "Player")
+        {
+            Debug.Log("Collision " + collision.gameObject.name + " " + Username);
+            Player attacker = collision.gameObject.GetComponent<Player>();
+            if(attacker.rb.velocity.sqrMagnitude > this.rb.velocity.sqrMagnitude && attacker.rb.velocity.sqrMagnitude > 100 && Mathf.Abs(attacker.rb.velocity.sqrMagnitude - rb.velocity.sqrMagnitude) > 30)
+            {
+
+                Strike(attacker);
+            }
+
+
+        }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+
+        if (collision.gameObject.tag == "Player")
+        {
+
+            Vector3 positionofcontact = collision.GetContact(0).point;
+            //SendParticle(0, positionofcontact);
+        }
+    }
+
+    private void SendParticle(int v, Vector3 positionofcontact)
+    {
+
+        Message message = Message.Create(MessageSendMode.unreliable, ServerToClientId.part);
+        message.AddInt(v);
+        message.AddVector3(positionofcontact);
+        NetworkManager.Singleton.Server.SendToAll(message);
+    }
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (collision.gameObject.GetComponent<AttackZone>())
+      /*  if (collision.gameObject.GetComponent<AttackZone>())
         {
             AttackZone attacked = collision.gameObject.GetComponent<AttackZone>();
             Player attackerCar = attacked.gameObject.transform.parent.gameObject.GetComponent<Player>();
@@ -88,7 +124,7 @@ public class Player : MonoBehaviour
                 Strike(attackerCar);
                 }
             
-        }else if (collision.gameObject.tag == "DirectionZone")
+        }else */if (collision.gameObject.tag == "DirectionZone")
         {
             ChangeDirection(collision.gameObject.transform.forward);
         }else if (collision.gameObject.GetComponent<DeathZone>())
@@ -264,6 +300,8 @@ public class Player : MonoBehaviour
         message.AddVector3(transform.position);
         message.AddQuaternion(transform.rotation);
         message.AddQuaternion(modelCar.transform.rotation);
+        message.AddVector3(rb.velocity);
+        message.AddFloat(boostamount);
         NetworkManager.Singleton.Server.SendToAll(message);
     }
 }

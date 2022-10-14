@@ -4205,6 +4205,10 @@ MonoBehaviour:
   goldAmountText: {fileID: 150431459}
   scoreBoardParent: {fileID: 0}
   scoreBoardCard: {fileID: 0}
+  disconnect: {fileID: 0}
+  SpeedometerAmount: {fileID: 0}
+  timer: {fileID: 0}
+  boostMeterFill: {fileID: 0}
 --- !u!1 &1893613652
 GameObject:
   m_ObjectHideFlags: 0
@@ -4559,6 +4563,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 463630594210867428, guid: 75aab9b10dc133842a63c108a0a97dcb, type: 3}
+      propertyPath: particleList.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 463630594210867428, guid: 75aab9b10dc133842a63c108a0a97dcb, type: 3}
+      propertyPath: particleList.Array.data[0]
+      value: 
+      objectReference: {fileID: 197494, guid: 8af7fc23449fb134587debd98a00604a, type: 3}
     - target: {fileID: 4172411788097038064, guid: 75aab9b10dc133842a63c108a0a97dcb, type: 3}
       propertyPath: m_Name
       value: GameManager

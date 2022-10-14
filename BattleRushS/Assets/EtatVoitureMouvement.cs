@@ -8,6 +8,9 @@ public class EtatVoitureMouvement : EtatVoiture
 
     public bool accelerating = false;
     public bool ralenting = false;
+    float accel = 1;
+    float tacceltime = 0.25f;
+    float timepassed = 0;
     public EtatVoitureMouvement(GameObject joueur) : base(joueur)
     {
     }
@@ -17,6 +20,8 @@ public class EtatVoitureMouvement : EtatVoiture
         Voiture.lastHit = null;
         Voiture.flightburst.SetActive(false);
         Voiture.attack.SetActive(false);
+        timepassed = 0;
+
 
     }
 
@@ -32,36 +37,73 @@ public class EtatVoitureMouvement : EtatVoiture
 
     public override void Handle()
     {
+        timepassed += Time.deltaTime;
         if (!Physics.BoxCast(Voiture.transform.position, Voiture.GetComponent<BoxCollider>().size / 2, Vector3.down, Voiture.transform.rotation, 0.51f, Voiture.lm))
         {
             Voiture.attack.SetActive(false);
-            Voiture.ChangerState(new EtatVoitureFrapper(Voiture.gameObject));
+            Voiture.ChangerState(new EtatVoitureJump(Voiture.gameObject));
+
         }
-        float accel = 1;
         float x = 0;
         if (Voiture.control)
         {
 
 
-        if (Voiture.inputs[0] && Voiture.boostamount > 0)
+        if (Voiture.inputs[0] && Voiture.boostamount > 0 && Voiture.canboost)
         {
 
                 Voiture.boostamount -=  30 * Time.deltaTime;
-                accel = 1.4f;
+                if(Voiture.boostamount<= 0)
+                {
+                    Voiture.boostamount = 0.001f;
+                    Voiture.canboost = false;
+                }
+                if(accel < 2)
+                {
+                    accel += Time.deltaTime;
+                }
+                else
+                {
+
+                    accel = 2;
+                }
             accelerating = true; ralenting = false;
 
         }
         else if (Voiture.inputs[2])
             {
-            accel = 0.5f;
+            if(accel > 0.5f)
+                {
+                    accel -= Time.deltaTime;
+                }
+                else
+                {
+                    accel = 0.5f;
+                }
             accelerating = false; ralenting = true;
+
+
         }
         else
         {
-            Voiture.boostamount += 20 * Time.deltaTime;
-            accel = 1;
-            accelerating = false; ralenting = false;
+
+                if (accel != 1)
+                {
+                    accel += Mathf.Sign(1 - accel) * Time.deltaTime;
+                }
+               
+                accelerating = false; ralenting = false;
         }
+
+            if (Voiture.boostamount < 100 && !accelerating)
+            {
+
+                Voiture.boostamount += 20 * Time.deltaTime;
+            }else if(Voiture.boostamount > 100)
+            {
+                Voiture.boostamount = 100;
+                Voiture.canboost = true;
+            }
 
 
             x = 0;
@@ -70,14 +112,15 @@ public class EtatVoitureMouvement : EtatVoiture
             {
                 x -= 0.4f;
             }
-            else if(Voiture.inputs[3]){
+            if(Voiture.inputs[3]){
                 x += 0.4f;
             }
 
 
-            if (Input.GetKeyDown(KeyCode.Mouse0))
+            if (Voiture.inputs[5])
             {
                 Voiture.ChangerState(new EtatVoitureJump(Voiture.gameObject));
+                Voiture.rb.AddForce(Voiture.transform.up * 7, ForceMode.Impulse);
             }
         }
         else
@@ -88,8 +131,13 @@ public class EtatVoitureMouvement : EtatVoiture
         }
 
 
-        Vector3 vel = (Vector3.Normalize(Voiture.transform.forward) * Voiture.speed * accel) + (Voiture.transform.right * 3 * (Voiture.speed / 4) * accel * x);
+        Vector3 vel = (Vector3.Normalize(Voiture.transform.forward) * Voiture.speed * accel) + (Voiture.transform.right * Voiture.speed/2 * accel * x);
+        if(timepassed/tacceltime < 1)
+        {
+            vel *= timepassed / tacceltime;
+        }
 
+  
         Voiture.rb.velocity = new Vector3(vel.x, Voiture.rb.velocity.y, vel.z);
 
         Vector3 dir = Voiture.rb.velocity;

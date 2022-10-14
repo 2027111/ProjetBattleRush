@@ -33,7 +33,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Transform scoreBoardParent;
     [SerializeField] public GameObject scoreBoardCard;
     [SerializeField] public GameObject disconnect;
+    [SerializeField] public Text SpeedometerAmount;
     [SerializeField] public Timer timer;
+    [SerializeField] public Image boostMeterFill;
     bool GameScene = false;
 
     private void Awake()
@@ -73,6 +75,17 @@ public class UIManager : MonoBehaviour
         timer.Amountis(t);
     }
 
+    public void SetSpeed(Vector3 v)
+    {
+        
+        float speed = v.sqrMagnitude;
+        SpeedometerAmount.text = ((int)speed) + "km/h";
+    }
+
+    public void SetBoost(float fillamount)
+    {
+        boostMeterFill.fillAmount = fillamount / 100;
+    }
     public void UpdateParameters()
     {
 
