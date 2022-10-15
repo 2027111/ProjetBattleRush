@@ -1,4 +1,4 @@
-using RiptideNetworking;
+using Riptide;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -114,7 +114,7 @@ public class Player : MonoBehaviour
 
     private void Move(uint tick, Vector3 newPosition, Quaternion carRot, Quaternion modelCarRot)
     {
-        //interpolater.NewUpdate(tick, newPosition); //Configurer système d'interpolation de mouvement pour rendre les changements de positions plus fluide.
+        interpolater.NewUpdate(tick, newPosition); //Configurer système d'interpolation de mouvement pour rendre les changements de positions plus fluide.
         Vector3 currentpos = transform.position;
         //transform.position = Vector3.LerpUnclamped(currentpos, newPosition, 0.025f);
         transform.position = newPosition;

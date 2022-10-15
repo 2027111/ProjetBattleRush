@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using RiptideNetworking;
-using RiptideNetworking.Utils;
+using Riptide;
+using Riptide.Utils;
 using System;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
@@ -211,7 +211,7 @@ public class NetworkManager : MonoBehaviour
 
     public void SendName()
     {
-        Message message = Message.Create(MessageSendMode.reliable, ClientToServerId.name);
+        Message message = Message.Create(MessageSendMode.Reliable, ClientToServerId.name);
         message.AddString(PlayerAccount.connectedUser.username);
         Client.Send(message);
         //
@@ -225,7 +225,7 @@ public class NetworkManager : MonoBehaviour
     private void FixedUpdate()
     {
       
-        Client.Tick();
+        Client.Update();
         ServerTick++;
     }
 

@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using RiptideNetworking;
-using RiptideNetworking.Utils;
+using Riptide;
+using Riptide.Utils;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using TMPro;
@@ -151,10 +151,26 @@ public class NetworkManager : MonoBehaviour
         Console.Clear();
         Debug.Log("SERVER HAS SUCESSFULLY OPEN ON PORTS : " + port);
     }
+    private void PlayerLeft(object sender, ServerDisconnectedEventArgs e)
+    {
+        if (Player.list.TryGetValue(e.Client.Id, out Player player))
+        {
+            Destroy(player.gameObject);
+        }
+        if (Server.ClientCount == 0)
+        {
+            RestartServer();
+        }
+        else
+        {
 
-    private void PlayerJoined(object sender, ServerClientConnectedEventArgs e)
-    {   
+            UpdateServer();
+        }
 
+    }
+ 
+    private void PlayerJoined(object sender, ServerConnectedEventArgs e)
+    {
     }
 
     internal void ConfirmAccountConnection(Player player)
@@ -207,7 +223,7 @@ public class NetworkManager : MonoBehaviour
 
     private void SendTimeStart(int threeminusi)
     {
-        Message message = Message.Create(MessageSendMode.unreliable, ServerToClientId.timeTillStart);
+        Message message = Message.Create(MessageSendMode.Unreliable, ServerToClientId.timeTillStart);
         message.AddFloat(3 - threeminusi);
         Server.SendToAll(message);
     }
@@ -474,7 +490,7 @@ public class NetworkManager : MonoBehaviour
     {
         if (Server != null)
         {
-            Server.Tick();
+            Server.Update();
 
             if (CurrentTick % 200 == 0)
             {
@@ -491,21 +507,21 @@ public class NetworkManager : MonoBehaviour
 
     private void SendSync()
     {
-        Message message = Message.Create(MessageSendMode.unreliable, (ushort)ServerToClientId.sync);
+        Message message = Message.Create(MessageSendMode.Unreliable, (ushort)ServerToClientId.sync);
         message.Add(CurrentTick);
         Server.SendToAll(message);
     }
 
     private void SendTextNotif(string s)
     {
-        Message message = Message.Create(MessageSendMode.unreliable, (ushort)ServerToClientId.messageText);
+        Message message = Message.Create(MessageSendMode.Unreliable, (ushort)ServerToClientId.messageText);
         message.AddString(s);
         Server.SendToAll(message);
     }
 
     private void SendTime(string time)
     {
-        Message message = Message.Create(MessageSendMode.unreliable, (ushort)ServerToClientId.time);
+        Message message = Message.Create(MessageSendMode.Unreliable, (ushort)ServerToClientId.time);
         message.AddString(time);
         Server.SendToAll(message);
     }
@@ -573,23 +589,7 @@ public class NetworkManager : MonoBehaviour
     }
 
     
-    private void PlayerLeft(object sender, ClientDisconnectedEventArgs e)
-    {
-        if (Player.list.TryGetValue(e.Id, out Player player))
-        {
-            Destroy(player.gameObject);
-        }
-        if(Server.ClientCount == 0)
-        {
-            RestartServer();
-        }
-        else
-        {
 
-            UpdateServer();
-        }
-
-    }
 
     private void RestartServer()
     {

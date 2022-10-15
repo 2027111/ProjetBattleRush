@@ -1,4 +1,4 @@
-﻿using RiptideNetworking;
+﻿using Riptide;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -104,7 +104,7 @@ public class PlayerController : MonoBehaviour
 
     private void SendInput()
     {
-        Message message = Message.Create(MessageSendMode.unreliable, ClientToServerId.input);
+        Message message = Message.Create(MessageSendMode.Unreliable, ClientToServerId.input);
         message.AddBools(inputs, false);
         NetworkManager.Singleton.Client.Send(message);
     }

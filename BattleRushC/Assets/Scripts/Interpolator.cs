@@ -29,7 +29,6 @@ public class Interpolator : MonoBehaviour
 
     }
 
-/*
     private void Update()
     {
         for (int i = 0; i < futureTransformUpdates.Count; i++)
@@ -44,7 +43,9 @@ public class Interpolator : MonoBehaviour
                 futureTransformUpdates.RemoveAt(i);
                 i--;
                 timeElapsed = 0f;
-                timeToReachTarget = (to.Tick - from.Tick) * Time.fixedDeltaTime;
+                float ticksToReach = (to.Tick - from.Tick);
+                if (ticksToReach == 0f) ticksToReach = 1f;
+                timeToReachTarget = ticksToReach * Time.fixedDeltaTime;
             }
 
             Debug.Log("Post Check : " + to.Position + "   " + from.Position);
@@ -55,7 +56,6 @@ public class Interpolator : MonoBehaviour
         InterpolatePosition(timeElapsed / timeToReachTarget);
         
     }
-*/
 
     private void InterpolatePosition(float lerpAmount)
     {

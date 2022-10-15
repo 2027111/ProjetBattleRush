@@ -1,4 +1,4 @@
-using RiptideNetworking;
+using Riptide;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -107,7 +107,7 @@ public class Player : MonoBehaviour
     private void SendParticle(int v, Vector3 positionofcontact)
     {
 
-        Message message = Message.Create(MessageSendMode.unreliable, ServerToClientId.part);
+        Message message = Message.Create(MessageSendMode.Unreliable, ServerToClientId.part);
         message.AddInt(v);
         message.AddVector3(positionofcontact);
         NetworkManager.Singleton.Server.SendToAll(message);
@@ -220,7 +220,7 @@ public class Player : MonoBehaviour
 
     public void SendStats()
     {
-        Message message = Message.Create(MessageSendMode.unreliable, ServerToClientId.stats);
+        Message message = Message.Create(MessageSendMode.Unreliable, ServerToClientId.stats);
         message.AddUShort(Id);
         message.AddInt(points);
         NetworkManager.Singleton.Server.SendToAll(message);
@@ -262,13 +262,13 @@ public class Player : MonoBehaviour
     private void SendSpawned()
     {
 
-        NetworkManager.Singleton.Server.SendToAll(AddSpawnData(Message.Create(MessageSendMode.reliable, ServerToClientId.playerSpawned)));
+        NetworkManager.Singleton.Server.SendToAll(AddSpawnData(Message.Create(MessageSendMode.Reliable, ServerToClientId.playerSpawned)));
     }
 
     private void SendSpawned(ushort toClientid)
     {
 
-        NetworkManager.Singleton.Server.Send(AddSpawnData(Message.Create(MessageSendMode.reliable, ServerToClientId.playerSpawned)), toClientid);
+        NetworkManager.Singleton.Server.Send(AddSpawnData(Message.Create(MessageSendMode.Reliable, ServerToClientId.playerSpawned)), toClientid);
     }
     private static void Spawn(ushort id, string username)
     {
@@ -294,7 +294,7 @@ public class Player : MonoBehaviour
         {
             return;
         }
-        Message message = Message.Create(MessageSendMode.unreliable, ServerToClientId.playerMovement);
+        Message message = Message.Create(MessageSendMode.Unreliable, ServerToClientId.playerMovement);
         message.AddUShort(Id);
         message.AddUInt(NetworkManager.Singleton.CurrentTick);
         message.AddVector3(transform.position);
