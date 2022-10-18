@@ -745,7 +745,7 @@ MonoBehaviour:
   currentServerState: 0
   currentLobbyType: 0
   port: 0
-  maxClientCount: 2
+  maxClientCount: 3
 --- !u!4 &415120779
 Transform:
   m_ObjectHideFlags: 0
