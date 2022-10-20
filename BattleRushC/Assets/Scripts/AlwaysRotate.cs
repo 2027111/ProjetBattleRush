@@ -6,10 +6,14 @@ public class AlwaysRotate : MonoBehaviour
 {
 
     public Vector3 rotateps = new Vector3(0, 140, 0);
+    bool rotate = true;
 
     void Update()
     {
-        transform.Rotate(rotateps * Time.deltaTime); //rotates 50 degrees per second around z axis
+        if (rotate)
+        {
+            transform.Rotate(rotateps * Time.deltaTime); //rotates 50 degrees per second around z axis
+        }
     }
 
     public void SetToYRot(int i)
@@ -27,7 +31,7 @@ public class AlwaysRotate : MonoBehaviour
 
     public void Lockit(bool l)
     {
-        enabled = l;
+        rotate = l;
     }
     public void Setactive()
     {
@@ -44,8 +48,9 @@ public class AlwaysRotate : MonoBehaviour
         float l = 0;
         while(l < 1)
         {
-            Vector3.Slerp(t, v, l);
+            
             l += Time.deltaTime;
+            transform.rotation = Quaternion.Euler(Vector3.Slerp(t, v, l));
         }
         
 
