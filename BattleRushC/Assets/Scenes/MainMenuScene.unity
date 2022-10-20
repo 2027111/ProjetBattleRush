@@ -357,9 +357,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 463630594210867426}
-        m_TargetAssemblyTypeName: NetworkManager, Assembly-CSharp
-        m_MethodName: AccountDisconnect
+      - m_Target: {fileID: 1852243695}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: LeaveGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3818,7 +3818,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1714590886}
-  - component: {fileID: 1714590885}
   m_Layer: 0
   m_Name: Shop
   m_TagString: Untagged
@@ -3826,18 +3825,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1714590885
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1714590884}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea001433a906fbf45977ae9b394a5a35, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1714590886
 Transform:
   m_ObjectHideFlags: 0
@@ -4621,14 +4608,3 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 75aab9b10dc133842a63c108a0a97dcb, type: 3}
---- !u!114 &463630594210867426 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 463630594834073802, guid: 75aab9b10dc133842a63c108a0a97dcb, type: 3}
-  m_PrefabInstance: {fileID: 463630594210867425}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 551fcfd1adb839d4a8ade238691607b0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

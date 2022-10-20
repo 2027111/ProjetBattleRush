@@ -1,7 +1,5 @@
 [System.Serializable]
-public class CreateResponse
+public class CreateResponse : Response
 {
-    public int code;
-    public string message;
-    public PlayerAccount data;
+    public new PlayerAccount data;
 }

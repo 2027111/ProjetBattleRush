@@ -745,7 +745,8 @@ MonoBehaviour:
   currentServerState: 0
   currentLobbyType: 0
   port: 0
-  maxClientCount: 3
+  maxClientCount: 2
+  debug: 0
 --- !u!4 &415120779
 Transform:
   m_ObjectHideFlags: 0
@@ -1738,6 +1739,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 2124240668806114927, guid: dcb63ec4fe4959f4fade77685c5a70dd, type: 3}
   spawnPoint: {fileID: 2121767710}
+  DebugServer: 0
 --- !u!4 &1319609507
 Transform:
   m_ObjectHideFlags: 0

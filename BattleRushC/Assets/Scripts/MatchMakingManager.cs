@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,56 +22,33 @@ public class MatchMakingManager : MonoBehaviour
         //Activer le layout de chargement,
         LoadingUI.SetActive(true);
         //Commencer MatchMaking
-        StartCoroutine(AttemptConnectToServer());
-    }
-
-    IEnumerator AttemptConnectToServer()
-    {
-
+        //StartCoroutine(AttemptConnectToServer());
+        Action<ServerResponse> Success = new Action<ServerResponse>(MatchMakingSuccess);
+        Action Failure = new Action(delegate{ LoadingUI.SetActive(false); });
         WWWForm form = new WWWForm();
         form.AddField("token", PlayerAccount.connectionToken);
-        UnityWebRequest request = UnityWebRequest.Post($"{ServerTalker.mainAddress}queue/join", form);
-        var handler = request.SendWebRequest();
-        float startTime = 0;
-        while (!handler.isDone)
-        {
-            startTime += Time.deltaTime;
-            if (startTime >= 100.0f)
-            {
-                break;
-            }
-            yield return null;
-        }
+        string link = "queue/join";
+        StartCoroutine(ServerTalker.PostRequestToMasterServer<ServerResponse>(link, form, Success, Failure));
 
-
-
-        if (request.result == UnityWebRequest.Result.Success)
-        {
-
-            ServerResponse response = JsonUtility.FromJson<ServerResponse>(request.downloadHandler.text);
-            Debug.Log(response);
-            switch (response.code)
-            {
-                case 0:
-                    Server s = response.data;
-                    Debug.Log(s);
-                    NetworkManager.Singleton.ConnectTo(s);
-                    break;
-
-                case -9:
-                    PlayerAccount.Disconnected();
-                    break;
-                default:
-                    PlayerAccount.Disconnected();
-                    break;
-            }
-
-
-
-        }
-        else
-        {
-            LoadingUI.SetActive(false);
-        }
     }
-}
+
+    void MatchMakingSuccess(ServerResponse response)
+    {
+        switch (response.code)
+        {
+            case 0:
+                Server s = response.data;
+                Debug.Log(s);
+                NetworkManager.Singleton.ConnectTo(s);
+                break;
+
+            case -9:
+                PlayerAccount.Disconnected();
+                break;
+            default:
+                PlayerAccount.Disconnected();
+                break;
+        }
+
+    }
+ }

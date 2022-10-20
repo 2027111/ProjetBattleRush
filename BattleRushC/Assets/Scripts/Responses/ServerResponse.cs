@@ -1,8 +1,6 @@
 [System.Serializable]
 
-public class ServerResponse
+public class ServerResponse : Response
 {
-    public int code;
-    public string message;
-    public Server data;
+    public new Server data;
 }

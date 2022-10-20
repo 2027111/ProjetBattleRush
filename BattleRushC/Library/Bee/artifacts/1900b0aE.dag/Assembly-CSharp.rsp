@@ -342,6 +342,7 @@
 "Assets/Scripts/PlayerController.cs"
 "Assets/Scripts/Responses/CreateResponse.cs"
 "Assets/Scripts/Responses/LoginResponse.cs"
+"Assets/Scripts/Responses/Response.cs"
 "Assets/Scripts/Responses/Server.cs"
 "Assets/Scripts/Responses/ServerResponse.cs"
 "Assets/Scripts/ScoreBoardCard.cs"

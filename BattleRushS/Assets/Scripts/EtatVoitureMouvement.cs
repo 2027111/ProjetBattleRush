@@ -131,13 +131,13 @@ public class EtatVoitureMouvement : EtatVoiture
         }
 
 
-        Vector3 vel = (Vector3.Normalize(Voiture.transform.forward) * Voiture.speed * accel) + (Voiture.transform.right * Voiture.speed/2 * accel * x);
-        if(timepassed/tacceltime < 1)
+        Vector3 vel = (Vector3.Normalize(Voiture.transform.forward) * Voiture.speed * accel) + (Voiture.transform.right * Voiture.speed / 2 * accel * x);
+        if (timepassed / tacceltime < 1)
         {
             vel *= timepassed / tacceltime;
         }
 
-  
+
         Voiture.rb.velocity = new Vector3(vel.x, Voiture.rb.velocity.y, vel.z);
 
         Vector3 dir = Voiture.rb.velocity;
@@ -148,6 +148,7 @@ public class EtatVoitureMouvement : EtatVoiture
 
         Vector3 rotation = Voiture.modelCar.transform.rotation.eulerAngles;
         Voiture.attack.transform.rotation = Quaternion.Euler(90, 0, -rotation.y);
+
 
         if (accelerating)
         {

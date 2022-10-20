@@ -239,42 +239,22 @@ public class NetworkManager : MonoBehaviour
     }
 
 
+    public void ConfirmDisconnection(Response t)
+    {
+        PlayerAccount.Disconnected();
+    }
 
 
     public void AccountDisconnect()
     {
-        StartCoroutine(TryDisconnect());
-    }
-
-    IEnumerator TryDisconnect()
-    {
+        Action<Response> Success = new Action<Response>(ConfirmDisconnection);
+        Action Failure = new Action(PlayerAccount.Disconnected);
         WWWForm form = new WWWForm();
         form.AddField("tokenid", PlayerAccount.connectionToken);
-        UnityWebRequest request = UnityWebRequest.Post($"{ServerTalker.mainAddress}deconnexion", form);
-        var handler = request.SendWebRequest();
-        float startTime = 0;
-        while (!handler.isDone)
-        {
-            startTime += Time.deltaTime;
-            if (startTime >= 10.0f)
-            {
-                break;
-            }
-            yield return null;
-        }
+        string link = "deconnexion";
+        StartCoroutine(ServerTalker.PostRequestToMasterServer<Response>(link, form, Success, Failure));
 
-        if (request.result == UnityWebRequest.Result.Success)
-        {
-
-            PlayerAccount.Disconnected();
-        }
-        else
-        {
-            Debug.Log("Disconnection failed");
-        }
-        yield return null;
     }
-
 
 
     private void SetTick(ushort serverTick)

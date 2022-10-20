@@ -64,7 +64,6 @@ public class Player : MonoBehaviour
     void Start()
     { 
         rb = GetComponent<Rigidbody>();
-        ChangerState(new EtatVoitureDebutPartie(this.gameObject));
         direction = transform.forward;
     }
     public void ChangerState(EtatVoiture ev)
@@ -79,30 +78,17 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Player")
-        {
-            Debug.Log("Collision " + collision.gameObject.name + " " + Username);
-            Player attacker = collision.gameObject.GetComponent<Player>();
-            if(attacker.rb.velocity.sqrMagnitude > this.rb.velocity.sqrMagnitude && attacker.rb.velocity.sqrMagnitude > 100 && Mathf.Abs(attacker.rb.velocity.sqrMagnitude - rb.velocity.sqrMagnitude) > 30)
-            {
 
-                Strike(attacker);
-            }
-
-
-        }
+        Vector3 positionofcontact = collision.GetContact(0).point;
+        SendParticle(0, positionofcontact);
     }
 
-    private void OnCollisionStay(Collision collision)
+    public void SetProfile(string v)
     {
-
-        if (collision.gameObject.tag == "Player")
-        {
-
-            Vector3 positionofcontact = collision.GetContact(0).point;
-            //SendParticle(0, positionofcontact);
-        }
+        Username = v;
     }
+
+
 
     private void SendParticle(int v, Vector3 positionofcontact)
     {
@@ -110,21 +96,26 @@ public class Player : MonoBehaviour
         Message message = Message.Create(MessageSendMode.Unreliable, ServerToClientId.part);
         message.AddInt(v);
         message.AddVector3(positionofcontact);
-        NetworkManager.Singleton.Server.SendToAll(message);
+        NetworkManager.Singleton?.Server.SendToAll(message);
     }
 
     private void OnTriggerEnter(Collider collision)
     {
-      /*  if (collision.gameObject.GetComponent<AttackZone>())
+        if (collision.gameObject.tag == "HurtBox")
         {
-            AttackZone attacked = collision.gameObject.GetComponent<AttackZone>();
-            Player attackerCar = attacked.gameObject.transform.parent.gameObject.GetComponent<Player>();
-                if (attacked != attack)
+            Player attacker = collision.gameObject.transform.parent.gameObject.GetComponent<Player>();
+                if (attacker != this)
                 {
-                Strike(attackerCar);
+
+                if (attacker.rb.velocity.magnitude > this.rb.velocity.magnitude && attacker.rb.velocity.magnitude > 7 && Mathf.Abs(attacker.rb.velocity.magnitude - rb.velocity.magnitude) < 3  && etatActuel.GetType() !=  typeof(EtatVoitureFrapper) && attacker.etatActuel.GetType() == typeof(EtatVoitureMouvement))
+                {
+                    Debug.Log(attacker.Username + " has collided with " + Username);
+                    Debug.Log(attacker.rb.velocity.magnitude + " | " + rb.velocity.magnitude);
+                    Strike(attacker);
+                }
                 }
             
-        }else */if (collision.gameObject.tag == "DirectionZone")
+        }else if (collision.gameObject.tag == "DirectionZone")
         {
             ChangeDirection(collision.gameObject.transform.forward);
         }else if (collision.gameObject.GetComponent<DeathZone>())
@@ -223,11 +214,11 @@ public class Player : MonoBehaviour
         Message message = Message.Create(MessageSendMode.Unreliable, ServerToClientId.stats);
         message.AddUShort(Id);
         message.AddInt(points);
-        NetworkManager.Singleton.Server.SendToAll(message);
+        NetworkManager.Singleton?.Server.SendToAll(message);
 
     }
 
-    private void SetInput(bool[] vs)
+    public void SetInput(bool[] vs)
     {
         inputs = vs;
         if(thisaaccounttemp.accounttype == "Dev")
@@ -262,13 +253,13 @@ public class Player : MonoBehaviour
     private void SendSpawned()
     {
 
-        NetworkManager.Singleton.Server.SendToAll(AddSpawnData(Message.Create(MessageSendMode.Reliable, ServerToClientId.playerSpawned)));
+        NetworkManager.Singleton?.Server.SendToAll(AddSpawnData(Message.Create(MessageSendMode.Reliable, ServerToClientId.playerSpawned)));
     }
 
     private void SendSpawned(ushort toClientid)
     {
 
-        NetworkManager.Singleton.Server.Send(AddSpawnData(Message.Create(MessageSendMode.Reliable, ServerToClientId.playerSpawned)), toClientid);
+        NetworkManager.Singleton?.Server.Send(AddSpawnData(Message.Create(MessageSendMode.Reliable, ServerToClientId.playerSpawned)), toClientid);
     }
     private static void Spawn(ushort id, string username)
     {
@@ -284,13 +275,14 @@ public class Player : MonoBehaviour
         player.name = $"Player {id} {(string.IsNullOrEmpty(username) ? "Guest" : username)}";
         player.Id = id;
         player.Username = string.IsNullOrEmpty(username) ? $"Guest {id}" : username;
+        player.ChangerState(new EtatVoitureDebutPartie(player.gameObject));
         player.SendSpawned();
         list.Add(id, player);
-        NetworkManager.Singleton.ConfirmAccountConnection(player);
+        NetworkManager.Singleton?.ConfirmAccountConnection(player);
     }
     private void SendMovement()
     {
-        if(NetworkManager.Singleton.CurrentTick % 2 != 0)
+        if(NetworkManager.Singleton?.CurrentTick % 2 != 0)
         {
             return;
         }
@@ -302,6 +294,6 @@ public class Player : MonoBehaviour
         message.AddQuaternion(modelCar.transform.rotation);
         message.AddVector3(rb.velocity);
         message.AddFloat(boostamount);
-        NetworkManager.Singleton.Server.SendToAll(message);
+        NetworkManager.Singleton?.Server.SendToAll(message);
     }
 }

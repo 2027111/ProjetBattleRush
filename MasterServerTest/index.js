@@ -303,7 +303,7 @@ app.post("/deconnexion", async (req, res) => {
 		response.code = -1;
 		response.msg = "Connection non-existant";
 	}
-	res.send("pozz");
+	res.send(response);
 });
 /* Login And Registrations */
 
@@ -381,16 +381,19 @@ app.post("/server/update", async (req, res) =>{
 
 	const thisserv = await Server.findOne({port : req.body.port});
 
+		if(thisserv){
 
-		thisserv.playerConnected = req.body.connectedPlayer;
-		thisserv.maxPlayer = req.body.maxPlayer;
-		thisserv.lobbyStatus = req.body.lobbystate;
-		thisserv.lobbyType = req.body.lobbytype;
-	
-	
-	
-		 await thisserv.save();
-		 console.log("Updated info on server using ports : " + thisserv.port)
+			thisserv.playerConnected = req.body.connectedPlayer;
+			thisserv.maxPlayer = req.body.maxPlayer;
+			thisserv.lobbyStatus = req.body.lobbystate;
+			thisserv.lobbyType = req.body.lobbytype;
+		
+		
+		
+			 await thisserv.save();
+			 console.log("Updated info on server using ports : " + thisserv.port)
+		 
+		}
 		 res.send(response);
 
 

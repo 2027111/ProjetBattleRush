@@ -1,14 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Riptide;
 using Riptide.Utils;
-using UnityEngine.UI;
-using UnityEngine.Networking;
-using TMPro;
-using UnityEngine.SceneManagement;
-using System.Net;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Net;
+using UnityEngine;
+using UnityEngine.Networking;
 
 public enum ServerToClientId : ushort
 {
@@ -90,6 +87,13 @@ public class NetworkManager : MonoBehaviour
     [SerializeField] private ushort port;
     [SerializeField] private ushort maxClientCount;
 
+
+
+    [Header("Debug")]
+    [SerializeField] bool debug = false;
+
+
+
     string ReturnAdress(string host)
     {
 
@@ -133,24 +137,7 @@ public class NetworkManager : MonoBehaviour
         }
 
     }
-    #region Server Starting
-    public void ProcessServerStart()
-    {
-        port = (ushort)serverPort;
-        timer = maxTime;
 
-
-        currentServerState = CurrentServerState.Open;
-        currentLobbyType = CurrentLobbyType.Casual;
-    RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);
-
-        Server = new Server();
-        Server.Start(port, maxClientCount);
-        Server.ClientConnected += PlayerJoined;
-        Server.ClientDisconnected += PlayerLeft;
-        Console.Clear();
-        Debug.Log("SERVER HAS SUCESSFULLY OPEN ON PORTS : " + port);
-    }
     private void PlayerLeft(object sender, ServerDisconnectedEventArgs e)
     {
         if (Player.list.TryGetValue(e.Client.Id, out Player player))
@@ -173,28 +160,7 @@ public class NetworkManager : MonoBehaviour
     {
     }
 
-    internal void ConfirmAccountConnection(Player player)
-    {
-        StartCoroutine(TryTestAccount(player));
-    }
 
-
-    public void ConfirmConnection()
-    {
-        if (Server.ClientCount == Server.MaxClientCount)
-        {
-
-            currentServerState = CurrentServerState.InGame;
-            StartCoroutine(StartBattle());
-            UpdateServer();
-        }
-        else
-        {
-
-            StartCoroutine(TryGetServer());
-        }
-
-    }
     private IEnumerator StartBattle()
     {
         //Send Who's left and who's right.
@@ -221,15 +187,6 @@ public class NetworkManager : MonoBehaviour
         currentServerState = CurrentServerState.Battle;
     }
 
-    private void SendTimeStart(int threeminusi)
-    {
-        Message message = Message.Create(MessageSendMode.Unreliable, ServerToClientId.timeTillStart);
-        message.AddFloat(3 - threeminusi);
-        Server.SendToAll(message);
-    }
-
-
-
 
     private void GetFreePort()
     {
@@ -239,233 +196,173 @@ public class NetworkManager : MonoBehaviour
 
     private void UpdateServer()
     {
-        StartCoroutine(TryUpdateServer());
-    }
 
-
-
-    private IEnumerator TryUpdateServer()
-    {
-
+        Action<DescResponse> Success = new Action<DescResponse>(delegate { UpdateSuccess(true); });
+        Action Failure = new Action(delegate { UpdateSuccess(false); });
         WWWForm form = new WWWForm();
         form.AddField("ip", "127.0.0.1");
         form.AddField("port", port);
-        form.AddField("maxPlayer", maxClientCount);
+        form.AddField("maxPlayer", maxClientCount);;
         form.AddField("lobbystate", currentServerState.ToString());
         form.AddField("lobbytype", currentLobbyType.ToString());
         form.AddField("connectedPlayer", Server.ClientCount);
-        UnityWebRequest request = UnityWebRequest.Post($"{mainAddress}server/update", form);
-        var handler = request.SendWebRequest();
-        float startTime = 0;
-        while (!handler.isDone)
-        {
-            startTime += Time.deltaTime;
-            if (startTime >= 10.0f)
-            {
-                break;
-            }
-            yield return null;
-        }
+        string link = "server/update";
+        StartCoroutine(NetworkManager.PostRequestToMasterServer<DescResponse>(link, form, Success, Failure));
 
-        if (request.result == UnityWebRequest.Result.Success)
-        {
-            Debug.Log("Update Successful");
-        }
-        else
-        {
-            Debug.Log("Update Failed");
-        }
-        yield return null;
+        //StartCoroutine(TryUpdateServer());
+    }
 
+    void UpdateSuccess(bool update)
+    {
+        string t = update ? "Update Successful" : "Update failed";
+        Debug.Log(t);
+    }
+
+
+
+
+   internal void ConfirmAccountConnection(Player player)
+    {
+
+        Action<DescResponse> Success = new Action<DescResponse>(ConfirmConnection);
+        Action Failure = new Action(delegate { KickPlayer(player.Id);});
+        WWWForm form = new WWWForm();
+        form.AddField("rUsername", player.Username);
+        string link = "user";
+
+        StartCoroutine(NetworkManager.PostRequestToMasterServer<DescResponse>(link, form, Success, Failure));
 
     }
 
 
-    private IEnumerator TryGetServer()
+    public void ConfirmConnection(DescResponse response)
     {
-
-        WWWForm form = new WWWForm();
-        form.AddField("port", port);
-        UnityWebRequest request = UnityWebRequest.Post($"{mainAddress}server", form);
-        var handler = request.SendWebRequest();
-        float startTime = 0;
-        while (!handler.isDone)
-        {
-            startTime += Time.deltaTime;
-            if (startTime >= 10.0f)
-            {
-                break;
-            }
-            yield return null;
-        }
-
-        if (request.result == UnityWebRequest.Result.Success)
+        if (Server.ClientCount == Server.MaxClientCount)
         {
 
-
-
-            DescResponse response = JsonUtility.FromJson<DescResponse>(request.downloadHandler.text);
-
-            switch (response.code)
-            {
-                case 0:
-
-                    currentLobbyType = CurrentLobbyType.Casual;
-                    //0 means casual;
-
-
-                    break;
-
-
-                case 1:
-                    //1 means ranked;
-                    currentLobbyType = CurrentLobbyType.Ranked;
-                    break;
-
-
-                case 2:
-                    //2 means friends
-                    currentLobbyType = CurrentLobbyType.Friend;
-                    break;
-
-            }
-
+            currentServerState = CurrentServerState.InGame;
+            StartCoroutine(StartBattle());
             UpdateServer();
         }
         else
         {
-            Debug.Log("Update Failed");
+                GetFreePort();
+                Action<DescResponse> Success = new Action<DescResponse>(ConfirmConnectionSuccess);
+                Action Failure = new Action(delegate { UpdateSuccess(false); });
+                WWWForm form = new WWWForm();
+                form.AddField("port", port);
+                string link = "server";
+                StartCoroutine(NetworkManager.PostRequestToMasterServer<DescResponse>(link, form, Success, Failure));
+
+            
         }
-        yield return null;
 
 
     }
+    void ConfirmConnectionSuccess(DescResponse response)
+    {
+        switch (response.code)
+        {
+            case 0:
 
+                currentLobbyType = CurrentLobbyType.Casual;
+                //0 means casual;
+
+
+                break;
+
+
+            case 1:
+                //1 means ranked;
+                currentLobbyType = CurrentLobbyType.Ranked;
+                break;
+
+
+            case 2:
+                //2 means friends
+                currentLobbyType = CurrentLobbyType.Friend;
+                break;
+
+        }
+
+        UpdateServer();
+    }
+    #region [ServerStart]
+    void ServerStartSuccess(DescResponse response)
+    {
+        switch (response.code)
+        {
+            case 0:
+                ProcessServerStart();
+                break;
+
+            default:
+                GetFreePort();
+                break;
+
+        }
+
+    }
+
+    void ServerStartFailure()
+    {
+
+        Debug.Log("Server start failed");
+        Application.Quit();
+    }
+    public void ProcessServerStart()
+    {
+        port = (ushort)serverPort;
+        timer = maxTime;
+
+
+        currentServerState = CurrentServerState.Open;
+        currentLobbyType = CurrentLobbyType.Casual;
+        RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);
+
+        Server = new Server();
+        Server.Start(port, maxClientCount);
+        Server.ClientConnected += PlayerJoined;
+        Server.ClientDisconnected += PlayerLeft;
+        Console.Clear();
+        Debug.Log("SERVER HAS SUCESSFULLY OPEN ON PORTS : " + port);
+    }
     public void StartServer()
     {
         if (Server != null)
         {
             return;
         }
-       GetFreePort();
-        StartCoroutine(TryStartServer());
-    }
 
-    IEnumerator TryTestAccount(Player p)
-    {
-        WWWForm form = new WWWForm();
-        form.AddField("rUsername", p.Username);
-        UnityWebRequest request = UnityWebRequest.Post($"{mainAddress}user", form);
-        var handler = request.SendWebRequest();
-        float startTime = 0;
-        while (!handler.isDone)
+        GetFreePort();
+
+        if (debug)
         {
-            startTime += Time.deltaTime;
-            if (startTime >= 10.0f)
-            {
-                break;
-            }
-            yield return null;
-        }
-
-        if (request.result == UnityWebRequest.Result.Success)
-        {
-            LoginResponse response = JsonUtility.FromJson<LoginResponse>(request.downloadHandler.text);
-            switch (response.code)
-            {
-                case 0:
-                    p.thisaaccounttemp = response.data;
-                    break;
-                default:
-                    break;
-            }
-
+            ProcessServerStart();
         }
         else
         {
-            KickPlayer(p.Id);
+            Action<DescResponse> Success = new Action<DescResponse>(ServerStartSuccess);
+            Action Failure = new Action(ServerStartFailure);
+            WWWForm form = new WWWForm();
+            form.AddField("ip", "127.0.0.1");
+            form.AddField("port", serverPort);
+            form.AddField("maxPlayer", maxClientCount);
+            string link = "server/On";
+            StartCoroutine(NetworkManager.PostRequestToMasterServer<DescResponse>(link, form, Success, Failure));
+
         }
-        ConfirmConnection();
-        yield return null;
     }
+    #endregion
+    
+    #region [ServerStop]
 
-    IEnumerator TryStartServer()
+    void ServerStopSuccess(DescResponse response)
     {
-        WWWForm form = new WWWForm();
-        form.AddField("ip", "127.0.0.1");
-        form.AddField("port", serverPort);
-        form.AddField("maxPlayer", maxClientCount);
-        UnityWebRequest request = UnityWebRequest.Post($"{mainAddress}server/On", form);
-        var handler = request.SendWebRequest();
-        float startTime = 0;
-        while (!handler.isDone)
-        {
-            startTime += Time.deltaTime;
-            if (startTime >= 10.0f)
-            {
-                break;
-            }
-            yield return null;
-        }
 
-        if (request.result == UnityWebRequest.Result.Success)
-        {
+        ProcessServerStop();
+    
 
-            DescResponse response = JsonUtility.FromJson<DescResponse>(request.downloadHandler.text);
-            switch (response.code)
-            {
-                case 0:
-                    ProcessServerStart();
-                    break;
-
-
-                case -1:
-
-
-                    GetFreePort();
-                    break;
-
-                default:
-                    GetFreePort();
-                    break;
-
-            }
-
-
-        }
-        else
-        {
-            Debug.Log("Server start failed");
-            Application.Quit();
-        }
-        yield return null;
-    }
-
-    IEnumerator TryStopServer()
-    {
-        WWWForm form = new WWWForm();
-        form.AddField("port", port);
-        UnityWebRequest request = UnityWebRequest.Post($"{mainAddress}server/Off", form);
-        var handler = request.SendWebRequest();
-        float startTime = 0;
-        while (!handler.isDone)
-        {
-            startTime += Time.deltaTime;
-            if (startTime >= 10.0f)
-            {
-                break;
-            }
-            yield return null;
-        }
-
-        if (request.result == UnityWebRequest.Result.Success)
-        {
-            ProcessServerStop();
-        }
-        else
-        {
-        }
-        yield return null;
     }
 
     private void ProcessServerStop()
@@ -477,13 +374,17 @@ public class NetworkManager : MonoBehaviour
         }
     }
 
-    #endregion
-
-
     public void StopServer()
     {
-        StartCoroutine(TryStopServer());
+        Action<DescResponse> Success = new Action<DescResponse>(ServerStopSuccess);
+        Action Failure = new Action(delegate { ServerStopSuccess(null); });
+        WWWForm form = new WWWForm();
+        form.AddField("port", port);
+        string link = "server/Off";
+        StartCoroutine(NetworkManager.PostRequestToMasterServer<DescResponse>(link, form, Success, Failure));
+
     }
+    #endregion
 
     // Update is called once per frame
     private void FixedUpdate()
@@ -598,6 +499,34 @@ public class NetworkManager : MonoBehaviour
         currentLobbyType = CurrentLobbyType.Casual;
         timer = maxTime;
         UpdateServer();
+    }
+
+    public static IEnumerator PostRequestToMasterServer<T>(string link, WWWForm form, Action<T> success, Action failure)
+    {
+        UnityWebRequest request = UnityWebRequest.Post($"{mainAddress}{link}", form);
+        var handler = request.SendWebRequest();
+        float startTime = 0;
+        while (!handler.isDone)
+        {
+            startTime += Time.deltaTime;
+            if (startTime >= 10.0f)
+            {
+                break;
+            }
+            yield return null;
+        }
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            T response = JsonUtility.FromJson<T>(request.downloadHandler.text);
+            success(response);
+
+        }
+        else
+        {
+            failure();
+        }
+        yield return null;
     }
 
 
