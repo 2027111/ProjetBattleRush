@@ -48,9 +48,9 @@ public class AlwaysRotate : MonoBehaviour
         float l = 0;
         while(l < 1)
         {
-            
             l += Time.deltaTime;
-            transform.rotation = Quaternion.Euler(Vector3.Slerp(t, v, l));
+            transform.rotation = Quaternion.Euler(Vector3.Lerp(t, v, l));
+            yield return null;
         }
         
 

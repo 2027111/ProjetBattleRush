@@ -9901,6 +9901,7 @@ MonoBehaviour:
   camHolder: {fileID: 5085968546450697582}
   usernameCanvas: {fileID: 3957076283727461485}
   interpolater: {fileID: 825320971951670341}
+  bodyColor: {fileID: 1809730278377731128}
 --- !u!114 &825320971951670341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10394,5 +10395,10 @@ Transform:
 --- !u!1 &2093600924478958849 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 33538749733570355, guid: 98c57f100a7d7684dba02b8725bbc5d8, type: 3}
+  m_PrefabInstance: {fileID: 2124240670069353010}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1809730278377731128 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 317404525374922250, guid: 98c57f100a7d7684dba02b8725bbc5d8, type: 3}
   m_PrefabInstance: {fileID: 2124240670069353010}
   m_PrefabAsset: {fileID: 0}

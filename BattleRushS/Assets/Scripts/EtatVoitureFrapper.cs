@@ -23,8 +23,8 @@ public class EtatVoitureFrapper : EtatVoiture
     {
         Vector3 diff = Voiture.transform.position - Player.transform.position;
         diff.Normalize();
-        diff *= 0.15f;
-        diff += Vector3.up * 1.5f;
+        diff *= 0.35f;
+        diff += Vector3.up * 3f;
         temp = diff;
     }
 

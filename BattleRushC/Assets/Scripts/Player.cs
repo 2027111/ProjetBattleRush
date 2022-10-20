@@ -24,6 +24,7 @@ public class Player : MonoBehaviour
     [SerializeField] public GameObject camHolder;
     [SerializeField] public GameObject usernameCanvas;
     [SerializeField] public Interpolator interpolater;
+    [SerializeField] public GameObject bodyColor;
     public event Evenement EvenementHandler;
     public int points
     {
@@ -56,7 +57,7 @@ public class Player : MonoBehaviour
             camHolder.transform.localRotation = Quaternion.Euler(rot);
         
     }
-    public static void Spawn(ushort id, string username, Vector3 position, Quaternion rot)
+    public static void Spawn(ushort id, string username, Vector3 position, Quaternion rot, Vector3 color)
     {
         Player player;
         player = Instantiate(GameLogic.Singleton.PlayerPrefab, position, rot).GetComponent<Player>();
@@ -75,6 +76,8 @@ public class Player : MonoBehaviour
         player.name = $"Player {id} {(string.IsNullOrEmpty(username) ? "Guest" : username)}";
         player.Id = id;
         player.Username = username;
+        Material m = player.bodyColor.GetComponent<MeshRenderer>().material;
+        m.SetColor("_Color", new Color(color.x, color.y, color.z, 255));
 
         list.Add(id, player);
     }
@@ -100,7 +103,7 @@ public class Player : MonoBehaviour
     private static void SpawnPlayer(Message message)
     {
         ushort playeid = message.GetUShort();
-        Spawn(playeid, message.GetString(), message.GetVector3(), message.GetQuaternion());
+        Spawn(playeid, message.GetString(), message.GetVector3(), message.GetQuaternion(), message.GetVector3());
     }
     [MessageHandler((ushort)ServerToClientId.stats)]
     private static void RecieveStats(Message message)

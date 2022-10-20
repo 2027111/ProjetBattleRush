@@ -7,7 +7,7 @@ public class CustomizeManager : MonoBehaviour
 
 
 
-    [SerializeField] Color carColorMaterial = Color.white;
+    public static Color carColorMaterial = Color.white;
     [SerializeField] bool hasSpoiler = true;
     [SerializeField] GameObject displayCar;
 
@@ -22,6 +22,8 @@ public class CustomizeManager : MonoBehaviour
     public void OnColorChange(Color c)
     {
         carColorMaterial = c;
-        displayCar.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material.SetColor(0, carColorMaterial);
+        GameObject body = displayCar.transform.GetChild(0).gameObject;
+        Material m = body.GetComponent<MeshRenderer>().material;
+        m.SetColor("_Color", carColorMaterial);
     }
 }

@@ -34,6 +34,7 @@ public class Player : MonoBehaviour
     public Rigidbody rb;
 
     EtatVoiture etatActuel;
+    private Vector3 color;
 
     protected static void WriteAt(string s, int x, int y)
     {
@@ -216,7 +217,7 @@ public class Player : MonoBehaviour
     [MessageHandler((ushort)ClientToServerId.name)]
     private static void Name(ushort fromClientId, Message message)
     {
-        Spawn(fromClientId, message.GetString());
+        Spawn(fromClientId, message.GetString(), message.GetVector3());
 
     }
 
@@ -259,6 +260,7 @@ public class Player : MonoBehaviour
         message.AddString(Username);
         message.AddVector3(transform.position); 
         message.AddQuaternion(GameManager.Singleton.SpawnPoint.transform.rotation);
+        message.AddVector3(color);
         return message;
     }
     private void SendSpawned()
@@ -272,7 +274,7 @@ public class Player : MonoBehaviour
 
         NetworkManager.Singleton?.Server.Send(AddSpawnData(Message.Create(MessageSendMode.Reliable, ServerToClientId.playerSpawned)), toClientid);
     }
-    private static void Spawn(ushort id, string username)
+    private static void Spawn(ushort id, string username, Vector3 color)
     {
         foreach (Player otherPlayer in list.Values)
         {
@@ -287,6 +289,7 @@ public class Player : MonoBehaviour
         player.Id = id;
         player.Username = string.IsNullOrEmpty(username) ? $"Guest {id}" : username;
         player.ChangerState(new EtatVoitureDebutPartie(player.gameObject));
+        player.color = color;
         player.SendSpawned();
         list.Add(id, player);
             NetworkManager.Singleton?.ConfirmAccountConnection(player);

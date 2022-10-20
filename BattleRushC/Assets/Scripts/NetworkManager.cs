@@ -213,6 +213,7 @@ public class NetworkManager : MonoBehaviour
     {
         Message message = Message.Create(MessageSendMode.Reliable, ClientToServerId.name);
         message.AddString(PlayerAccount.connectedUser.username);
+        message.AddVector3(new Vector3(CustomizeManager.carColorMaterial.r, CustomizeManager.carColorMaterial.g, CustomizeManager.carColorMaterial.b));
         Client.Send(message);
         //
     }
