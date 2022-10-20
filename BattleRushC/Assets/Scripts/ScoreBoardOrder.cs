@@ -19,10 +19,9 @@ public class ScoreBoardOrder : MonoBehaviour
 
         foreach(GameObject c in tempList)
         {
-            c.transform.SetSiblingIndex(tempList.IndexOf(c));
+            c.transform.SetSiblingIndex(tempList.Count-tempList.IndexOf(c));
         }
 
-        Debug.Log("Sorting ScoreBoard");
 
 
     }

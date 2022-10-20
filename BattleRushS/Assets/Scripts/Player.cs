@@ -106,19 +106,30 @@ public class Player : MonoBehaviour
             Player attacker = collision.gameObject.transform.parent.gameObject.GetComponent<Player>();
                 if (attacker != this)
                 {
-
-                if (attacker.rb.velocity.magnitude > this.rb.velocity.magnitude && attacker.rb.velocity.magnitude > 7 && Mathf.Abs(attacker.rb.velocity.magnitude - rb.velocity.magnitude) < 3  && etatActuel.GetType() !=  typeof(EtatVoitureFrapper) && attacker.etatActuel.GetType() == typeof(EtatVoitureMouvement))
-                {
-                    Debug.Log(attacker.Username + " has collided with " + Username);
-                    Debug.Log(attacker.rb.velocity.magnitude + " | " + rb.velocity.magnitude);
-                    Strike(attacker);
-                }
+                    if(attacker.rb.velocity.magnitude > this.rb.velocity.magnitude)
+                    {
+                        int difference = Mathf.Abs(Mathf.RoundToInt(attacker.rb.velocity.magnitude - rb.velocity.magnitude));
+                        
+                        Debug.Log(attacker.Username + " has collided with " + Username);
+                        Debug.Log(attacker.Username + " : " + Mathf.Round(attacker.rb.velocity.magnitude) + " | " + Username + " : " + Mathf.Round(rb.velocity.magnitude)  + " | " + "Difference : " + Mathf.Abs(Mathf.Round(attacker.rb.velocity.magnitude - rb.velocity.magnitude)));
+                        Debug.Log(attacker.Username + " : " + attacker.etatActuel.GetType() + " | " + Username + " : " + etatActuel.GetType());
+                        if (difference > 3)
+                        {
+                            if(attacker.etatActuel.GetType() == typeof(EtatVoitureMouvement))
+                            {
+                                Debug.Log("STRIKE!");
+                                Strike(attacker);
+                            }
+                        }
+                    }
                 }
             
-        }else if (collision.gameObject.tag == "DirectionZone")
+        }
+        else if (collision.gameObject.tag == "DirectionZone")
         {
             ChangeDirection(collision.gameObject.transform.forward);
-        }else if (collision.gameObject.GetComponent<DeathZone>())
+        }
+        else if (collision.gameObject.GetComponent<DeathZone>())
         {
             if (lastHit)
             {
@@ -278,7 +289,8 @@ public class Player : MonoBehaviour
         player.ChangerState(new EtatVoitureDebutPartie(player.gameObject));
         player.SendSpawned();
         list.Add(id, player);
-        NetworkManager.Singleton?.ConfirmAccountConnection(player);
+            NetworkManager.Singleton?.ConfirmAccountConnection(player);
+       
     }
     private void SendMovement()
     {

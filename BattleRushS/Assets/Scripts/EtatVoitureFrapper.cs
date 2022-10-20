@@ -10,29 +10,22 @@ public class EtatVoitureFrapper : EtatVoiture
     float time = 0.3f;
     public EtatVoitureFrapper(GameObject joueur) : base(joueur)
     {
-    }
-
-    public EtatVoitureFrapper(GameObject joueur, Vector3 position, bool acceler) : this(joueur)
-    {
-
-        Vector3 diff = Voiture.transform.position - position;
+        Vector3 diff =new Vector3(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
         diff.Normalize();
-        diff += Vector3.up;
         diff *= 0.15f;
-
-
+        diff += Vector3.up;
         temp = diff;
-
     }
+
+
 
     public EtatVoitureFrapper(GameObject joueur, Player Player) : this(joueur)
     {
-
         Vector3 diff = Voiture.transform.position - Player.transform.position;
         diff.Normalize();
-        diff += Vector3.up * 3;
+        diff *= 0.15f;
+        diff += Vector3.up * 1.5f;
         temp = diff;
-        
     }
 
 
@@ -47,7 +40,6 @@ public class EtatVoitureFrapper : EtatVoiture
         }
         else
         {
-
             Rotation = new Vector3(Random.Range(0.1f, 1), Random.Range(0.1f, 1), Random.Range(0.1f, 1));
         }
     }

@@ -144,6 +144,10 @@ public class NetworkManager : MonoBehaviour
         {
             Destroy(player.gameObject);
         }
+        if (debug)
+        {
+            return;
+        }
         if (Server.ClientCount == 0)
         {
             RestartServer();
@@ -166,7 +170,10 @@ public class NetworkManager : MonoBehaviour
         //Send Who's left and who's right.
         //
         currentServerState = CurrentServerState.InGame;
-        UpdateServer();
+        if (!debug)
+        {
+            UpdateServer();
+        }
         SendTextNotif("Game will start soon!");
         for(int i = 0; i < 3; i++)
         {
@@ -221,9 +228,13 @@ public class NetworkManager : MonoBehaviour
 
 
 
-   internal void ConfirmAccountConnection(Player player)
+    public void ConfirmAccountConnection(Player player)
     {
-
+        if (debug)
+        {
+            ConfirmConnection(null);
+            return;
+        }
         Action<DescResponse> Success = new Action<DescResponse>(ConfirmConnection);
         Action Failure = new Action(delegate { KickPlayer(player.Id);});
         WWWForm form = new WWWForm();
@@ -242,11 +253,20 @@ public class NetworkManager : MonoBehaviour
 
             currentServerState = CurrentServerState.InGame;
             StartCoroutine(StartBattle());
+            if (debug)
+            {
+                return;
+            }
             UpdateServer();
+            
         }
         else
         {
-                GetFreePort();
+            if (debug)
+            {
+                return;
+            }
+            GetFreePort();
                 Action<DescResponse> Success = new Action<DescResponse>(ConfirmConnectionSuccess);
                 Action Failure = new Action(delegate { UpdateSuccess(false); });
                 WWWForm form = new WWWForm();

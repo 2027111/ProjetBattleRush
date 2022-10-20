@@ -119,8 +119,7 @@ public class EtatVoitureMouvement : EtatVoiture
 
             if (Voiture.inputs[5])
             {
-                Voiture.ChangerState(new EtatVoitureJump(Voiture.gameObject));
-                Voiture.rb.AddForce(Voiture.transform.up * 7, ForceMode.Impulse);
+                Voiture.ChangerState(new EtatVoitureJump(Voiture.gameObject, 7));
             }
         }
         else

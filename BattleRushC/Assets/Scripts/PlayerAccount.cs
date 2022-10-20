@@ -15,6 +15,19 @@ public class PlayerAccount
 
     public static PlayerAccount connectedUser;
     public static string connectionToken;
+
+
+
+    public PlayerAccount()
+    {
+        username = "Debug";
+        _id = "r";
+        wins = 0;
+        losses = 0;
+        goldcoins = 0;
+        accounttype = "Lol";
+    }
+
     public static void Connected(PlayerAccount returnedAccount, string token)
     {
         if (connectedUser == null && connectionToken == null) {

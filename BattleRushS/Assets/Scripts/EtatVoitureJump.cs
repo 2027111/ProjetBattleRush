@@ -5,15 +5,21 @@ using UnityEngine;
 public class EtatVoitureJump : EtatVoiture
 {
     float time = 0.3f;
+    int jumpforce = 0;
     public EtatVoitureJump(GameObject joueur) : base(joueur)
     {
+
     }
 
-
+    public EtatVoitureJump(GameObject joueur, int force) : base(joueur)
+    {
+        jumpforce = force;
+    }
 
 
     public override void Enter()
     {
+        Voiture.rb.AddForce(Voiture.transform.up * jumpforce, ForceMode.Impulse);
         Voiture.attack.SetActive(false);
         Voiture.flightburst.SetActive(false);
     }

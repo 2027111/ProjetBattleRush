@@ -3470,6 +3470,7 @@ MonoBehaviour:
   rpasswordInput: {fileID: 1209537148}
   signupButton: {fileID: 582504587}
   ralertText: {fileID: 1189383083}
+  debug: 0
 --- !u!4 &1457912619
 Transform:
   m_ObjectHideFlags: 0

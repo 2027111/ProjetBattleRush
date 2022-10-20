@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.6376248, g: 0.8891383, b: 0.99326617, a: 1}
+  m_IndirectSpecularColor: {r: 0.6381219, g: 0.88913745, b: 0.9932688, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1740,6 +1740,7 @@ MonoBehaviour:
   playerPrefab: {fileID: 2124240668806114927, guid: dcb63ec4fe4959f4fade77685c5a70dd, type: 3}
   spawnPoint: {fileID: 2121767710}
   DebugServer: 0
+  camObject: {fileID: 0}
 --- !u!4 &1319609507
 Transform:
   m_ObjectHideFlags: 0

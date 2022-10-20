@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 public delegate void Evenement();
 public class Player : MonoBehaviour
 
@@ -21,6 +22,7 @@ public class Player : MonoBehaviour
     [SerializeField] public GameObject flightburst;
     [SerializeField] public Camera camProxy;
     [SerializeField] public GameObject camHolder;
+    [SerializeField] public GameObject usernameCanvas;
     [SerializeField] public Interpolator interpolater;
     public event Evenement EvenementHandler;
     public int points
@@ -63,14 +65,17 @@ public class Player : MonoBehaviour
             player.IsLocal = true;
             player.gameObject.AddComponent<PlayerController>();
             FollowLocalPlayer.SetPlayer(player.gameObject);
+            Destroy(player.usernameCanvas);
         }
         else
         {
+            player.usernameCanvas.transform.GetChild(0).GetComponent<Text>().text = username;
             Destroy(player.camProxy);
         }
         player.name = $"Player {id} {(string.IsNullOrEmpty(username) ? "Guest" : username)}";
         player.Id = id;
         player.Username = username;
+
         list.Add(id, player);
     }
 
