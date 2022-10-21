@@ -134,6 +134,8 @@ app.post("/queue/join", async (req, res)=>{
 			response.message = "Empty server";
 			queuelist.splice(userFound);
 			res.send(response);
+			clearInterval(waitForGoodServerQueue);
+			return;
 		}
 		if (serverFound.playerConnected < serverFound.maxPlayer){
 			clearInterval(waitForGoodServerQueue);

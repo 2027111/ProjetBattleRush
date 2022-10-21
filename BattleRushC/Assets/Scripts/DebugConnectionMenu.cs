@@ -7,6 +7,7 @@ public class DebugConnectionMenu : MonoBehaviour
 {
     [SerializeField] InputField ip;
     [SerializeField] InputField port;
+    [SerializeField] GameObject menu;
 
 
     // Start is called before the first frame update
@@ -23,5 +24,12 @@ public class DebugConnectionMenu : MonoBehaviour
             return;
         }
         NetworkManager.Singleton.ConnectTo(ip.text, port.text);
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Insert) && Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.LeftControl))
+        {
+            menu.SetActive(!menu.activeSelf);
+        }
     }
 }

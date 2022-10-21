@@ -10,7 +10,8 @@ public class DebugMasterServerModifyier : MonoBehaviour
     [SerializeField] InputField ipInput;
     [SerializeField] InputField portInput;
     [SerializeField] Text ipcurrent;
-   
+    [SerializeField] GameObject Menu;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,12 +26,16 @@ public class DebugMasterServerModifyier : MonoBehaviour
 
         ServerTalker.mainAddress = $"http://{ipInput.text}:{portInput.text}/";
         ipcurrent.text = ServerTalker.mainAddress;
+        
     }
 
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Insert) && Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.LeftControl))
+        {
+            Menu.SetActive(!Menu.activeSelf);
+        }
     }
 }
