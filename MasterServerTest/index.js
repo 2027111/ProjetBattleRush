@@ -31,11 +31,8 @@ const Token = require("./models/connectionToken");
 const { response } = require("express");
 const user = require("./models/user");
 
+var queuelist = [];
 
-
-queueList = [];
-serverQueue = null;
-maxed = false;
 
 app.get("/users", async (req, res) =>{
 
@@ -101,10 +98,10 @@ app.post("/queue/leave", async (req, res)=>{
 
 app.post("/queue/join", async (req, res)=>{
 
-	console.log("accessing queue");
 	var response= {};
-	const oken = req.body.token;
-	var TokenObject = await Token.findOne({tokenId : oken});
+	const token = req.body.token;
+	const queueType = req.body.queueType;
+	var TokenObject = await Token.findOne({tokenId : token});
 
 
 
@@ -113,6 +110,7 @@ app.post("/queue/join", async (req, res)=>{
 		response.code = -9;
 		response.message = "user isnt connected.";
 		res.send(response);
+		return;
 	}
 		
 	var userFound = await User.findOne({_id : TokenObject.userId});
@@ -121,60 +119,39 @@ app.post("/queue/join", async (req, res)=>{
 		response.code = -9;
 		response.message = userFound.username + "user doesnt exist.";
 		res.send(response);
+		return;
 	}
 
-	if(maxed){
-				
-		var waitForOpenQueue = setInterval(function() {
-			if (!maxed){
-				clearInterval(waitForOpenQueue);
-
-
-			}
-		}, 5000); // retry every 5 seconds
-	}
 
 	console.log("User : " + userFound.username + " is accessing online MatchMaking.")
+	queuelist.push(userFound);
+	var serverFound;
+	serverFound = await Server.findOne({lobbyType : queueType, lobbyStatus:"Open"});
 
-	
-	var wait = setInterval(async function() {
-		console.log("Server is maxed = " + maxed);
-	if(serverQueue == null){
-
-		serverQueue = await Server.findOne({playerConnected : 0, lobbyStatus : "Open"});
-	}else{
-		
-	if(queueList.length == serverQueue.maxPlayer && maxed == false){
-		console.log("Queue is full for server size");
-		maxed = true;
-	}else if(maxed == false && queueList.length != serverQueue.maxPlayer){
-			if(!queueList.includes(userFound)){
-				queueList.push(userFound);
-				console.log("User : " + userFound.username + " has been added to the queue");
-				console.log(queueList);
-			}
-
-	}
-
-	if(maxed){
-		
-		response.code = 0;
-		response.msg="Send server";
-		response.data = serverQueue;
-		if(queueList.length == 0){
-			serverQueue = null;
-			maxed = false;
-			queueList = [];
-			clearInterval(wait);
+	var waitForGoodServerQueue = setInterval(function() {
+		if(serverFound == null){
+			response.code = 2;
+			response.message = "Empty server";
+			queuelist.splice(userFound);
+			res.send(response);
 		}
-		res.send(response);
+		if (serverFound.playerConnected < serverFound.maxPlayer){
+			clearInterval(waitForGoodServerQueue);
+		}	
 	
+	}, 5000); // retry every 5 seconds
+	const i = queuelist.findIndex(e => e.username === userFound.username);
+	if (i > -1) {
+		response.code = 0;
+		response.message = "ServerFound";
+		response.data = serverFound;
+		queuelist.splice(userFound);
+		res.send(response);
+	}else{
+		response.code = 1;
+		response.message = "user has left queue";
+		res.send(response);
 	}
-
-
-}
-}, 1000);
-
 });
 /* Queue */
 

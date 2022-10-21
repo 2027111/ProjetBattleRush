@@ -33,7 +33,6 @@ public class Interpolator : MonoBehaviour
     {
         for (int i = 0; i < futureTransformUpdates.Count; i++)
         {
-            Debug.Log("Pre Check : " + to.Position + "   " + from.Position);
             if (NetworkManager.Singleton.ServerTick >= futureTransformUpdates[i].Tick)
             {
                 previous = to;
@@ -48,7 +47,6 @@ public class Interpolator : MonoBehaviour
                 timeToReachTarget = ticksToReach * Time.fixedDeltaTime;
             }
 
-            Debug.Log("Post Check : " + to.Position + "   " + from.Position);
 
         }
 

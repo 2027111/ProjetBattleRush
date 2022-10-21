@@ -3,6 +3,7 @@ using Riptide.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
@@ -45,10 +46,15 @@ public class UIManager : MonoBehaviour
     }
 
     private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
+
+    { 
+        if(SceneManager.GetActiveScene().name == "GameScene")
         {
-            disconnect.SetActive(!disconnect.activeSelf);
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                disconnect.SetActive(!disconnect.activeSelf);
+            }
+
         }
     }
 

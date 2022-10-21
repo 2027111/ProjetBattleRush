@@ -9791,25 +9791,6 @@ MonoBehaviour:
   m_EffectColor: {r: 1, g: 1, b: 1, a: 1}
   m_EffectDistance: {x: 2, y: 2}
   m_UseGraphicAlpha: 1
---- !u!114 &4392554176797635542
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2093600924478958849}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d117ca898401164d84a3d4f47045935, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Body: {fileID: 1809730278377731128}
-  Spoiler: {fileID: 2599594284337169341}
-  Wheels:
-  - {fileID: 7918400372309543539}
-  - {fileID: 4258891067600902068}
-  - {fileID: 4899793568744536676}
-  - {fileID: 662197504887843173}
 --- !u!1 &2124240668806114927
 GameObject:
   m_ObjectHideFlags: 0
@@ -9823,6 +9804,7 @@ GameObject:
   - component: {fileID: 2124240668806114931}
   - component: {fileID: 2124240668806114926}
   - component: {fileID: 825320971951670341}
+  - component: {fileID: 384280233697027472}
   m_Layer: 0
   m_Name: Car
   m_TagString: Untagged
@@ -9936,6 +9918,25 @@ MonoBehaviour:
   timeElapsed: 0
   timeToReachTarget: 0.05
   movementThreshold: 0.05
+--- !u!114 &384280233697027472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2124240668806114927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d117ca898401164d84a3d4f47045935, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Body: {fileID: 1809730278377731128}
+  Spoiler: {fileID: 2599594284337169341}
+  Wheels:
+  - {fileID: 7918400372309543539}
+  - {fileID: 4258891067600902068}
+  - {fileID: 4899793568744536676}
+  - {fileID: 662197504887843173}
 --- !u!1 &2124240669316772210
 GameObject:
   m_ObjectHideFlags: 0
@@ -10406,6 +10407,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 104696f8b5f23d24586d858b68916bdc, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 98c57f100a7d7684dba02b8725bbc5d8, type: 3}
+--- !u!1 &2093600924478958849 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 33538749733570355, guid: 98c57f100a7d7684dba02b8725bbc5d8, type: 3}
+  m_PrefabInstance: {fileID: 2124240670069353010}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &662197504887843173 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1462061006511833943, guid: 98c57f100a7d7684dba02b8725bbc5d8, type: 3}
@@ -10429,11 +10435,6 @@ GameObject:
 --- !u!1 &2599594284337169341 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4136921948618123663, guid: 98c57f100a7d7684dba02b8725bbc5d8, type: 3}
-  m_PrefabInstance: {fileID: 2124240670069353010}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &2093600924478958849 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 33538749733570355, guid: 98c57f100a7d7684dba02b8725bbc5d8, type: 3}
   m_PrefabInstance: {fileID: 2124240670069353010}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1809730278377731128 stripped

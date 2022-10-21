@@ -57,7 +57,7 @@ public class Player : MonoBehaviour
             camHolder.transform.localRotation = Quaternion.Euler(rot);
         
     }
-    public static void Spawn(ushort id, string username, Vector3 position, Quaternion rot, Vector3 color)
+    public static void Spawn(ushort id, string username, Vector3 position, Quaternion rot, Vector3 colorBody, Vector3 colorEmi, Vector3 colorRims)
     {
         Player player;
         player = Instantiate(GameLogic.Singleton.PlayerPrefab, position, rot).GetComponent<Player>();
@@ -76,8 +76,9 @@ public class Player : MonoBehaviour
         player.name = $"Player {id} {(string.IsNullOrEmpty(username) ? "Guest" : username)}";
         player.Id = id;
         player.Username = username;
-        Material m = player.bodyColor.GetComponent<MeshRenderer>().material;
-        m.SetColor("_Color", new Color(color.x, color.y, color.z, 255));
+        player.GetComponent<CarGraphics>().SetBody(colorBody);
+        player.GetComponent<CarGraphics>().SetEmissions(colorEmi);
+        player.GetComponent<CarGraphics>().SetRims(colorRims);
 
         list.Add(id, player);
     }
@@ -103,7 +104,7 @@ public class Player : MonoBehaviour
     private static void SpawnPlayer(Message message)
     {
         ushort playeid = message.GetUShort();
-        Spawn(playeid, message.GetString(), message.GetVector3(), message.GetQuaternion(), message.GetVector3());
+        Spawn(playeid, message.GetString(), message.GetVector3(), message.GetQuaternion(), message.GetVector3(), message.GetVector3(), message.GetVector3());
     }
     [MessageHandler((ushort)ServerToClientId.stats)]
     private static void RecieveStats(Message message)

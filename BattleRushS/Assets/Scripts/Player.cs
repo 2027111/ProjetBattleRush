@@ -217,8 +217,7 @@ public class Player : MonoBehaviour
     [MessageHandler((ushort)ClientToServerId.name)]
     private static void Name(ushort fromClientId, Message message)
     {
-        Spawn(fromClientId, message.GetString(), message.GetVector3());
-
+        Spawn(fromClientId, message.GetString(), message.GetVector3(), message.GetVector3(), message.GetVector3());
     }
 
     public void SendStats()
@@ -255,12 +254,13 @@ public class Player : MonoBehaviour
     }
     private Message AddSpawnData(Message message)
     {
-
         message.AddUShort(Id);
         message.AddString(Username);
         message.AddVector3(transform.position); 
         message.AddQuaternion(GameManager.Singleton.SpawnPoint.transform.rotation);
-        message.AddVector3(color);
+        message.AddVector3(GetComponent<CarGraphics>().CarroserieColor);
+        message.AddVector3(GetComponent<CarGraphics>().EmissionColor);
+        message.AddVector3(GetComponent<CarGraphics>().RimsColor);
         return message;
     }
     private void SendSpawned()
@@ -274,7 +274,7 @@ public class Player : MonoBehaviour
 
         NetworkManager.Singleton?.Server.Send(AddSpawnData(Message.Create(MessageSendMode.Reliable, ServerToClientId.playerSpawned)), toClientid);
     }
-    private static void Spawn(ushort id, string username, Vector3 color)
+    private static void Spawn(ushort id, string username, Vector3 colorBody, Vector3 colorEmi, Vector3 colorRims)
     {
         foreach (Player otherPlayer in list.Values)
         {
@@ -289,7 +289,7 @@ public class Player : MonoBehaviour
         player.Id = id;
         player.Username = string.IsNullOrEmpty(username) ? $"Guest {id}" : username;
         player.ChangerState(new EtatVoitureDebutPartie(player.gameObject));
-        player.color = color;
+        player.GetComponent<CarGraphics>().Set(colorBody, colorEmi, colorRims);
         player.SendSpawned();
         list.Add(id, player);
             NetworkManager.Singleton?.ConfirmAccountConnection(player);

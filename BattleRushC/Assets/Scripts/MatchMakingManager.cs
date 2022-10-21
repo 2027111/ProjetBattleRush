@@ -27,6 +27,7 @@ public class MatchMakingManager : MonoBehaviour
         Action Failure = new Action(delegate{ LoadingUI.SetActive(false); });
         WWWForm form = new WWWForm();
         form.AddField("token", PlayerAccount.connectionToken);
+        form.AddField("queueType", "Casual");
         string link = "queue/join";
         StartCoroutine(ServerTalker.PostRequestToMasterServer<ServerResponse>(link, form, Success, Failure));
 
@@ -38,15 +39,16 @@ public class MatchMakingManager : MonoBehaviour
         {
             case 0:
                 Server s = response.data;
-                Debug.Log(s);
                 NetworkManager.Singleton.ConnectTo(s);
                 break;
-
+            case 1:
+                LoadingUI.SetActive(false);
+                break;
             case -9:
                 PlayerAccount.Disconnected();
                 break;
             default:
-                PlayerAccount.Disconnected();
+                LoadingUI.SetActive(false);
                 break;
         }
 

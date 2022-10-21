@@ -30,10 +30,13 @@ public class CustomizeManager : MonoBehaviour
     {
         EmissionColor = c;
         displayCar.GetComponent<CarGraphics>().SetEmissions(c);
+    }
+
+    public void OnRimsColorChange(Color c)
+    {
         RimsColor = c;
         displayCar.GetComponent<CarGraphics>().SetRims(c);
     }
-
 
     public static Vector3 ColorToVector(int returnobject)
     {
