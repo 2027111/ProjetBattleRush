@@ -6,10 +6,11 @@ public class CustomizeManager : MonoBehaviour
 {
 
 
-
-    public static Color carColorMaterial = Color.white;
     [SerializeField] bool hasSpoiler = true;
     [SerializeField] GameObject displayCar;
+    public static Color EmissionColor = Color.white;
+    public static Color CarroserieColor = Color.white;
+    public static Color RimsColor = Color.white;
 
 
 
@@ -19,11 +20,38 @@ public class CustomizeManager : MonoBehaviour
     }
 
 
-    public void OnColorChange(Color c)
+    public void OnBodyColorChange(Color c)
     {
-        carColorMaterial = c;
-        GameObject body = displayCar.transform.GetChild(0).gameObject;
-        Material m = body.GetComponent<MeshRenderer>().material;
-        m.SetColor("_Color", carColorMaterial);
+        CarroserieColor = c;
+        displayCar.GetComponent<CarGraphics>().SetBody(c);
+    }
+
+    public void OnAccessoriesColorChange(Color c)
+    {
+        EmissionColor = c;
+        displayCar.GetComponent<CarGraphics>().SetEmissions(c);
+        RimsColor = c;
+        displayCar.GetComponent<CarGraphics>().SetRims(c);
+    }
+
+
+    public static Vector3 ColorToVector(int returnobject)
+    {
+        switch (returnobject)
+        {
+            case 0:
+                return new Vector3(CarroserieColor.r, CarroserieColor.g, CarroserieColor.b);
+
+            case 1:
+                return new Vector3(EmissionColor.r, EmissionColor.g, EmissionColor.b);
+
+            case 2:
+                return new Vector3(RimsColor.r, RimsColor.g, RimsColor.b);
+
+            default:
+                return new Vector3(CarroserieColor.r, CarroserieColor.g, CarroserieColor.b);
+
+
+        }
     }
 }
