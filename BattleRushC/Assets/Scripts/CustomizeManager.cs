@@ -13,7 +13,12 @@ public class CustomizeManager : MonoBehaviour
     public static Color RimsColor = Color.white;
 
 
-
+    private void Start()
+    {
+        OnBodyColorChange(CarroserieColor);
+        OnAccessoriesColorChange(EmissionColor);
+        OnRimsColorChange(RimsColor);
+    }
     public void ToggleSpoiler()
     {
         hasSpoiler = !hasSpoiler;
