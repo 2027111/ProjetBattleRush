@@ -112,7 +112,7 @@ public class ServerTalker : MonoBehaviour
                 ActivateButtons(false);
                 alertText.text = $"Welcome {response.data.username}";
                 PlayerAccount.Connected(response.data, response.token);
-                SceneManager.LoadScene("MainMenuScene");
+                LoadingScene.main.LoadScene("MainMenuScene");
                 break;
             default:
                 ActivateButtons(true);

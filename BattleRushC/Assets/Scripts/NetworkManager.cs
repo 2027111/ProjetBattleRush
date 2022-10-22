@@ -152,10 +152,9 @@ public class NetworkManager : MonoBehaviour
     {
         string playscene = "GameScene";
 
-        SceneManager.LoadScene(playscene);
+        LoadingScene.main.LoadScene(playscene);
         while (SceneManager.GetActiveScene().name != playscene)
         {
-            Debug.Log("Loading Scene");
             yield return null;
         }
 
@@ -168,7 +167,6 @@ public class NetworkManager : MonoBehaviour
 
     private void DidConnect(object sender, EventArgs e)
     {
-        Debug.Log("Sending Name");
         DontDestroyOnLoad(this.gameObject);
         SendName();
         //UIManager.Singleton.SendName();
@@ -196,11 +194,11 @@ public class NetworkManager : MonoBehaviour
         {
             Destroy(player.gameObject);
         }
-        SceneManager.LoadScene("MainMenuScene");
+        LoadingScene.main.LoadScene("MainMenuScene");
     }
     private void OnFailedToConnect(object sender, EventArgs e)
     {
-        SceneManager.LoadScene("MainMenuScene");
+        LoadingScene.main.LoadScene("MainMenuScene");
     }
 
     private void DidDisconnect(object sender, EventArgs e)

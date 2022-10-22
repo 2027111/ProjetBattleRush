@@ -35,12 +35,12 @@ public class PlayerAccount
             connectionToken = token;
             connectedUser = returnedAccount;
 
-            Debug.Log($"{connectedUser.username} - {connectedUser.wins} - {connectedUser.losses} - {connectedUser.goldcoins}");
+            //Debug.Log($"{connectedUser.username} - {connectedUser.wins} - {connectedUser.losses} - {connectedUser.goldcoins}");
 
         }
         else
         {
-            Debug.LogError("User alreadyconnected");
+            //Debug.LogError("User alreadyconnected");
         }
     }
 

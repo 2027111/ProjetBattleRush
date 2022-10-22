@@ -23,8 +23,8 @@ public class Player : MonoBehaviour
     [SerializeField] public Camera camProxy;
     [SerializeField] public GameObject camHolder;
     [SerializeField] public GameObject usernameCanvas;
+    [SerializeField] public CarGraphics carGraphics;
     [SerializeField] public Interpolator interpolater;
-    [SerializeField] public GameObject bodyColor;
     public event Evenement EvenementHandler;
     public int points
     {
@@ -76,9 +76,9 @@ public class Player : MonoBehaviour
         player.name = $"Player {id} {(string.IsNullOrEmpty(username) ? "Guest" : username)}";
         player.Id = id;
         player.Username = username;
-        player.GetComponent<CarGraphics>().SetBody(colorBody);
-        player.GetComponent<CarGraphics>().SetEmissions(colorEmi);
-        player.GetComponent<CarGraphics>().SetRims(colorRims);
+        player.carGraphics.SetBody(colorBody);
+        player.carGraphics.SetEmissions(colorEmi);
+        player.carGraphics.SetRims(colorRims);
 
         list.Add(id, player);
     }
@@ -126,7 +126,7 @@ public class Player : MonoBehaviour
         interpolater.NewUpdate(tick, newPosition); //Configurer système d'interpolation de mouvement pour rendre les changements de positions plus fluide.
         Vector3 currentpos = transform.position;
         //transform.position = Vector3.LerpUnclamped(currentpos, newPosition, 0.025f);
-        transform.position = newPosition;
+        //transform.position = newPosition;
         transform.rotation = carRot;
         modelCar.transform.rotation = modelCarRot;
     }

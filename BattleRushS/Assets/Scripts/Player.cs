@@ -292,7 +292,7 @@ public class Player : MonoBehaviour
         player.GetComponent<CarGraphics>().Set(colorBody, colorEmi, colorRims);
         player.SendSpawned();
         list.Add(id, player);
-            NetworkManager.Singleton?.ConfirmAccountConnection(player);
+        NetworkManager.Singleton?.ConfirmAccountConnection(player);
        
     }
     private void SendMovement()
