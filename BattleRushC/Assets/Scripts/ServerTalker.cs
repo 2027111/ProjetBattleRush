@@ -33,10 +33,12 @@ public class ServerTalker : MonoBehaviour
     
 
     [HideInInspector] public static string mainAddress = "http://127.0.0.1:5500/";
-    // Start is called before the first frame update
 
+    private void Awake()
+    {
 
-
+        Application.targetFrameRate = 60;
+    }
 
 
 

@@ -1,6 +1,7 @@
 ﻿using Riptide;
 using Riptide.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -103,9 +104,19 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public IEnumerator ActivateUI()
+    {
+        float time = 0;
+        while (time < 1)
+        {
+            GetComponent<CanvasGroup>().alpha = time;
+            time += Time.deltaTime;
+            yield return null;
+        }
+        yield return null;
+    }
 
-
-    public void ServerDIsconnect()
+    public void ServerDisconnect()
     {
         NetworkManager.Singleton?.Disconnect();
     }

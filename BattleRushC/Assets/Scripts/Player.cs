@@ -126,7 +126,7 @@ public class Player : MonoBehaviour
         interpolater.NewUpdate(tick, newPosition); //Configurer système d'interpolation de mouvement pour rendre les changements de positions plus fluide.
         Vector3 currentpos = transform.position;
         //transform.position = Vector3.LerpUnclamped(currentpos, newPosition, 0.025f);
-        //transform.position = newPosition;
+        transform.position = newPosition;
         transform.rotation = carRot;
         modelCar.transform.rotation = modelCarRot;
     }

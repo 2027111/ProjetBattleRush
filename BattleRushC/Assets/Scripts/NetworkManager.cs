@@ -288,8 +288,17 @@ public class NetworkManager : MonoBehaviour
         string m = message.GetString();
         GameObject messageObject = Instantiate(GameLogic.Singleton.message, GameObject.Find("Canvas").transform);
         messageObject.GetComponent<TextAnimator>().SetText(m);
+        if (UIManager.Singleton.gameObject.GetComponent<CanvasGroup>().alpha == 0)
+        {
 
+            UIManager.Singleton.StartCoroutine(UIManager.Singleton.ActivateUI());
+        }
+        if (m == "3")
+        {
+            CinematicCamera.Transition();
+        }
 
     }
 
+   
 }

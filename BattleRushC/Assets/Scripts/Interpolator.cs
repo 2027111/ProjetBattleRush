@@ -67,6 +67,7 @@ public class Interpolator : MonoBehaviour
         }
         transform.position = Vector3.LerpUnclamped(from.Position, to.Position, lerpAmount);
     }
+    
 
     public void NewUpdate(uint tick, Vector3 position)
     {

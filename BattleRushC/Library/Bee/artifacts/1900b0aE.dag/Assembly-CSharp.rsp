@@ -327,6 +327,7 @@
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/VSSettingsProvider.ref.dll"
+"Assets/CinematicCamera.cs"
 "Assets/FlexibleColorPicker/ExampleScene/FCP_ExampleScript.cs"
 "Assets/FlexibleColorPicker/Scripts/FCP_Persistence.cs"
 "Assets/FlexibleColorPicker/Scripts/FCP_SpriteMeshEditor.cs"
