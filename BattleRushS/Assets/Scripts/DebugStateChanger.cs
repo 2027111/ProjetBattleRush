@@ -41,6 +41,10 @@ public class DebugStateChanger : MonoBehaviour
         {
             car.ChangerState(new EtatVoitureDebutPartie(car.gameObject));
         }
+        if (GUI.Button(new Rect(24, 330, 126, 25), "MortState"))
+        {
+            car.ChangerState(new EtatVoitureMort(car.gameObject));
+        }
 
 
         for (int i = 0; i < 3; i++)
@@ -48,7 +52,7 @@ public class DebugStateChanger : MonoBehaviour
             for(int j = 0; j<3; j++)
             {
 
-                if (GUI.Button(new Rect(20 + (j * 45), 330 + (i * 30), 45, 25), ""+ ((i*3)+j)))
+                if (GUI.Button(new Rect(20 + (j * 45), 360 + (i * 30), 45, 25), ""+ ((i*3)+j)))
                 {
                     car.speed = (i * 3) + j;
                 }

@@ -147,8 +147,7 @@ public class Player : MonoBehaviour
             //RespawnMethod();
             transform.rotation = Quaternion.Euler(Vector3.zero);
             rb.velocity = Vector3.zero;
-            transform.position = GameObject.Find("Spawn").transform.position;
-            ForceChangeDir(GameObject.Find("Spawn").transform.forward);
+            ChangerState(new EtatVoitureMort(gameObject));
             lastHit = null;
             damage = 0;
         }
@@ -173,7 +172,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    void ForceChangeDir(Vector3 forward)
+    public void ForceChangeDir(Vector3 forward)
     {
         direction = forward;
         transform.forward = forward;
