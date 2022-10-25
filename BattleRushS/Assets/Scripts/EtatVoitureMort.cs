@@ -15,8 +15,7 @@ public class EtatVoitureMort : EtatVoiture
     {
         Voiture.gameObject.layer = 9; 
         Voiture.StartCoroutine(changeView());
-        Voiture.transform.position = GameObject.Find("Spawn").transform.position;
-        Voiture.ForceChangeDir(GameObject.Find("Spawn").transform.forward);
+        Voiture.carRespawn();
 
     }
 
@@ -35,8 +34,8 @@ public class EtatVoitureMort : EtatVoiture
     {
         for (int i = 0; i <7; i++)
         {
-
-            yield return new WaitForSecondsRealtime(0.25f);
+            Debug.Log("Work pls");
+            yield return new WaitForSeconds(0.25f);
             Voiture.modelCar.SetActive(!Voiture.modelCar.activeSelf);
         }
         Voiture.modelCar.SetActive(true);

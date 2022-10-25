@@ -7,9 +7,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 
 {
-
-
-
+    public Check lastCheck;
     public static Dictionary<ushort, Player> list = new Dictionary<ushort, Player>();
     public ushort Id { get; private set; }
     public bool IsLocal { get; private set; }
@@ -66,6 +64,7 @@ public class Player : MonoBehaviour
     { 
         rb = GetComponent<Rigidbody>();
         direction = transform.forward;
+        lastCheck = new Check(transform.position, transform.forward);
     }
     public void ChangerState(EtatVoiture ev)
     {
@@ -190,7 +189,7 @@ public class Player : MonoBehaviour
             t+= 3 * Time.deltaTime;
             yield return null;
         }
-
+        lastCheck = new Check(transform.position, transform.forward);
 
 
         yield return null;
@@ -309,5 +308,12 @@ public class Player : MonoBehaviour
         message.AddVector3(rb.velocity);
         message.AddFloat(boostamount);
         NetworkManager.Singleton?.Server.SendToAll(message);
+    }
+
+    public void carRespawn()
+    {
+        ForceChangeDir(lastCheck.orientation);
+        transform.position = lastCheck.position;
+        //modelCar.transform.forward = lastCheck.orientation;
     }
 }
