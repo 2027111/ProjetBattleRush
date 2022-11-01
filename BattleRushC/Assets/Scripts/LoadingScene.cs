@@ -9,8 +9,9 @@ public class LoadingScene : MonoBehaviour
 
 
     public GameObject LoadingScreen;
+    public CanvasGroup alphaController;
     public Image LoadingBarFill;
-
+    string scenename;
 
     public static LoadingScene main;
     private void Start()
@@ -19,12 +20,12 @@ public class LoadingScene : MonoBehaviour
     }
     public void LoadScene(string sceneName)
     {
-        StartCoroutine(LoadSceneAsync(sceneName));
+        this.scenename = sceneName;
+        StartCoroutine(ToggleLoading(true));
     }
 
     IEnumerator LoadSceneAsync(string sceneName)
     {
-        LoadingScene.main.LoadingScreen.SetActive(true);
         AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
         while (!op.isDone)
         {
@@ -32,5 +33,37 @@ public class LoadingScene : MonoBehaviour
             LoadingBarFill.fillAmount = progressValue;
             yield return null;
         }
+
+
+        StartCoroutine(ToggleLoading(false));
+    }
+
+    IEnumerator ToggleLoading(bool onoff)
+    {
+
+        LoadingScreen.SetActive(true);
+        DontDestroyOnLoad(this.gameObject);
+        int factor = onoff ? 1 : -1;
+        int final = onoff ? 1 : 0;
+        while(alphaController.alpha != final)
+        {
+            alphaController.alpha += 4 * Time.deltaTime * factor;
+            yield return null;
+        }
+
+
+        if(alphaController.alpha == 1)
+        {
+
+            StartCoroutine(LoadSceneAsync(scenename));
+        }
+        else
+        {
+
+            LoadingScreen.SetActive(false);
+        }
+
+
+        yield return null;
     }
 }
