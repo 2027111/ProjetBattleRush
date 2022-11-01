@@ -86,7 +86,7 @@ public class ServerTalker : MonoBehaviour
             {
 
                 PlayerAccount.Connected(new PlayerAccount(), "");
-                SceneManager.LoadScene("MainMenuScene");
+                LoadingScene.main.LoadScene("MainMenuScene");
             }
         }
         else

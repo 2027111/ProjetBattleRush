@@ -1731,8 +1731,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timerText: {fileID: 1697559361}
   available:
-  - {fileID: 21300000, guid: 840fe95aae1c4914e859f97d8fb0fbbb, type: 3}
-  - {fileID: 21300000, guid: 298fe9f8408ea7f478d551bebe1d8dbe, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
   thisImage: {fileID: 688608668}
 --- !u!114 &688608668
 MonoBehaviour:
