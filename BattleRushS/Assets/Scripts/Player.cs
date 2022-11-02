@@ -127,7 +127,7 @@ public class Player : MonoBehaviour
         }
         else if (collision.gameObject.tag == "DirectionZone")
         {
-            ChangeDirection(collision.gameObject.transform.forward);
+            ChangeDirection(collision.gameObject);
         }
         else if (collision.gameObject.GetComponent<DeathZone>())
         {
@@ -158,16 +158,16 @@ public class Player : MonoBehaviour
         lastHit = attackerCar;
         ChangerState(new EtatVoitureFrapper(this.gameObject, attackerCar));
     }
-    public void ChangeDirection(Vector3 dir)
+    public void ChangeDirection(GameObject dir)
     {
-        if(direction == dir)
+        if(direction == dir.transform.forward)
         {
             return;
         }
         else
         {
-            direction = dir;
-            StartCoroutine(changeDir());
+            direction = dir.transform.forward;
+            StartCoroutine(changeDir(dir));
         }
     }
 
@@ -177,7 +177,7 @@ public class Player : MonoBehaviour
         transform.forward = forward;
     }
 
-    IEnumerator changeDir()
+    IEnumerator changeDir(GameObject check)
     {
         float t = 0;
         Vector3 temp = transform.forward;
@@ -189,7 +189,7 @@ public class Player : MonoBehaviour
             t+= 3 * Time.deltaTime;
             yield return null;
         }
-        lastCheck = new Check(transform.position, transform.forward);
+        lastCheck = new Check(check.transform.position, check.transform.forward);
 
 
         yield return null;

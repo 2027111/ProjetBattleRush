@@ -13,7 +13,8 @@ public class EtatVoitureMort : EtatVoiture
 
     public override void Enter()
     {
-        Voiture.gameObject.layer = 9; 
+        Voiture.gameObject.layer = 9;
+        Voiture.modelCar.transform.forward = Voiture.transform.forward;
         Voiture.StartCoroutine(changeView());
         Voiture.carRespawn();
 

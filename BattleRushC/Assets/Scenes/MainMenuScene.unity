@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.6376248, g: 0.8891383, b: 0.99326617, a: 1}
+  m_IndirectSpecularColor: {r: 0.6381219, g: 0.88913745, b: 0.9932688, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -544,7 +544,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1852243695}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: LeaveGame
+        m_MethodName: AccountDisconnect
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2435,7 +2435,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Music Volume
+  m_Text: SFX Volume
 --- !u!222 &403375032
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6784,10 +6784,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 648222844}
   m_HandleRect: {fileID: 0}
   m_Direction: 0
-  m_MinValue: -20
-  m_MaxValue: 80
+  m_MinValue: -80
+  m_MaxValue: 20
   m_WholeNumbers: 0
-  m_Value: 80
+  m_Value: 2
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -6922,10 +6922,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 1403313888}
   m_HandleRect: {fileID: 0}
   m_Direction: 0
-  m_MinValue: -20
-  m_MaxValue: 80
+  m_MinValue: -80
+  m_MaxValue: 20
   m_WholeNumbers: 0
-  m_Value: 80
+  m_Value: 2
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -9125,7 +9125,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SFX Volume
+  m_Text: Music Volume
 --- !u!222 &1934304295
 CanvasRenderer:
   m_ObjectHideFlags: 0

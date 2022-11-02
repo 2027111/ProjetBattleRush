@@ -76,7 +76,10 @@ public class UIManager : MonoBehaviour
     {
         Application.Quit();
     }
-
+    public void AccountDisconnect()
+    {
+        NetworkManager.Singleton.AccountDisconnect();
+    }
     public void SetTimerAmount(string t)
     {
         timer.Amountis(t);

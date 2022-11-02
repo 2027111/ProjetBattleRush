@@ -15,14 +15,18 @@ public class ScoreBoardOrder : MonoBehaviour
         }
 
 
+
         tempList.Sort((p1, p2) => p1.GetComponent<ScoreBoardCard>().returnPoints().CompareTo(p2.GetComponent<ScoreBoardCard>().returnPoints()));
 
         foreach(GameObject c in tempList)
         {
-            c.transform.SetSiblingIndex(tempList.Count-tempList.IndexOf(c));
+            c.transform.SetSiblingIndex(0);
         }
 
 
-
+        foreach (GameObject c in tempList)
+        {
+            c.GetComponent<ScoreBoardCard>().SetPosition();
+        }
     }
 }

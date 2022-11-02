@@ -451,6 +451,6 @@ mongoose
 	.then(() => {
         
         app.listen(keys.port, ()=>{
-        console.log("Server has started on port 5500");
+        console.log(`Server has started on port ${keys.port}`);
     });
 	});

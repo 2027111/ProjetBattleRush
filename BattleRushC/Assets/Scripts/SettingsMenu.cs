@@ -60,12 +60,12 @@ public class SettingsMenu : MonoBehaviour
     public void SetMusic(float value)
     {
         musicMixer.SetFloat("Volume", value);
-        musicLabel.text = "" + Mathf.RoundToInt(value + 20);
+        musicLabel.text = "" + Mathf.RoundToInt(value + 80);
     }
 
     public void SetSFX(float value) {
         sfxMixer.SetFloat("Volume", value);
-        sfxLabel.text = "" + Mathf.RoundToInt(value + 20);
+        sfxLabel.text = "" + Mathf.RoundToInt(value + 80);
     }
 
 

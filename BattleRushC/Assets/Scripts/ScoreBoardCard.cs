@@ -13,17 +13,21 @@ public class ScoreBoardCard : MonoBehaviour
 
     [SerializeField] public Player playerInfo;
     bool playerExisted = false;
-    bool dc = false;
+
+    private void Start()
+    {
+
+        transform.parent.GetComponent<ScoreBoardOrder>().OrderChildren();
+    }
     private void Update()
     {
         if (!playerInfo)
         {
-            if (playerExisted && !dc)
+            if (playerExisted)
             {
                 pointsText.text = "Disconnected";
-                dc = true;
             }
-            else
+            else if(!playerExisted)
             {
                 Destroy(gameObject);
             }
@@ -50,5 +54,9 @@ public class ScoreBoardCard : MonoBehaviour
     {
         pointsText.text = "" + playerInfo.points;
         transform.parent.GetComponent<ScoreBoardOrder>().OrderChildren();
+    }
+    public void SetPosition()
+    {
+        positionText.text = ""+(transform.GetSiblingIndex());
     }
 }
