@@ -211,11 +211,12 @@ public class NetworkManager : MonoBehaviour
     {
         Message message = Message.Create(MessageSendMode.Reliable, ClientToServerId.name);
         message.AddString(PlayerAccount.connectedUser.username);
-        message.AddVector3(CustomizeManager.ColorToVector(0));
-        message.AddVector3(CustomizeManager.ColorToVector(1));
-        message.AddVector3(CustomizeManager.ColorToVector(2));
+        message.AddColors(CustomizeManager.ColorToVector(0), CustomizeManager.ColorToVector(1), CustomizeManager.ColorToVector(2));
+        //message.AddVector3(CustomizeManager.ColorToVector(0));
+        //message.AddVector3(CustomizeManager.ColorToVector(1));
+        //message.AddVector3(CustomizeManager.ColorToVector(2));
         Client.Send(message);
-        //
+        
     }
 
 

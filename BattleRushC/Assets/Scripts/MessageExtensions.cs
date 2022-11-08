@@ -43,6 +43,14 @@ public static class MessageExtensions
     {
         return new Vector3(message.GetFloat(), message.GetFloat(), message.GetFloat());
     }
+
+    public static Message AddColors(this Message message, Vector3 valueC, Vector3 valueE, Vector3 valueR)
+    {
+        message.AddFloat(valueC.x).AddFloat(valueC.y).AddFloat(valueC.z);
+        message.AddFloat(valueE.x).AddFloat(valueE.y).AddFloat(valueE.z);
+        message.AddFloat(valueR.x).AddFloat(valueR.y).AddFloat(valueR.z);
+        return message;
+    }
     #endregion
 
     #region Quaternion
