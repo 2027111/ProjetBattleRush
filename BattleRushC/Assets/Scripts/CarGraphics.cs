@@ -15,7 +15,7 @@ public class CarGraphics : MonoBehaviour
         foreach(GameObject wheel in Wheels)
         {
 
-            Material m = wheel.GetComponent<MeshRenderer>().materials[0];
+            Material m = wheel.GetComponentInChildren<MeshRenderer>().materials[0];
             m.SetColor("_Color", c);
         }
     }
