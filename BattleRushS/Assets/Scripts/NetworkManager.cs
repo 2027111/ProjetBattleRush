@@ -494,9 +494,18 @@ public class NetworkManager : MonoBehaviour
     private void EndGame()
     {
 
+        int maxamount = Server.ClientCount;
+        foreach (KeyValuePair<ushort, Player> t in Player.list)
+        {
+
+
+
+        }
+
+
         //Send to Master Server Who Wins or loses
         //Kick Players
-        foreach(KeyValuePair<ushort, Player> t in Player.list)
+        foreach (KeyValuePair<ushort, Player> t in Player.list)
         {
             KickPlayer(t.Key);
         }

@@ -257,6 +257,41 @@ app.post("/account/create", async (req, res)=>{
 	return;
 
 });
+
+function getRandomInt(max) {
+	return Math.floor(Math.random() * max);
+  }
+app.post("/server/winlose", async (req, res) => {
+	var response= {};
+	USERNAME = req.body.username;
+	POSITION = req.body.position;
+	SERVERCOUNT = req.body.serverCount
+	var userFound = await User.findOne({username : USERNAME});
+
+
+
+
+	if(userFound){
+			
+		
+		gold = getRandomInt(96);
+		gold *= ((SERVERCOUNT-POSITION)+1)
+		truegold = userFound.goldcoins;
+		truegold += gold;
+		userFound.goldcoins = truegold;
+		await userFound.save();
+		response.code = 0;
+
+	}else{
+		console.log("Unidentifiable user has disconnected");
+		response.code = -1;
+		
+	}
+
+	
+	res.send(response);
+});
+
 app.post("/deconnexion", async (req, res) => {
 	var response= {};
 	const tokenid = req.body.tokenid;
