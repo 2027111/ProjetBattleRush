@@ -110,14 +110,13 @@ public class Player : MonoBehaviour
                     {
                         int difference = Mathf.Abs(Mathf.RoundToInt(attacker.rb.velocity.magnitude - rb.velocity.magnitude));
                         
-                        Debug.Log(attacker.Username + " has collided with " + Username);
-                        Debug.Log(attacker.Username + " : " + Mathf.Round(attacker.rb.velocity.magnitude) + " | " + Username + " : " + Mathf.Round(rb.velocity.magnitude)  + " | " + "Difference : " + Mathf.Abs(Mathf.Round(attacker.rb.velocity.magnitude - rb.velocity.magnitude)));
-                        Debug.Log(attacker.Username + " : " + attacker.etatActuel.GetType() + " | " + Username + " : " + etatActuel.GetType());
+                        //Debug.Log(attacker.Username + " has collided with " + Username);
+                        //Debug.Log(attacker.Username + " : " + Mathf.Round(attacker.rb.velocity.magnitude) + " | " + Username + " : " + Mathf.Round(rb.velocity.magnitude)  + " | " + "Difference : " + Mathf.Abs(Mathf.Round(attacker.rb.velocity.magnitude - rb.velocity.magnitude)));
+                        //Debug.Log(attacker.Username + " : " + attacker.etatActuel.GetType() + " | " + Username + " : " + etatActuel.GetType());
                         if (difference > 3)
                         {
                             if(attacker.etatActuel.GetType() == typeof(EtatVoitureMouvement))
                             {
-                                Debug.Log("STRIKE!");
                                 Strike(attacker);
                             }
                         }

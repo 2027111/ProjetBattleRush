@@ -25,6 +25,7 @@ public class Player : MonoBehaviour
     [SerializeField] public GameObject usernameCanvas;
     [SerializeField] public CarGraphics carGraphics;
     [SerializeField] public Interpolator interpolater;
+    [SerializeField] public Image carMap;
     public event Evenement EvenementHandler;
     public int points
     {
@@ -78,6 +79,7 @@ public class Player : MonoBehaviour
         player.Id = id;
         player.Username = username;
         player.carGraphics.SetBody(colorBody);
+        player.carMap.color = new Color(colorBody.x, colorBody.y, colorBody.z);
         player.carGraphics.SetEmissions(colorEmi);
         player.carGraphics.SetRims(colorRims);
 

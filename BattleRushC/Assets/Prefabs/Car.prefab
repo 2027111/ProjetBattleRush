@@ -9972,6 +9972,7 @@ MonoBehaviour:
   usernameCanvas: {fileID: 3957076283727461485}
   carGraphics: {fileID: 709770080812252572}
   interpolater: {fileID: 825320971951670341}
+  carMap: {fileID: 1442169772005041350}
 --- !u!114 &825320971951670341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10377,8 +10378,8 @@ GameObject:
   - component: {fileID: 932602357189525586}
   - component: {fileID: 7558906398454789397}
   - component: {fileID: 1442169772005041350}
-  m_Layer: 5
-  m_Name: Image
+  m_Layer: 7
+  m_Name: MinimapOverlay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10398,10 +10399,10 @@ RectTransform:
   m_Father: {fileID: 7211080343000155469}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 1.5, y: 3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7558906398454789397
 CanvasRenderer:
@@ -10431,7 +10432,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f834a057a04975944af687c98f925575, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2360903bd24096245852dd1a994af029, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
