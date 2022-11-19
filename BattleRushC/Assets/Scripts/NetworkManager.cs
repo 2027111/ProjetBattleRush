@@ -90,7 +90,7 @@ public class NetworkManager : MonoBehaviour
 
 
 
-
+    [SerializeField] string[] MapLists;
 
     [SerializeField] private string ip;
     [SerializeField] private string port;
@@ -150,7 +150,7 @@ public class NetworkManager : MonoBehaviour
 
     private IEnumerator Connection()
     {
-        string playscene = "GameScene";
+        string playscene = MapLists[0];
 
         LoadingScene.main.LoadScene(playscene);
         while (SceneManager.GetActiveScene().name != playscene)

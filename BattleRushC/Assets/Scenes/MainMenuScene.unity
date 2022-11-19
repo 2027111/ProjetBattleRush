@@ -7693,7 +7693,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a3ba4321f2f3ba5468010e11a23b25f1, type: 2}
+  - {fileID: 2100000, guid: 5831c314096b11f4aa0e64cac0a4a642, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -7931,6 +7931,18 @@ PrefabInstance:
       propertyPath: particleList.Array.data[1]
       value: 
       objectReference: {fileID: 4706786871786821110, guid: 565f829586bc0ed428d11a549b3f812d, type: 3}
+    - target: {fileID: 463630594834073802, guid: 75aab9b10dc133842a63c108a0a97dcb, type: 3}
+      propertyPath: MapLists.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 463630594834073802, guid: 75aab9b10dc133842a63c108a0a97dcb, type: 3}
+      propertyPath: MapLists.Array.data[0]
+      value: RainbowRoad
+      objectReference: {fileID: 0}
+    - target: {fileID: 463630594834073802, guid: 75aab9b10dc133842a63c108a0a97dcb, type: 3}
+      propertyPath: MapLists.Array.data[1]
+      value: FutureCity
+      objectReference: {fileID: 0}
     - target: {fileID: 4172411788097038064, guid: 75aab9b10dc133842a63c108a0a97dcb, type: 3}
       propertyPath: m_Name
       value: GameManager
