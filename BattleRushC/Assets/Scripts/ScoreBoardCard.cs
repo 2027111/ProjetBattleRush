@@ -57,6 +57,6 @@ public class ScoreBoardCard : MonoBehaviour
     }
     public void SetPosition()
     {
-        positionText.text = ""+(transform.GetSiblingIndex());
+        positionText.text = ""+(transform.GetSiblingIndex()+1);
     }
 }

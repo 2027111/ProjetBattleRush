@@ -9881,9 +9881,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 879895be1abf93041b5f88630e046a90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Body: {fileID: 0}
-  Spoiler: {fileID: 0}
-  Wheels: []
+  EmissionColor: {x: 0, y: 0, z: 0}
+  CarroserieColor: {x: 0, y: 0, z: 0}
+  RimsColor: {x: 0, y: 0, z: 0}
 --- !u!1 &4717891228519231512
 GameObject:
   m_ObjectHideFlags: 0
@@ -9926,7 +9926,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.75, y: 0.42, z: 1.5}
+  m_Size: {x: 0.85, y: 0.5, z: 1.7}
   m_Center: {x: 0, y: -0.31148237, z: 0}
 --- !u!1001 &2124240670069353010
 PrefabInstance:

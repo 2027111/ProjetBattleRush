@@ -50,7 +50,7 @@ app.post("/user", async (req, res) =>{
 	if(userFound){
 		console.log("User : " + username + " has succesfully been looked up for.");
 		response.code = 0;
-		response.msg = "Successful Connection";
+		response.message = "Successful Connection";
 		response.data =(({username, wins, losses, goldcoins, accounttype}) => ({username, wins, losses, goldcoins, accounttype}))(userFound);
 	}else{
 		response.code = -1;
@@ -167,7 +167,7 @@ app.post("/account/login", async (req, res)=>{
 	if(rUsername == null || rPassword==null){
 		
 	response.code = 1;
-	response.msg = "Invalid credentials";
+	response.message = "Invalid credentials";
 	res.send(response);
 		return;
 	}
@@ -180,7 +180,7 @@ app.post("/account/login", async (req, res)=>{
 
 					if(await Token.findOne({userId : userAccount._id})){
 						response.code = -8;
-						response.msg = "This user is already connected somewhere else.";
+						response.message = "This user is already connected somewhere else.";
 						res.send(response);
 						return;
 					}
@@ -195,7 +195,7 @@ app.post("/account/login", async (req, res)=>{
 					});
 					await tempToken.save();
 					response.code = 0;
-					response.msg = "Successful Connection";
+					response.message = "Successful Connection";
 					response.token = tempToken.tokenId;
 					response.data =(({username, wins, losses, goldcoins}) => ({username, wins, losses, goldcoins}))(userAccount);
 					console.log(userAccount.username + " has successfully connected to the Master Server");
@@ -205,7 +205,7 @@ app.post("/account/login", async (req, res)=>{
 	}
 
 	response.code = 1;
-	response.msg = "Invalid credentials";
+	response.message = "Invalid credentials";
 	res.send(response);
 	return;
 
@@ -220,7 +220,7 @@ app.post("/account/create", async (req, res)=>{
 	if(rUsername == null || rPassword==null || rEmail == null){
 		
 	response.code = 1;
-	response.msg = "Invalid credentials";
+	response.message = "Invalid credentials";
 	res.send(response);
 		return;
 	}
@@ -245,13 +245,13 @@ app.post("/account/create", async (req, res)=>{
 		console.log("Email is already in use")
 		
 	response.code = 2;
-	response.msg = "Email already in use";
+	response.message = "Email already in use";
 	res.send(response);
 	}
 }else{
 	console.log("Username is already taken")
 	response.code = 3;
-	response.msg = "Username already in use";
+	response.message = "Username already in use";
 	res.send(response);
 }
 	return;
@@ -306,7 +306,7 @@ app.post("/deconnexion", async (req, res) => {
 		if(userFound){
 			
 		
-			response.msg = userFound.username +" has disconnected";
+			response.message = userFound.username +" has disconnected";
 			console.log(userFound.username +" has successfully disconnected from the Master Server");
 	}else{
 		console.log("Unidentifiable user has disconnected");
@@ -315,7 +315,7 @@ app.post("/deconnexion", async (req, res) => {
 		response.code = 0;
 	}else{
 		response.code = -1;
-		response.msg = "Connection non-existant";
+		response.message = "Connection non-existant";
 	}
 	res.send(response);
 });
@@ -354,7 +354,7 @@ app.post("/server/On", async (req, res) =>{
 	if(await Server.findOne({port : port})){
 
 		response.code = -1;
-		response.msg = "ServerWithPort already on";
+		response.message = "ServerWithPort already on";
 		res.send(response);
 		console.log("Server with open ports : " + port + " already exists.")
 		return;
@@ -375,7 +375,7 @@ app.post("/server/On", async (req, res) =>{
 
  	await thisserv.save();
 	 response.code = 0;
-	 response.msg = "Server On";
+	 response.message = "Server On";
 	 res.send(response);
 	 console.log("Server with open ports : " + port + " has successfully been created and connected to the Master Server.")
 
@@ -420,13 +420,13 @@ app.post("/servers", async (req, res) =>{
 		allitems = await Server.find();
 		const servers = JSON.stringify(allitems);
 		response.code = 0;
-		response.msg="Send servers";
+		response.message="Send servers";
 		response.data = servers;
 		res.send(response);
 
 	}else{
 		response.code = -9;
-		response.msg="User not connected";
+		response.message="User not connected";
 		res.send(response);
 		console.log("User is not connected");
 	}
@@ -459,13 +459,13 @@ app.post("/server", async (req, res) =>{
 		}
 
 
-		response.msg="Server is " + thisServer.lobbyType;
+		response.message="Server is " + thisServer.lobbyType;
 		response.data = thisServer;
 		res.send(response);
 
 	}else{
 		response.code = -9;
-		response.msg="Server doesn't exist";
+		response.message="Server doesn't exist";
 		res.send(response);
 		return;
 	}

@@ -65,13 +65,14 @@ public class Player : MonoBehaviour
         {
             player.IsLocal = true;
             player.gameObject.AddComponent<PlayerController>();
+            player.camProxy.transform.parent = null;
             FollowLocalPlayer.SetPlayer(player.gameObject);
             Destroy(player.usernameCanvas);
         }
         else
         {
             player.usernameCanvas.transform.GetChild(0).GetComponent<Text>().text = username;
-            Destroy(player.camProxy);
+            Destroy(player.camHolder);
         }
         player.name = $"Player {id} {(string.IsNullOrEmpty(username) ? "Guest" : username)}";
         player.Id = id;

@@ -289,6 +289,7 @@ public class NetworkManager : MonoBehaviour
         string m = message.GetString();
         GameObject messageObject = Instantiate(GameLogic.Singleton.message, GameObject.Find("Canvas").transform);
         messageObject.GetComponent<TextAnimator>().SetText(m);
+        Debug.Log(m);
         if (UIManager.Singleton.gameObject.GetComponent<CanvasGroup>().alpha == 0)
         {
 

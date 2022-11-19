@@ -28,7 +28,7 @@ public class Interpolator : MonoBehaviour
 
 
     }
-
+    
     private void Update()
     {
         for (int i = 0; i < futureTransformUpdates.Count; i++)
@@ -54,6 +54,8 @@ public class Interpolator : MonoBehaviour
         InterpolatePosition(timeElapsed / timeToReachTarget);
         
     }
+    
+
 
     private void InterpolatePosition(float lerpAmount)
     {
