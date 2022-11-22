@@ -27,9 +27,11 @@ public class GameLogic : MonoBehaviour
 
 
     public GameObject PlayerPrefab => playerPrefab;
+    public GameObject LobbyPlayerPrefab => lobbyPlayerPrefab;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private GameObject lobbyPlayerPrefab;
     [SerializeField] public GameObject message;
     [SerializeField] GameObject[] particleList;
 
@@ -37,7 +39,7 @@ public class GameLogic : MonoBehaviour
 
     public void SpawnParticle(Vector3 pos, int index)
     {
-        Debug.Log("Spawned " + index);
+        //Debug.Log("Spawned " + index);
         Instantiate(particleList[index], pos, Quaternion.identity);
     }
 

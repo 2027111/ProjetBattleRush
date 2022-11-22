@@ -71,6 +71,7 @@ public class EtatVoitureFrapper : EtatVoiture
         float y = Input.GetAxis("Vertical");
         Vector3 vel = (Vector3.Normalize(Voiture.transform.forward * 4 * y + Voiture.transform.right * 4 * x));
         Voiture.rb.AddForce(vel);
+        Voiture.SendMovement();
     }
     
 }

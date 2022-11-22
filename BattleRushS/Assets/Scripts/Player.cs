@@ -24,6 +24,8 @@ public class Player : MonoBehaviour
     public Player lastHit = null;
     public float boostamount = 100;
     public bool canboost = true;
+    public bool isReady = false;
+    public bool HasLoadedGameScene = false;
     int points = 0;
 
     public bool[] inputs = new bool[6];
@@ -51,6 +53,7 @@ public class Player : MonoBehaviour
     private void OnDestroy()
     {
         list.Remove(Id);
+        NetworkManager.Singleton.OnPlayerReady();
     }
 
     public bool GetAccel()
@@ -66,6 +69,12 @@ public class Player : MonoBehaviour
         direction = transform.forward;
         lastCheck = new Check(transform.position, transform.forward);
     }
+
+    public void SpawnEveryone()
+    {
+        SendConnected(ServerToClientId.playerSpawned);
+    }
+
     public void ChangerState(EtatVoiture ev)
     {
         if(etatActuel != null)
@@ -75,7 +84,15 @@ public class Player : MonoBehaviour
         etatActuel = ev;
         ev.Enter();
     }
-
+    [MessageHandler((ushort)ClientToServerId.ready)]
+    private static void Ready(ushort fromClientId, Message message)
+    {
+        if (list.TryGetValue(fromClientId, out Player player))
+        {
+            player.isReady = !player.isReady;
+            NetworkManager.Singleton.OnPlayerReady();
+        }
+    }
     private void OnCollisionEnter(Collision collision)
     {
 
@@ -199,7 +216,6 @@ public class Player : MonoBehaviour
     {
 
         etatActuel.Handle();
-        SendMovement();
     }
 
 
@@ -260,22 +276,23 @@ public class Player : MonoBehaviour
         message.AddVector3(GetComponent<CarGraphics>().RimsColor);
         return message;
     }
-    private void SendSpawned()
-    {
 
-        NetworkManager.Singleton?.Server.SendToAll(AddSpawnData(Message.Create(MessageSendMode.Reliable, ServerToClientId.playerSpawned)));
+    private void SendConnected(ServerToClientId type)
+    {
+        Debug.Log("Spawn");
+        NetworkManager.Singleton?.Server.SendToAll(AddSpawnData(Message.Create(MessageSendMode.Reliable, type)));
     }
 
-    private void SendSpawned(ushort toClientid)
+    private void SendConnected(ushort toClientid, ServerToClientId type)
     {
 
-        NetworkManager.Singleton?.Server.Send(AddSpawnData(Message.Create(MessageSendMode.Reliable, ServerToClientId.playerSpawned)), toClientid);
+        NetworkManager.Singleton?.Server.Send(AddSpawnData(Message.Create(MessageSendMode.Reliable, type)), toClientid);
     }
     private static void Spawn(ushort id, string username, Vector3 colorBody, Vector3 colorEmi, Vector3 colorRims)
     {
         foreach (Player otherPlayer in list.Values)
         {
-            otherPlayer.SendSpawned(id);
+            otherPlayer.SendConnected(id, ServerToClientId.playerConnected);
         }
 
         Vector3 pos = GameManager.Singleton.SpawnPoint.transform.position;
@@ -285,14 +302,25 @@ public class Player : MonoBehaviour
         player.name = $"Player {id} {(string.IsNullOrEmpty(username) ? "Guest" : username)}";
         player.Id = id;
         player.Username = string.IsNullOrEmpty(username) ? $"Guest {id}" : username;
-        player.ChangerState(new EtatVoitureDebutPartie(player.gameObject));
+        player.ChangerState(new EtatVoitureCarte(player.gameObject));
         player.GetComponent<CarGraphics>().Set(colorBody, colorEmi, colorRims);
-        player.SendSpawned();
+        player.SendConnected(ServerToClientId.playerConnected);
         list.Add(id, player);
+        NetworkManager.Singleton.OnPlayerReady();
         NetworkManager.Singleton?.ConfirmAccountConnection(player);
        
     }
-    private void SendMovement()
+    public void SendReady()
+    {
+
+        Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.playerisReady);
+        message.AddUShort(Id);
+        message.AddBool(isReady);
+        Debug.Log(isReady);
+        NetworkManager.Singleton?.Server.SendToAll(message);
+    }
+
+    public void SendMovement()
     {
         if(NetworkManager.Singleton?.CurrentTick % 2 != 0)
         {

@@ -1101,13 +1101,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 400268665}
-  m_LocalRotation: {x: -0.25733012, y: 0.49972034, z: -0.106848575, w: -0.8201489}
-  m_LocalPosition: {x: 34.91, y: 7.97, z: -38.63}
+  m_LocalRotation: {x: 0.17319827, y: 0.67952234, z: -0.0021264357, w: 0.7129147}
+  m_LocalPosition: {x: 18.33, y: 2.61, z: -26.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 14.468, y: 89.023, z: 13.884}
 --- !u!1 &460082770
 GameObject:
   m_ObjectHideFlags: 0
@@ -1989,7 +1989,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 490ef15d420ba5d42b5ef4efb2f8fc12, type: 2}
+  - {fileID: 2100000, guid: 80037842c1eb39f46844315f0c88cf42, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3699,7 +3699,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1586981555}
   m_LocalRotation: {x: 0.17319827, y: 0.67952234, z: -0.0021264357, w: 0.7129147}
-  m_LocalPosition: {x: 18.33, y: 2.61, z: -33.78}
+  m_LocalPosition: {x: 18.33, y: 2.61, z: -26.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3746,7 +3746,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1599876478}
   m_LocalRotation: {x: -0.2573301, y: 0.4997203, z: -0.10684857, w: -0.8201488}
-  m_LocalPosition: {x: 34.91, y: 7.97, z: -38.63}
+  m_LocalPosition: {x: 34.91, y: 7.97, z: -31.450003}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3918,7 +3918,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1722843729}
   m_LocalRotation: {x: -0.025378399, y: 0.957672, z: -0.27251917, w: -0.08918339}
-  m_LocalPosition: {x: 29.12, y: 4.93, z: -25.310001}
+  m_LocalPosition: {x: 29.12, y: 4.93, z: -18.130003}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -4287,7 +4287,7 @@ GameObject:
   - component: {fileID: 2023631910}
   m_Layer: 0
   m_Name: Main Camera
-  m_TagString: MainCamera
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

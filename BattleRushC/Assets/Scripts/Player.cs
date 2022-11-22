@@ -16,24 +16,98 @@ public class Player : MonoBehaviour
 
 
     public string Username { get; set; }
+    bool isReady = false;
     public bool[] inputs = new bool[7];//if necessary
-    [SerializeField] public GameObject modelCar;
-    [SerializeField] public GameObject attack;
-    [SerializeField] public GameObject flightburst;
-    [SerializeField] public Camera camProxy;
-    [SerializeField] public GameObject camHolder;
-    [SerializeField] public GameObject usernameCanvas;
-    [SerializeField] public CarGraphics carGraphics;
-    [SerializeField] public Interpolator interpolater;
-    [SerializeField] public Image carMap;
+    public GameObject modelCar
+    {
+        get
+        {
+            return gameObject.transform.Find("CarModel").gameObject;
+        }
+    }
+    public GameObject attack
+    {
+        get
+        {
+            return gameObject.transform.Find("Attack").gameObject;
+        }
+    }
+    public GameObject flightburst
+    {
+        get
+        {
+            return gameObject.transform.Find("FlightBurst").gameObject;
+        }
+    }
+    public Camera camProxy
+    {
+        get
+        {
+            return GetComponentInChildren<Camera>();
+        }
+    }
+    public GameObject camHolder
+    {
+        get
+        {
+            return gameObject.transform.Find("CamHolder").gameObject;
+        }
+    }
+    public GameObject usernameCanvas
+    {
+        get
+        {
+            return gameObject.transform.Find("Username").gameObject;
+        }
+    }
+    public CarGraphics carGraphics
+    {
+        get
+        {
+            return GetComponentInChildren<CarGraphics>();
+        }
+    }
+    public CardGraphics cardGraphics
+    {
+        get
+        {
+            return GetComponentInChildren<CardGraphics>();
+        }
+    }
+    public Interpolator interpolater
+    {
+
+        get
+        {
+            return GetComponent<Interpolator>();
+        }
+    }
+    public Image carMap
+    {
+        get
+        {
+            return gameObject.transform.Find("Canvas").GetChild(0).GetComponent<Image>();
+        }
+    }
     public event Evenement EvenementHandler;
     public int points
     {
-
         get;
         private set;
     } = 0;
 
+    [MessageHandler((ushort)ServerToClientId.playerisReady)]
+    private static void serverPlayerReady(Message message)
+    {
+        if (list.TryGetValue(message.GetUShort(), out Player player))
+        {
+            player.isReady = message.GetBool();
+            if (player.cardGraphics.readyText != null)
+            {
+                player.cardGraphics.readyText.text = player.isReady ? "Ready!" : "Not Ready!";
+            }
+        }
+    }
 
     private void OnDestroy()
     {
@@ -58,6 +132,27 @@ public class Player : MonoBehaviour
             camHolder.transform.localRotation = Quaternion.Euler(rot);
         
     }
+    public static void SpawnCard(ushort id, string username)
+    {
+        Player player;
+        player = Instantiate(GameLogic.Singleton.LobbyPlayerPrefab, GameObject.Find("CardContainer").transform).GetComponent<Player>();
+        if (id == NetworkManager.Singleton.Client.Id)
+        {
+            player.IsLocal = true;
+        }
+        player.name = $"Player {id} {(string.IsNullOrEmpty(username) ? "Guest" : username)}";
+        player.Id = id;
+        player.Username = username;
+        player.cardGraphics.usernameText.text = username;
+        if (list.ContainsKey(id))
+        {
+            list.Remove(id);
+        }
+
+        list.Add(id, player);
+    }
+
+
     public static void Spawn(ushort id, string username, Vector3 position, Quaternion rot, Vector3 colorBody, Vector3 colorEmi, Vector3 colorRims)
     {
         Player player;
@@ -83,7 +178,19 @@ public class Player : MonoBehaviour
         player.carGraphics.SetEmissions(colorEmi);
         player.carGraphics.SetRims(colorRims);
 
+        if (list.ContainsKey(id))
+        {
+            list.Remove(id);
+        }
         list.Add(id, player);
+        UIManager.Singleton?.SetSBCard(player);
+    }
+
+    [MessageHandler((ushort)ServerToClientId.playerConnected)]
+    private static void SpawnPlayerCard(Message message)
+    {
+        ushort playeid = message.GetUShort();
+        SpawnCard(playeid, message.GetString());
     }
 
     [MessageHandler((ushort)ServerToClientId.playerMovement)]
@@ -126,7 +233,7 @@ public class Player : MonoBehaviour
 
     private void Move(uint tick, Vector3 newPosition, Quaternion carRot, Quaternion modelCarRot)
     {
-        interpolater.NewUpdate(tick, newPosition); //Configurer système d'interpolation de mouvement pour rendre les changements de positions plus fluide.
+        interpolater?.NewUpdate(tick, newPosition); //Configurer système d'interpolation de mouvement pour rendre les changements de positions plus fluide.
         Vector3 currentpos = transform.position;
         //transform.position = Vector3.LerpUnclamped(currentpos, newPosition, 0.025f);
         transform.position = newPosition;
@@ -140,7 +247,6 @@ public class Player : MonoBehaviour
     void Start()
     {
 
-        UIManager.Singleton.SetSBCard(this);
     }
 
 

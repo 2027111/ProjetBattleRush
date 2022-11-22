@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/RainbowRoad.unity
     guid: 30ca18036a76ac9428a4a9dbbf01ea0d
+  - enabled: 1
+    path: Assets/Scenes/Lobby.unity
+    guid: c7cfa553e252c1646a909e804d319f5e
   m_configObjects: {}

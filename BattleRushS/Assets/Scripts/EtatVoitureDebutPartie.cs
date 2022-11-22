@@ -30,6 +30,7 @@ public class EtatVoitureDebutPartie : EtatVoiture
 
     public override void Handle()
     {
+        Voiture.SendMovement();
     }
     
 }

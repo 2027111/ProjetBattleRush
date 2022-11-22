@@ -9815,7 +9815,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1869684103253972406}
-  m_LocalRotation: {x: 0.2248348, y: 1e-45, z: -0, w: 0.9743969}
+  m_LocalRotation: {x: 0.2248348, y: 3.4594168e-22, z: -9.8395283e-23, w: 0.9743969}
   m_LocalPosition: {x: 0, y: 0.97, z: -1.9899998}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -9852,7 +9852,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7779922, y: 1}
+    m_SensorSize: {x: 1.7769231, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -9964,15 +9964,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputs: 00000000000000
-  modelCar: {fileID: 4722177212351591135}
-  attack: {fileID: 375703150}
-  flightburst: {fileID: 0}
-  camProxy: {fileID: 2124240669316772208}
-  camHolder: {fileID: 5085968546450697582}
-  usernameCanvas: {fileID: 3957076283727461485}
-  carGraphics: {fileID: 709770080812252572}
-  interpolater: {fileID: 825320971951670341}
-  carMap: {fileID: 1442169772005041350}
 --- !u!114 &825320971951670341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10013,7 +10004,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2124240669316772210}
-  m_LocalRotation: {x: 0.2248348, y: 1e-45, z: -0, w: 0.9743969}
+  m_LocalRotation: {x: 0.2248348, y: 3.4594168e-22, z: -9.8395283e-23, w: 0.9743969}
   m_LocalPosition: {x: 0, y: 0.97, z: -1.9899998}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -10155,15 +10146,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TrackedObjectOffset: {x: 0, y: 0, z: 0}
-  m_LookaheadTime: 0.033
+  m_LookaheadTime: 0.028
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
   m_HorizontalDamping: 0.5
   m_VerticalDamping: 0.5
   m_ScreenX: 0.5
   m_ScreenY: 0.5
-  m_DeadZoneWidth: 0.26
-  m_DeadZoneHeight: 0.084
+  m_DeadZoneWidth: 0
+  m_DeadZoneHeight: 0
   m_SoftZoneWidth: 0.851
   m_SoftZoneHeight: 0.867
   m_BiasX: 0
@@ -10599,17 +10590,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c4cad50aa03bbca42938fe318344950b, type: 3}
---- !u!114 &709770080812252572 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 199619274683393404, guid: c4cad50aa03bbca42938fe318344950b, type: 3}
-  m_PrefabInstance: {fileID: 800704555201370336}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d117ca898401164d84a3d4f47045935, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1226269947771444100 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1880317207959290724, guid: c4cad50aa03bbca42938fe318344950b, type: 3}

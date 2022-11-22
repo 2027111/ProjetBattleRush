@@ -162,6 +162,7 @@ public class EtatVoitureMouvement : EtatVoiture
             
         }
 
+        Voiture.SendMovement();
     }
 
 }

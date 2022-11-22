@@ -40,6 +40,7 @@ public class EtatVoitureJump : EtatVoiture
             Voiture.modelCar.transform.forward = Voiture.gameObject.transform.forward;
             Voiture.ChangerState(new EtatVoitureMouvement(Voiture.gameObject));
         }
+        Voiture.SendMovement();
 
     }
     

@@ -29,6 +29,7 @@ public class EtatVoitureMort : EtatVoiture
     public override void Handle()
     {
 
+        Voiture.SendMovement();
     }
 
     public IEnumerator changeView()

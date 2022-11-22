@@ -10,6 +10,7 @@ public class PlayerAccount
     public string username;
     public int wins;
     public int losses;
+    public int elo;
     public int goldcoins;
     public string accounttype;
 
@@ -24,6 +25,7 @@ public class PlayerAccount
         _id = "r";
         wins = 0;
         losses = 0;
+        elo = 1000;
         goldcoins = 0;
         accounttype = "Lol";
     }

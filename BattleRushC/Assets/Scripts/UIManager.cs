@@ -49,7 +49,7 @@ public class UIManager : MonoBehaviour
     private void Update()
 
     { 
-        if(SceneManager.GetActiveScene().name == "GameScene")
+        if(NetworkManager.Singleton.Client.IsConnected)
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {

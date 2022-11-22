@@ -11,7 +11,10 @@ public enum ServerToClientId : ushort
 {
     sync = 1,
     playerSpawned,
+    playerConnected,
+    playerisReady,
     playerMovement,
+    scene,
     messageText,
     damage,
     startPositions,
@@ -25,6 +28,8 @@ public enum ClientToServerId : ushort
 {
     name = 1,
     input,
+    ready,
+    gameSceneLoaded,
 }
 
 
@@ -90,7 +95,7 @@ public class NetworkManager : MonoBehaviour
 
 
 
-    [SerializeField] string[] MapLists;
+    [SerializeField] public List<string> MapLists;
 
     [SerializeField] private string ip;
     [SerializeField] private string port;
@@ -124,6 +129,13 @@ public class NetworkManager : MonoBehaviour
 
 
 
+    public void SendReady()
+    {
+
+        Message message = Message.Create(MessageSendMode.Reliable, ClientToServerId.ready);
+        NetworkManager.Singleton.Client.Send(message);
+    }
+
     public void ConnectTo(Server s)
     {
         this.ip = s.ip;
@@ -150,7 +162,7 @@ public class NetworkManager : MonoBehaviour
 
     private IEnumerator Connection()
     {
-        string playscene = MapLists[0];
+        string playscene = "Lobby";
 
         LoadingScene.main.LoadScene(playscene);
         while (SceneManager.GetActiveScene().name != playscene)
@@ -249,12 +261,12 @@ public class NetworkManager : MonoBehaviour
 
     public void AccountDisconnect()
     {
-        Action<Response> Success = new Action<Response>(ConfirmDisconnection);
+        Action<DecoResponse> Success = new Action<DecoResponse>(ConfirmDisconnection);
         Action Failure = new Action(PlayerAccount.Disconnected);
         WWWForm form = new WWWForm();
         form.AddField("tokenid", PlayerAccount.connectionToken);
         string link = "deconnexion";
-        StartCoroutine(ServerTalker.PostRequestToMasterServer<Response>(link, form, Success, Failure));
+        StartCoroutine(ServerTalker.PostRequestToMasterServer<DecoResponse>(link, form, Success, Failure));
 
     }
 
@@ -267,6 +279,27 @@ public class NetworkManager : MonoBehaviour
             ServerTick = serverTick;
         }
     }
+
+
+    [MessageHandler((ushort)ServerToClientId.scene)]
+    private static void GameScene(Message message)
+    {
+        ConnectionMenuDebug.singleton.gameObject.SetActive(false);
+        Debug.Log("Enter Game");
+        Action success = new Action(Singleton.SendGameSceneLoaded);
+        LoadingScene.main.LoadScene(Singleton.MapLists[0], success);
+    }
+
+
+    public void SendGameSceneLoaded()
+    {
+        Debug.Log("Finished Loading");
+        Message message = Message.Create(MessageSendMode.Reliable, ClientToServerId.gameSceneLoaded);
+        Client.Send(message);
+
+    }
+
+
     [MessageHandler((ushort)ServerToClientId.sync)]
     public static void Sync(Message message)
     {

@@ -11,7 +11,10 @@ public enum ServerToClientId : ushort
 {
     sync = 1,
     playerSpawned,
+    playerConnected,
+    playerisReady,
     playerMovement,
+    scene,
     messageText,
     damage,
     startPositions,
@@ -19,12 +22,16 @@ public enum ServerToClientId : ushort
     stats,
     time,
     part,
+
 }
 public enum ClientToServerId : ushort
 {
     name = 1,
     input,
+    ready,
+    gameSceneLoaded,
 }
+
 
 public enum CurrentServerState
 {
@@ -51,9 +58,9 @@ public class NetworkManager : MonoBehaviour
 
    [Range(63577, 64000)]
     int serverPort = 63578;
-    float timer = 300;
-    int lasttime = 300;
-    [SerializeField] float maxTime = 120;
+    float timer = 20;
+    int lasttime = 20;
+    [SerializeField] float maxTime = 20;
 
 
     private static NetworkManager _singleton;
@@ -87,12 +94,94 @@ public class NetworkManager : MonoBehaviour
     [SerializeField] private ushort port;
     [SerializeField] private ushort maxClientCount;
 
+    Coroutine readyCoroutine;
 
 
     [Header("Debug")]
     [SerializeField] bool debug = false;
 
+    private bool IsEveryoneLoaded()
+    {
+        if (Player.list.Count == 0)
+        {
+            return false;
+        }
+        foreach (KeyValuePair<ushort, Player> player in Player.list)
+        {
+            if (!player.Value.HasLoadedGameScene)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    private void OnPlayerLoadedGameScene()
+    {
+        if (IsEveryoneLoaded())
+        {
+            foreach (KeyValuePair<ushort, Player> player in Player.list)
+            {
+                player.Value.SpawnEveryone();
+            }
+            StartCoroutine(StartBattle());
+        }
+    }
+    public void OnPlayerReady()
+    {
+        foreach (KeyValuePair<ushort, Player> player in Player.list)
+        {
+            player.Value.SendReady();
+        }
+        if (IsEveryoneReady())
+        {
+            if (readyCoroutine == null)
+            {
+                readyCoroutine = StartCoroutine(OnEveryoneReady());
+            }
+        }
+        else
+        {
+            if (readyCoroutine != null)
+            {
 
+                StopCoroutine(readyCoroutine);
+                readyCoroutine = null;
+                Debug.Log("Stopped Ready");
+            }
+        }
+    }
+    private bool IsEveryoneReady()
+    {
+        if (Player.list.Count == 0)
+        {
+            return false;
+        }
+        foreach (KeyValuePair<ushort, Player> player in Player.list)
+        {
+            if (!player.Value.isReady)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    IEnumerator OnEveryoneReady()
+    {
+        for (int i = 0; i <= 3; i++)
+        {
+            yield return new WaitForSeconds(1f);
+            Debug.Log(3 - i);
+        }
+        SendChangeSceneToGame();
+    }
+
+    private void SendChangeSceneToGame()
+    {
+        Debug.Log("Yes");
+        Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.scene);
+        NetworkManager.Singleton.Server.SendToAll(message);
+    }
 
     string ReturnAdress(string host)
     {
@@ -170,6 +259,11 @@ public class NetworkManager : MonoBehaviour
         //Send Who's left and who's right.
         //
         currentServerState = CurrentServerState.InGame;
+
+        foreach (KeyValuePair<ushort, Player> car in Player.list)
+        {
+            car.Value.ChangerState(new EtatVoitureDebutPartie(car.Value.gameObject));
+        }
         if (!debug)
         {
             UpdateServer();
@@ -248,20 +342,6 @@ public class NetworkManager : MonoBehaviour
 
     public void ConfirmConnection(DescResponse response)
     {
-        if (Server.ClientCount == Server.MaxClientCount)
-        {
-
-            currentServerState = CurrentServerState.InGame;
-            StartCoroutine(StartBattle());
-            if (debug)
-            {
-                return;
-            }
-            UpdateServer();
-            
-        }
-        else
-        {
             if (debug)
             {
                 return;
@@ -274,8 +354,9 @@ public class NetworkManager : MonoBehaviour
                 string link = "server";
                 StartCoroutine(NetworkManager.PostRequestToMasterServer<DescResponse>(link, form, Success, Failure));
 
-            
-        }
+
+
+        UpdateServer();
 
 
     }
@@ -471,6 +552,15 @@ public class NetworkManager : MonoBehaviour
         }
     }
 
+    [MessageHandler((ushort)ClientToServerId.gameSceneLoaded)]
+    private static void gameScene(ushort fromClientId, Message message)
+    {
+        if (Player.list.TryGetValue(fromClientId, out Player player))
+        {
+            player.HasLoadedGameScene = true;
+            NetworkManager.Singleton.OnPlayerLoadedGameScene();
+        }
+    }
 
     string amountofTimeLeft()
     {
@@ -485,9 +575,12 @@ public class NetworkManager : MonoBehaviour
         if (lasttime > truesec)
         {
             SendTime(t);
+            if (timer <= 10)
+            {
+                SendTextNotif(truesec + "");
+            }
         }
         lasttime = truesec;
-
 
         return t;
     }

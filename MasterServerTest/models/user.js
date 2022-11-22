@@ -23,6 +23,11 @@ const userSchema = new mongoose.Schema({
 		required:true,
 		default:0,
 	},
+	elo:{
+		type:Number,
+		default:1000,
+		required:true,
+	},
 	goldcoins:{
 		type:Number,
 		default:100,
