@@ -41,7 +41,7 @@ public class FriendRequestObject : MonoBehaviour
         WWWForm form = new WWWForm();
         form.AddField("token", PlayerAccount.connectionToken);
         form.AddField("friendname", Username);
-        form.AddField("accepted", yesno ? "YES":"NO") ;
+        form.AddField("accept", yesno ? "YES":"NO") ;
         string link = "account/acceptRequest";
         StartCoroutine(ServerTalker.PostRequestToMasterServer<DecoResponse>(link, form, Success, Failure));
 
