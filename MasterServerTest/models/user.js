@@ -42,7 +42,11 @@ const userSchema = new mongoose.Schema({
 	lastAuthentication:{
 		required:true,
 		type:Date,
-	}
+	},
+	friendlist:[{
+		required:true,
+		type:String,
+	}]
 });
 
 const user = mongoose.model("user", userSchema);

@@ -49,14 +49,21 @@ public class UIManager : MonoBehaviour
     private void Update()
 
     { 
-        if(NetworkManager.Singleton.Client.IsConnected)
+       
+    }
+    
+    public void ActivateEscapeUI()
+    {
+        if (NetworkManager.Singleton.Client.IsConnected)
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            disconnect.SetActive(!disconnect.activeSelf);
+            if (disconnect.activeSelf)
             {
-                disconnect.SetActive(!disconnect.activeSelf);
+                disconnect.transform.GetChild(0).GetComponent<Button>().Select();
             }
 
         }
+
     }
 
     private void Start()

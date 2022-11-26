@@ -2,101 +2,69 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
 
 
-    public bool pc = false;
+    private PlayerInput pi;
+    private InputAction move;
+    private bool Jump;
+    private bool Switch;
+    private Vector2 forceDirection = Vector2.zero;
 
-    private bool[] inputs;//WASDSPACES
-    private bool[] down = { false, false, false, false, true, false };
-    private KeyCode[] inp = { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.Space, KeyCode.LeftShift};
-
-
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        inputs = new bool[inp.Length];
-         //   hold[8] = false;
+        pi = new PlayerInput();
     }
 
-    // Update is called once per frame
+    private void OnEnable()
+    {
+
+        pi.Player.Jump.started += DoJump;
+        pi.Player.CamSwitch.started += DoCamSwitch;
+        pi.Player.Menu.started += DoMenu;
+        move = pi.Player.Move;
+        pi.Player.Enable();
+
+    }
+
+    private void DoMenu(InputAction.CallbackContext obj)
+    {
+        UIManager.Singleton?.ActivateEscapeUI();
+
+    }
+
+    private void OnDisable()
+    {
+        pi.Player.Jump.started -= DoJump;
+        pi.Player.CamSwitch.started -= DoCamSwitch;
+        pi.Player.Disable();
+
+    }
     void Update()
     {
-           for(int i = 0; i < inputs.Length; i++)
-            {
-            
-                inputs[i] = down[i]?Input.GetKeyDown(inp[i]): Input.GetKey(inp[i]);
 
-        }
-
-
-        if (inputs[4])
-        {
-            GetComponent<Player>().RotateCam();
-        }
-        
-        /*
-        else
-        {
-
-
-            Vector2 dir = js.Direction;
-
-            if (dir.y > 0.5f)
-            {
-                inputs[0] = true;
-            }
-            if (dir.x < -0.5f)
-            {
-
-                inputs[1] = true;
-            }
-            if (dir.y < 0)
-            {
-
-                inputs[2] = true;
-            }
-            if (dir.x > 0.5f)
-            {
-
-                inputs[3] = true;
-            }
-
-            if (Light.buttonPressed)
-            {
-                inputs[4] = true;
-
-            }
-
-            if (Heavy.buttonPressed)
-            {
-
-
-                inputs[5] = true;
-            }
-
-            if (Special.buttonPressed)
-            {
-
-                inputs[6] = true;
-            }
-
-        }*/
+        forceDirection.x = move.ReadValue<Vector2>().x;
+        forceDirection.y = move.ReadValue<Vector2>().y;
 
     }
 
-
-
+    private void DoJump(InputAction.CallbackContext obj)
+    {
+        Jump = true;
+    }
+    private void DoCamSwitch(InputAction.CallbackContext obj)
+    {
+        Switch = true;
+    }
     private void FixedUpdate()
     {
         SendInput();
-        for(int i =0; i < inputs.Length; i++)
-        {
-            inputs[i] = false;
-        }
+        Jump = false;
+        Switch = false;
     }
 
 
@@ -105,7 +73,9 @@ public class PlayerController : MonoBehaviour
     private void SendInput()
     {
         Message message = Message.Create(MessageSendMode.Unreliable, ClientToServerId.input);
-        message.AddBools(inputs, false);
+        message.AddVector2(forceDirection);
+        message.AddBool(Jump);
+        message.AddBool(Switch);
         NetworkManager.Singleton.Client.Send(message);
     }
 

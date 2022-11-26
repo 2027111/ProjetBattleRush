@@ -1,12 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AlwaysRotate : MonoBehaviour
 {
+    
 
     public Vector3 rotateps = new Vector3(0, 140, 0);
     bool rotate = true;
+
+   
 
     void Update()
     {
@@ -14,6 +18,10 @@ public class AlwaysRotate : MonoBehaviour
         {
             transform.Rotate(rotateps * Time.deltaTime); //rotates 50 degrees per second around z axis
         }
+    }
+    void Start()
+    {
+
     }
 
     public void SetToYRot(int i)

@@ -28,10 +28,12 @@ public class Player : MonoBehaviour
     public bool HasLoadedGameScene = false;
     int points = 0;
 
-    public bool[] inputs = new bool[6];
-    public string[] inputchar = { "W", "A", "S", "D", "SPACE", "SHIFT"};
 
     public Rigidbody rb;
+
+    public bool Jump;
+    public bool Switch;
+    public Vector2 forceDirection = Vector2.zero;
 
     EtatVoiture etatActuel;
     private Vector3 color;
@@ -224,9 +226,17 @@ public class Player : MonoBehaviour
     {
         if (list.TryGetValue(fromClientId, out Player player))
         {
-            player.SetInput(message.GetBools(6));
+            player.SetInput(message.GetVector2(), message.GetBool(), message.GetBool());
         }
     }
+
+    private void SetInput(Vector2 direction, bool jump, bool dirswitch)
+    {
+        forceDirection = direction;
+        Jump = jump;
+        Switch = dirswitch;
+    }
+
     [MessageHandler((ushort)ClientToServerId.name)]
     private static void Name(ushort fromClientId, Message message)
     {
@@ -242,29 +252,6 @@ public class Player : MonoBehaviour
 
     }
 
-    public void SetInput(bool[] vs)
-    {
-        inputs = vs;
-        if(thisaaccounttemp.accounttype == "Dev")
-        {
-            string t = "";
-            for(int i = 0; i < inputs.Length; i++)
-            {
-                if (inputs[i])
-                {
-                    t += inputchar[i];
-                    t += " ";
-                }
-                else
-                {
-
-                    t += "N";
-                    t += " ";
-                }
-            }
-            WriteAt($"User : {Username} INPUTS : {t}", 0, Id);
-        }
-    }
     private Message AddSpawnData(Message message)
     {
         message.AddUShort(Id);

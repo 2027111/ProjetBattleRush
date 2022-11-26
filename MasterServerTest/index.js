@@ -27,6 +27,7 @@ app.use(flash());
 
 const User = require("./models/user");
 const Server = require("./models/server");
+const Friendship = require("./models/friendship");
 const Token = require("./models/connectionToken");
 const { response } = require("express");
 const user = require("./models/user");
@@ -42,6 +43,26 @@ app.get("/users", async (req, res) =>{
 res.send(users);
 
 });
+
+app.post("/user/friend", async (req, res) =>{
+	var username = req.body.rUsername;
+
+
+    var userFound = await User.findOne({username : username });
+	if(userFound){
+		console.log("User : " + username + " has succesfully been looked up for.");
+		response.code = 0;
+		response.message = "Successful request";
+		response.data = JSON.stringify(userFound.friendlist);
+	}else{
+		response.code = -1;
+		console.log("User : " + username + " does not exist and search is invalid.");
+	}
+
+	res.send(response);
+
+});
+
 app.post("/user", async (req, res) =>{
 	var username = req.body.rUsername;
 
@@ -95,6 +116,163 @@ app.post("/queue/leave", async (req, res)=>{
 	}
 });
 
+app.post("/account/getRequests", async(req, res)=>{
+	var response= {};
+	const token = req.body.token;
+	var TokenObject = await Token.findOne({tokenId : token});
+
+
+
+	if(TokenObject == null){
+	
+		response.code = -9;
+		response.message = "user isnt connected.";
+		res.send(response);
+		return;
+	}
+		
+	var userFound = await User.findOne({_id : TokenObject.userId});
+	if(userFound == null){
+		
+		response.code = -9;
+		response.message =  "Current user doesnt exist.";
+		res.send(response);
+		return;
+	}
+
+	var requests = await Friendship.find({userRecipientID:userFound.username, requestStatus:1});
+	response.code = 0;
+	response.message = "requests found!";
+	response.data = JSON.stringify(requests);
+	res.send(response);
+
+});
+
+app.post("/account/acceptRequest", async(req, res)=>{
+	var response= {};
+	const token = req.body.token;
+	const friendname = req.body.friendname;
+	const accepted = req.body.accept;
+	var TokenObject = await Token.findOne({tokenId : token});
+
+
+
+	if(TokenObject == null){
+	
+		response.code = -9;
+		response.message = "user isnt connected.";
+		res.send(response);
+		return;
+	}
+		
+	var userFound = await User.findOne({_id : TokenObject.userId});
+	if(userFound == null){
+		
+		response.code = -9;
+		response.message =  "Current user doesnt exist.";
+		res.send(response);
+		return;
+	}
+	var requestUserFound = await User.findOne({username : friendname});
+	if(requestUserFound == null){
+		
+		response.code = -43;
+		response.message = friendname + " user doesnt exist.";
+		res.send(response);
+		return;
+	}
+	var Request = await Friendship.findOne({userRequestID: userFound.username, userRecipientID: requestUserFound.username});
+	if(Request == null){
+		response.code = -11;
+		response.message = "Requests doesnt exists."
+		res.send(response);
+		return;
+	}
+	await AcceptRequest(Request, accepted == "YES");
+	response.code = 0;
+	response.message = "Request accepted"
+	res.send(response);
+	return;
+});
+app.post("/account/sendfriendrequest", async(req, res)=>{
+	
+	var response= {};
+	const token = req.body.token;
+	const friendname = req.body.friendname;
+	var TokenObject = await Token.findOne({tokenId : token});
+
+
+
+	if(TokenObject == null){
+	
+		response.code = -9;
+		response.message = "user isnt connected.";
+		res.send(response);
+		return;
+	}
+		
+	var userFound = await User.findOne({_id : TokenObject.userId});
+	if(userFound == null){
+		
+		response.code = -9;
+		response.message =  "Current user doesnt exist.";
+		res.send(response);
+		return;
+	}
+
+	var requestUserFound = await User.findOne({username : friendname});
+	if(requestUserFound == null){
+		
+		response.code = -43;
+		response.message = friendname + " user doesnt exist.";
+		res.send(response);
+		return;
+	}
+
+
+	try {
+		console.log("Creating new request...");
+	const newRequest = new Friendship({
+		userRequestID: userFound.username,
+		userRecipientID: requestUserFound.username,
+		requestStatus: 1,
+	});
+
+	const i = userFound.friendlist.findIndex(e => e === requestUserFound.username);
+	if (i > -1) {
+		response.code = 11;
+		response.message = "Requests already exists."
+		res.send(response);
+		return;
+	}
+	
+	var Test = await Friendship.findOne({userRequestID: userFound.username, userRecipientID: requestUserFound.username});
+	var Test2 = await Friendship.findOne({userRequestID: requestUserFound.username, userRecipientID: userFound.username});
+	if(Test != null){
+	response.code = 11;
+	response.message = "Requests already exists."
+	res.send(response);
+	return;
+	}
+	if(Test2 != null){
+		if(Test2.requestStatus == 1){
+			await AcceptRequest(Test2, true);
+		}
+	response.code = 12;
+	response.message = "Opposing request has been accepted."
+	res.send(response);
+	return;
+	}
+
+	await newRequest.save();
+	response.code = 0;
+	response.message = "Request has been sent!"
+	res.send(response);
+} catch (error) {
+	console.log(error);
+}
+	
+})
 
 app.post("/queue/join", async (req, res)=>{
 
@@ -156,7 +334,6 @@ app.post("/queue/join", async (req, res)=>{
 	}
 });
 /* Queue */
-
 /* Login And Registrations */
 app.post("/account/login", async (req, res)=>{
 
@@ -257,7 +434,23 @@ app.post("/account/create", async (req, res)=>{
 	return;
 
 });
+async function AcceptRequest(Request, accepted) {
 
+	if(accepted == false){
+		Request.requestStatus = 3;
+		await Friendship.findOneAndDelete({_id: Request._id})
+		return;
+	}
+
+	var RequesteeUser = await User.findOne({username : Request.userRequestID});
+	var RequesterUser = await User.findOne({username : Request.userRecipientID});
+	RequesteeUser.friendlist.push(RequesterUser.username);
+	RequesterUser.friendlist.push(RequesteeUser.username);
+	Request.requestStatus = 2;
+	RequesteeUser.save();
+	RequesterUser.save();
+	await Friendship.findOneAndDelete({_id: Request._id})
+  }
 function getRandomInt(max) {
 	return Math.floor(Math.random() * max);
   }
@@ -473,7 +666,6 @@ app.post("/server", async (req, res) =>{
 
 });
 /*Server*/
-
 
 
 

@@ -49,7 +49,7 @@ public class EtatVoitureMouvement : EtatVoiture
         {
 
 
-        if (Voiture.inputs[0] && Voiture.boostamount > 0 && Voiture.canboost)
+        if (Voiture.forceDirection.y > 0.2f && Voiture.boostamount > 0 && Voiture.canboost)
         {
 
                 Voiture.boostamount -=  30 * Time.deltaTime;
@@ -70,7 +70,7 @@ public class EtatVoitureMouvement : EtatVoiture
             accelerating = true; ralenting = false;
 
         }
-        else if (Voiture.inputs[2])
+        else if (Voiture.forceDirection.y < -0.2f)
             {
             if(accel > 0.5f)
                 {
@@ -107,17 +107,13 @@ public class EtatVoitureMouvement : EtatVoiture
 
 
             x = 0;
-
-            if (Voiture.inputs[1])
+            if(Mathf.Abs(Voiture.forceDirection.x) > 0.3f)
             {
-                x -= 0.4f;
-            }
-            if(Voiture.inputs[3]){
-                x += 0.4f;
+                x += Mathf.Sign(Voiture.forceDirection.x) * 0.4f;
             }
 
 
-            if (Voiture.inputs[5])
+            if (Voiture.Jump)
             {
                 Voiture.ChangerState(new EtatVoitureJump(Voiture.gameObject, 7));
             }

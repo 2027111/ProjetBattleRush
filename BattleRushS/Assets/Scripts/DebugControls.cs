@@ -81,7 +81,7 @@ public class DebugControls : MonoBehaviour
 
         }*/
 
-        GetComponent<Player>().SetInput(inputs);
+        //GetComponent<Player>().SetInput(inputs);
 
     }
 
