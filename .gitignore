@@ -79,5 +79,3 @@ crashlytics-build.properties
 /BattleRushC/Library/ArtifactDB
 /BattleRushC/Library/ArtifactDB-lock
 *.meta
-BattleRushC/Library/ArtifactDB
-BattleRushC/Library/ArtifactDB-lock
