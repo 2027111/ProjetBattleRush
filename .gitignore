@@ -9,7 +9,13 @@
 /BRS/[Bb]uilds/
 /BRS/[Ll]ogs/
 /BRS/[Uu]ser[Ss]ettings/
-
+/BRServer/[Ll]ibrary/
+/BRServer/[Tt]emp/
+/BRServer/[Oo]bj/
+/BRServer/[Bb]uild/
+/BRServer/[Bb]uilds/
+/BRServer/[Ll]ogs/
+/BRServer/[Uu]ser[Ss]ettings/
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
 /[Mm]emoryCaptures/
@@ -70,14 +76,14 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
-/BattleRushC/Library/ArtifactDB
-/BattleRushC/Library/ArtifactDB-lock
-/BattleRushC/Library/ArtifactDB
-/BattleRushC/Library/ArtifactDB-lock
-/BattleRushC/Library/ArtifactDB
-/BattleRushC/Library/ArtifactDB-lock
-/BattleRushC/Library/ArtifactDB
-/BattleRushC/Library/ArtifactDB-lock
+/BRClient/Library/ArtifactDB
+/BRClient/Library/ArtifactDB-lock
+/BRClient/Library/ArtifactDB
+/BRClient/Library/ArtifactDB-lock
+/BRClient/Library/ArtifactDB
+/BRClient/Library/ArtifactDB-lock
+/BRClient/Library/ArtifactDB
+/BRClient/Library/ArtifactDB-lock
 *.meta
 BattleRushC/Library/ArtifactDB
 BattleRushC/Library/ArtifactDB-lock
