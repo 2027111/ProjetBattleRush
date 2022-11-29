@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
     public bool canboost = true;
     public bool isReady = false;
     public bool HasLoadedGameScene = false;
-    int points = 0;
+    public int points = 0;
 
 
     public Rigidbody rb;
@@ -63,6 +63,7 @@ public class Player : MonoBehaviour
         return (etatActuel as EtatVoitureMouvement).accelerating;
     }
 
+  
 
     // Start is called before the first frame update
     void Start()
@@ -131,7 +132,7 @@ public class Player : MonoBehaviour
                         
                         //Debug.Log(attacker.Username + " has collided with " + Username);
                         //Debug.Log(attacker.Username + " : " + Mathf.Round(attacker.rb.velocity.magnitude) + " | " + Username + " : " + Mathf.Round(rb.velocity.magnitude)  + " | " + "Difference : " + Mathf.Abs(Mathf.Round(attacker.rb.velocity.magnitude - rb.velocity.magnitude)));
-                        //Debug.Log(attacker.Username + " : " + attacker.etatActuel.GetType() + " | " + Username + " : " + etatActuel.GetType());
+  ;                      //Debug.Log(attacker.Username + " : " + attacker.etatActuel.GetType() + " | " + Username + " : " + etatActuel.GetType());
                         if (difference > 3)
                         {
                             if(attacker.etatActuel.GetType() == typeof(EtatVoitureMouvement))
@@ -151,14 +152,14 @@ public class Player : MonoBehaviour
         {
             if (lastHit)
             {
-                lastHit.points += collision.gameObject.GetComponent<DeathZone>().pointsByKills;
+                lastHit.AddPoints(collision.gameObject.GetComponent<DeathZone>().pointsByKills);
                 lastHit.SendStats();
 
             }
             else
             {
 
-                points -= collision.gameObject.GetComponent<DeathZone>().suicidePenality;
+                AddPoints(-collision.gameObject.GetComponent<DeathZone>().suicidePenality);
                 SendStats();
             }
             //RespawnMethod();
@@ -168,6 +169,13 @@ public class Player : MonoBehaviour
             lastHit = null;
             damage = 0;
         }
+    }
+
+
+    public void AddPoints(int amount)
+    {
+        points += amount;
+        NetworkManager.Singleton?.SetJoueurPoint(Username, points);
     }
 
 

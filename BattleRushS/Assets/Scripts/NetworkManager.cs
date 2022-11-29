@@ -62,6 +62,7 @@ public class NetworkManager : MonoBehaviour
     int lasttime = 20;
     [SerializeField] float maxTime = 20;
 
+    public List<CarteJoueur> joueurPoint = new List<CarteJoueur>();
 
     private static NetworkManager _singleton;
 
@@ -173,12 +174,15 @@ public class NetworkManager : MonoBehaviour
             yield return new WaitForSeconds(1f);
             Debug.Log(3 - i);
         }
+        foreach(KeyValuePair<ushort, Player> player in Player.list)
+        {
+            joueurPoint.Add(new CarteJoueur(player.Value.Username, player.Value.points));
+        }
         SendChangeSceneToGame();
     }
 
     private void SendChangeSceneToGame()
     {
-        Debug.Log("Yes");
         Message message = Message.Create(MessageSendMode.Reliable, ServerToClientId.scene);
         NetworkManager.Singleton.Server.SendToAll(message);
     }
@@ -229,8 +233,19 @@ public class NetworkManager : MonoBehaviour
 
     private void PlayerLeft(object sender, ServerDisconnectedEventArgs e)
     {
+        
         if (Player.list.TryGetValue(e.Client.Id, out Player player))
         {
+            if (currentServerState == CurrentServerState.Battle)
+            {
+                foreach (CarteJoueur j in joueurPoint)
+                {
+                    if(j.Username == player.Username)
+                    {
+                        j.Points = -9999;
+                    }
+                }
+            }
             Destroy(player.gameObject);
         }
         if (debug)
@@ -248,7 +263,18 @@ public class NetworkManager : MonoBehaviour
         }
 
     }
- 
+
+    public void SetJoueurPoint(string username, int points)
+    {
+        foreach (CarteJoueur j in joueurPoint)
+        {
+            if (j.Username == username)
+            {
+                j.Points = points;
+            }
+        }
+    }
+
     private void PlayerJoined(object sender, ServerConnectedEventArgs e)
     {
     }
@@ -587,14 +613,12 @@ public class NetworkManager : MonoBehaviour
     private void EndGame()
     {
 
-        int maxamount = Server.ClientCount;
-        foreach (KeyValuePair<ushort, Player> t in Player.list)
+
+        joueurPoint.Sort();
+        for(int i = 1; i <= joueurPoint.Count; i++)
         {
-
-
-
+            SendPlayerScoreRequest(joueurPoint[i].Username, i, joueurPoint.Count); ;
         }
-
 
         //Send to Master Server Who Wins or loses
         //Kick Players
@@ -604,6 +628,34 @@ public class NetworkManager : MonoBehaviour
         }
 
         RestartServer();
+    }
+
+    private void SendPlayerScoreRequest(string username, int position, int count)
+    {
+        Action<DescResponse> Success = new Action<DescResponse>(ConfirmConnectionSuccess);
+        Action Failure = new Action(delegate { UpdateSuccess(false); });
+        WWWForm form = new WWWForm();
+        form.AddField("username", username);
+        form.AddField("position", position);
+        form.AddField("serverCount", count);
+        string link = "server/winlose";
+        StartCoroutine(NetworkManager.PostRequestToMasterServer<DescResponse>(link, form, Success, Failure));
+
+
+    }
+
+    public void Success(DescResponse response)
+    {
+
+    }
+    public void Failure()
+    {
+
+    }
+
+    private void WinLoseRequest(string username, int position, int maxcount)
+    {
+
     }
 
     private void OnApplicationQuit()
