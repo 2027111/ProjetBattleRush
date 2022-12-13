@@ -44,6 +44,10 @@ public class WinScreenManager : MonoBehaviour
         {
             if (i >= playerCount)
             {
+                if(i < GraphicCars.Length)
+                {
+                    Destroy(GraphicCars[i]);
+                }
                 return;
             }
             GraphicCars[i] = GameObject.Find("CarDisplay" + i);

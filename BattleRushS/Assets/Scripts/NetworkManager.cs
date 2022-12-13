@@ -191,7 +191,7 @@ public class NetworkManager : MonoBehaviour
         NetworkManager.Singleton.Server.SendToAll(message);
     }
 
-
+    
     public string GetLocalIPv4()
     {
         /*return Dns.GetHostEntry(Dns.GetHostName())
@@ -506,10 +506,11 @@ public class NetworkManager : MonoBehaviour
         }
         else
         {
-            if(GetLocalIPv4() != null)
+            if(IPManager.GetIP(ADDRESSFAM.IPv4) != null)
             {
-                ip = GetLocalIPv4();
+                ip = IPManager.GetIP(ADDRESSFAM.IPv4);
             }
+            Debug.Log(ip);
             Action<DescResponse> Success = new Action<DescResponse>(ServerStartSuccess);
             Action Failure = new Action(ServerStartFailure);
             WWWForm form = new WWWForm();
