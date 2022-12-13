@@ -1,8 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CarteJoueur : IComparer<CarteJoueur>
+public class CarteJoueur : IComparable<CarteJoueur>
 {
     public string Username;
     public int Points;
@@ -13,13 +14,10 @@ public class CarteJoueur : IComparer<CarteJoueur>
         Points = points;
     }
 
-    public static int Sort(CarteJoueur p1, CarteJoueur p2)
-    {
-        return p1.Points.CompareTo(p2.Points);
-    }
+   
 
-    public int Compare(CarteJoueur p1, CarteJoueur p2)
+    public int CompareTo(CarteJoueur p2)
     {
-        return p1.Points.CompareTo(p2.Points);
+        return this.Points.CompareTo(p2.Points);
     }
 }

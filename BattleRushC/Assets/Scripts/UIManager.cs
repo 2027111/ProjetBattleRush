@@ -108,10 +108,24 @@ public class UIManager : MonoBehaviour
 
         if (PlayerAccount.IsConnected())
         {
-            usernameText.text = PlayerAccount.connectedUser.username;
-
-            goldAmountText.text = PlayerAccount.connectedUser.goldcoins.ToString();
+            Action<LoginResponse> Success = new Action<LoginResponse>(UpdateCharacterSuccess);
+            Action Failure = new Action(UpdateCharacterFailure);
+            WWWForm form = new WWWForm();
+            form.AddField("rUsername", PlayerAccount.connectedUser.username);
+            string link = "user";
+            StartCoroutine(ServerTalker.PostRequestToMasterServer<LoginResponse>(link, form, Success, Failure));
         }
+    }
+
+    public void UpdateCharacterFailure()
+    {
+        PlayerAccount.Disconnected();
+    }
+    public void UpdateCharacterSuccess(LoginResponse response)
+    {
+        PlayerAccount.connectedUser = response.data;
+        usernameText.text = PlayerAccount.connectedUser.username;
+        goldAmountText.text = PlayerAccount.connectedUser.goldcoins.ToString();
     }
 
     public IEnumerator ActivateUI()

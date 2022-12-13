@@ -15,6 +15,7 @@ public class CinematicCamera : MonoBehaviour
     Vector3 dir;
     [SerializeField] static Camera cam;
     float shotRate = 1;
+    public static bool trans = false;
 
     // Start is called before the first frame update
     void Start()
@@ -59,7 +60,12 @@ public class CinematicCamera : MonoBehaviour
 
     public static void Transition()
     {
-        cam.GetComponent<CinematicCamera>().StartCoroutine(cam.GetComponent<CinematicCamera>().TransitionIntoMain());
+        if (!trans)
+        {
+            trans = true; 
+            cam.GetComponent<CinematicCamera>().StartCoroutine(cam.GetComponent<CinematicCamera>().TransitionIntoMain());
+
+        }
     }
 
     IEnumerator TransitionIntoMain()

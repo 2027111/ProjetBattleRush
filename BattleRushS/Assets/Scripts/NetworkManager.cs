@@ -3,7 +3,9 @@ using Riptide.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -22,6 +24,7 @@ public enum ServerToClientId : ushort
     stats,
     time,
     part,
+    colorsforend,
 
 }
 public enum ClientToServerId : ushort
@@ -93,6 +96,7 @@ public class NetworkManager : MonoBehaviour
 
 
     [SerializeField] private ushort port;
+    [SerializeField] private string ip = "127.0.0.1";
     [SerializeField] private ushort maxClientCount;
 
     Coroutine readyCoroutine;
@@ -187,6 +191,39 @@ public class NetworkManager : MonoBehaviour
         NetworkManager.Singleton.Server.SendToAll(message);
     }
 
+
+    public string GetLocalIPv4()
+    {
+        /*return Dns.GetHostEntry(Dns.GetHostName())
+            .AddressList.First(
+                f => f.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+            .ToString();*/
+
+
+
+        foreach (NetworkInterface ni in NetworkInterface.GetAllNetworkInterfaces())
+        {
+            if (ni.OperationalStatus == OperationalStatus.Up)
+            {
+                if (ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 || ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet)
+                {
+                    foreach (UnicastIPAddressInformation ip in ni.GetIPProperties().UnicastAddresses)
+                    {
+                        if (ip != null && ip.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                        {
+
+                            Debug.Log(ip.Address.ToString());
+                            return ip.Address.ToString();
+                        }
+                            
+                    }
+                }
+            }
+        }
+        return null;
+    
+    }
+
     string ReturnAdress(string host)
     {
 
@@ -242,7 +279,7 @@ public class NetworkManager : MonoBehaviour
                 {
                     if(j.Username == player.Username)
                     {
-                        j.Points = -9999;
+                        j.Points -= 9999;
                     }
                 }
             }
@@ -254,7 +291,7 @@ public class NetworkManager : MonoBehaviour
         }
         if (Server.ClientCount == 0)
         {
-            RestartServer();
+            EndGame();
         }
         else
         {
@@ -327,7 +364,7 @@ public class NetworkManager : MonoBehaviour
         Action<DescResponse> Success = new Action<DescResponse>(delegate { UpdateSuccess(true); });
         Action Failure = new Action(delegate { UpdateSuccess(false); });
         WWWForm form = new WWWForm();
-        form.AddField("ip", "127.0.0.1");
+        form.AddField("ip", ip);
         form.AddField("port", port);
         form.AddField("maxPlayer", maxClientCount);;
         form.AddField("lobbystate", currentServerState.ToString());
@@ -469,10 +506,14 @@ public class NetworkManager : MonoBehaviour
         }
         else
         {
+            if(GetLocalIPv4() != null)
+            {
+                ip = GetLocalIPv4();
+            }
             Action<DescResponse> Success = new Action<DescResponse>(ServerStartSuccess);
             Action Failure = new Action(ServerStartFailure);
             WWWForm form = new WWWForm();
-            form.AddField("ip", "127.0.0.1");
+            form.AddField("ip", ip);
             form.AddField("port", serverPort);
             form.AddField("maxPlayer", maxClientCount);
             string link = "server/On";
@@ -615,10 +656,24 @@ public class NetworkManager : MonoBehaviour
 
 
         joueurPoint.Sort();
-        for(int i = 1; i <= joueurPoint.Count; i++)
+        for(int i = 0; i < joueurPoint.Count; i++)
         {
-            SendPlayerScoreRequest(joueurPoint[i].Username, i, joueurPoint.Count); ;
+
+            SendPlayerScoreRequest(joueurPoint[i].Username, i+1, joueurPoint.Count);
+            bool found = false;
+            foreach (KeyValuePair<ushort, Player> t in Player.list)
+            {
+                if (t.Value.Username.Equals(joueurPoint[i].Username))
+                {
+                    found = true;
+                    SendAllNames(joueurPoint.ToArray());
+                    
+                }
+            }
+
         }
+
+
 
         //Send to Master Server Who Wins or loses
         //Kick Players
@@ -629,7 +684,16 @@ public class NetworkManager : MonoBehaviour
 
         RestartServer();
     }
-
+    internal void SendAllNames(CarteJoueur[] lol)
+    {
+        Message message = Message.Create(MessageSendMode.Unreliable, ServerToClientId.colorsforend);
+        message.Add(Server.ClientCount);
+        foreach (CarteJoueur lo in lol)
+        {
+            message.AddString(lo.Username);
+        }
+        NetworkManager.Singleton?.Server.SendToAll(message);
+    }
     private void SendPlayerScoreRequest(string username, int position, int count)
     {
         Action<DescResponse> Success = new Action<DescResponse>(ConfirmConnectionSuccess);

@@ -10,6 +10,29 @@ public class CarGraphics : MonoBehaviour
     [SerializeField] GameObject Spoiler;
     [SerializeField] GameObject[] Wheels;
 
+
+    public Color GetRims()
+    {
+
+        Material m = Wheels[0].GetComponentInChildren<MeshRenderer>().materials[0];
+        return m.color;
+    }
+
+    public Color GetLights()
+    {
+
+        Material m = Body.GetComponentInChildren<MeshRenderer>().materials[1];
+        return m.color;
+    }
+
+    public Color GetBody()
+    {
+
+        Material m = Body.GetComponentInChildren<MeshRenderer>().materials[0];
+        return m.color;
+    }
+
+
     public void SetRims(Color c)
     {
         foreach(GameObject wheel in Wheels)

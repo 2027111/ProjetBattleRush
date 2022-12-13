@@ -19,16 +19,6 @@ public class PlayerAccount
 
 
 
-    public PlayerAccount()
-    {
-        username = "Debug";
-        _id = "r";
-        wins = 0;
-        losses = 0;
-        elo = 1000;
-        goldcoins = 0;
-        accounttype = "Lol";
-    }
 
     public static void Connected(PlayerAccount returnedAccount, string token)
     {

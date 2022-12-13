@@ -22,6 +22,7 @@ public enum ServerToClientId : ushort
     stats,
     time,
     part,
+    colorsforend,
 
 }
 public enum ClientToServerId : ushort
@@ -100,6 +101,7 @@ public class NetworkManager : MonoBehaviour
     [SerializeField] private string ip;
     [SerializeField] private string port;
 
+    private bool GameOver = false;
 
 
     [MessageHandler((ushort)ServerToClientId.timeTillStart)]
@@ -199,13 +201,14 @@ public class NetworkManager : MonoBehaviour
         OnServerDeco();
     }
 
-        public void OnServerDeco()
-        {
+    public void OnServerDeco()
+    {
 
         foreach (Player player in Player.list.Values)
         {
             Destroy(player.gameObject);
         }
+        
         LoadingScene.main.LoadScene("MainMenuScene");
     }
     private void OnFailedToConnect(object sender, EventArgs e)
@@ -215,7 +218,21 @@ public class NetworkManager : MonoBehaviour
 
     private void DidDisconnect(object sender, EventArgs e)
     {
-        OnServerDeco();
+        if (GameOver)
+        {
+            foreach (Player player in Player.list.Values)
+            {
+                Destroy(player.gameObject);
+            }
+
+            LoadingScene.main.LoadScene("EndGameScene", new Action(WinScreenManager.Singleton.GetAllCars));
+
+        }
+        else
+        {
+
+            OnServerDeco();
+        }
 
     }
 
@@ -298,7 +315,35 @@ public class NetworkManager : MonoBehaviour
         Client.Send(message);
 
     }
-
+    [MessageHandler((ushort)ServerToClientId.colorsforend)]
+    public static void EndGameName(Message message)
+    {
+        Singleton.GameOver = true;
+        WinScreenManager.Singleton.playerCount = message.GetInt();
+        if (Singleton.MapLists.Contains(SceneManager.GetActiveScene().name))
+        {
+            for (int i = 0; i < WinScreenManager.Singleton.GraphicCars.Length; i++)
+            {
+                string username = message.GetString();
+                bool found = false;
+                foreach (KeyValuePair<ushort, Player> player in Player.list)
+                {
+                    if (player.Value.Username.Equals(username))
+                    {
+                        found = true;
+                        WinScreenManager.Singleton.ColorCars[i, 0] = player.Value.carGraphics.GetBody();
+                        WinScreenManager.Singleton.ColorCars[i, 0] = player.Value.carGraphics.GetLights();
+                        WinScreenManager.Singleton.ColorCars[i, 0] = player.Value.carGraphics.GetRims();
+                        WinScreenManager.Singleton.carNames[i] = username;
+                    }
+                }
+                if (!found)
+                {
+                    WinScreenManager.Singleton.stillConnected[i] = false;
+                }
+            }
+        }
+    }
 
     [MessageHandler((ushort)ServerToClientId.sync)]
     public static void Sync(Message message)

@@ -346,6 +346,7 @@
 "Assets/Prefabs/ParticleSystems/Scripts/AfterburnerPhysicsForce.cs"
 "Assets/Prefabs/ParticleSystems/Scripts/ExplosionPhysicsForce.cs"
 "Assets/Prefabs/ParticleSystems/Scripts/ParticleSystemMultiplier.cs"
+"Assets/Quitter.cs"
 "Assets/Scripts/AlwaysRotate.cs"
 "Assets/Scripts/AttackZone.cs"
 "Assets/Scripts/CameraLocks.cs"
@@ -386,6 +387,8 @@
 "Assets/Scripts/Timer.cs"
 "Assets/Scripts/TransformUpdates.cs"
 "Assets/Scripts/UIManager.cs"
+"Assets/UsernameContainer.cs"
+"Assets/WinScreenManager.cs"
 -langversion:8.0
 
 /deterministic
