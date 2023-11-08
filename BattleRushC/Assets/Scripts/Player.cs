@@ -136,17 +136,14 @@ public class Player : MonoBehaviour
     {
         Player player;
         player = Instantiate(GameLogic.Singleton.LobbyPlayerPrefab, GameObject.Find("CardContainer").transform).GetComponent<Player>();
-        if (id == NetworkManager.Singleton.Client.Id)
-        {
-            player.IsLocal = true;
-        }
+        player.IsLocal = id == NetworkManager.Singleton.Client.Id;
         player.name = $"Player {id} {(string.IsNullOrEmpty(username) ? "Guest" : username)}";
         player.Id = id;
         player.Username = username;
         player.cardGraphics.usernameText.text = username;
         if (list.ContainsKey(id))
         {
-            list.Remove(id);
+            Destroy(list[id].gameObject);
         }
 
         list.Add(id, player);
@@ -173,14 +170,17 @@ public class Player : MonoBehaviour
         player.name = $"Player {id} {(string.IsNullOrEmpty(username) ? "Guest" : username)}";
         player.Id = id;
         player.Username = username;
-        player.carGraphics.SetBody(colorBody);
-        player.carMap.color = new Color(colorBody.x, colorBody.y, colorBody.z);
-        player.carGraphics.SetEmissions(colorEmi);
+        Debug.Log(colorBody);
+        Debug.Log(colorEmi);
+        Debug.Log(colorRims);
+        player.carGraphics.SetBody(colorEmi);
+        player.carMap.color = new Color(colorEmi.x, colorEmi.y, colorEmi.z);
+        player.carGraphics.SetEmissions(colorBody);
         player.carGraphics.SetRims(colorRims);
 
         if (list.ContainsKey(id))
         {
-            list.Remove(id);
+            Destroy(list[id].gameObject);
         }
         list.Add(id, player);
         UIManager.Singleton?.SetSBCard(player);
@@ -242,7 +242,7 @@ public class Player : MonoBehaviour
     }
 
     
-
+    
     // Start is called before the first frame update
     void Start()
     {

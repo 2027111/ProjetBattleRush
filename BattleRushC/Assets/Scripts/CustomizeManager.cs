@@ -95,6 +95,7 @@ public class CustomizeManager : MonoBehaviour
 
     public static Vector3 ColorToVector(int returnobject)
     {
+        ColorSelected = returnobject;
         return new Vector3(Colors[ColorSelected].r, Colors[ColorSelected].g, Colors[ColorSelected].b);
     }
 }

@@ -766,12 +766,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AutomaticStart: 1
-  maxTime: 20
+  maxTime: 120
   currentServerState: 0
   currentLobbyType: 0
   port: 0
   ip: 127.0.0.1
-  maxClientCount: 3
+  maxClientCount: 4
   debug: 0
 --- !u!4 &1312280980
 Transform:

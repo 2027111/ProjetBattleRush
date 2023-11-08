@@ -119,7 +119,6 @@ public class UIManager : MonoBehaviour
 
     public void UpdateCharacterFailure()
     {
-        PlayerAccount.Disconnected();
     }
     public void UpdateCharacterSuccess(LoginResponse response)
     {

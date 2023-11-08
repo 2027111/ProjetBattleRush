@@ -298,6 +298,10 @@ public class Player : MonoBehaviour
         player.Id = id;
         player.Username = string.IsNullOrEmpty(username) ? $"Guest {id}" : username;
         player.ChangerState(new EtatVoitureCarte(player.gameObject));
+
+        Debug.Log(colorBody);
+        Debug.Log(colorEmi);
+        Debug.Log(colorRims);
         player.GetComponent<CarGraphics>().Set(colorBody, colorEmi, colorRims);
         player.SendConnected(ServerToClientId.playerConnected);
         list.Add(id, player);

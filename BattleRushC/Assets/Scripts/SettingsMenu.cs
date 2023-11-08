@@ -39,7 +39,7 @@ public class SettingsMenu : MonoBehaviour
             }
         }
         resolutionDropdown.AddOptions(options);
-        resolutionDropdown.value = currentResolusionIndex;
+        //resolutionDropdown.value = currentResolusionIndex;
         resolutionDropdown.RefreshShownValue();
     }
 
@@ -48,13 +48,14 @@ public class SettingsMenu : MonoBehaviour
         Screen.SetResolution(res[resIndex].width, res[resIndex].height, Screen.fullScreen);
     }
 
+
     private void SetupVolume()
     {
 
         musicMixer.GetFloat("Volume", out float value);
         sfxMixer.GetFloat("Volume", out float svalue);
         SetMusic(value);
-        SetSFX(value);
+        SetSFX(svalue);
     }
 
     public void SetMusic(float value)

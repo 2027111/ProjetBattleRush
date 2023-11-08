@@ -9847,15 +9847,13 @@ MonoBehaviour:
   lastHit: {fileID: 0}
   boostamount: 100
   canboost: 1
-  inputs: 000000000000
-  inputchar:
-  - W
-  - A
-  - S
-  - D
-  - SPACE
-  - SHIFT
+  isReady: 0
+  HasLoadedGameScene: 0
+  points: 0
   rb: {fileID: 0}
+  Jump: 0
+  Switch: 0
+  forceDirection: {x: 0, y: 0}
 --- !u!65 &2124240668806114924
 BoxCollider:
   m_ObjectHideFlags: 0

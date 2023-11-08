@@ -21,6 +21,7 @@ public class CinematicCamera : MonoBehaviour
     void Start()
     {
         cam = this.GetComponent<Camera>();
+        trans = false;
         shotRate = 1 / ShotsPerSeconds;
         cam.transform.position = pos[index].position;
         cam.transform.forward = pos[index].forward;

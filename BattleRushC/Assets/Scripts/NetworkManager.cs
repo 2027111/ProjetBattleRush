@@ -328,13 +328,13 @@ public class NetworkManager : MonoBehaviour
                 bool found = false;
                 foreach (KeyValuePair<ushort, Player> player in Player.list)
                 {
-                    if (player.Value.Username.Equals(username))
+                    if (player.Value.Username == username)
                     {
                         found = true;
                         WinScreenManager.Singleton.ColorCars[i, 0] = player.Value.carGraphics.GetBody();
                         WinScreenManager.Singleton.ColorCars[i, 1] = player.Value.carGraphics.GetLights();
                         WinScreenManager.Singleton.ColorCars[i, 2] = player.Value.carGraphics.GetRims();
-                        WinScreenManager.Singleton.carNames[i] = username;
+                        WinScreenManager.Singleton.carNames[i] = (string.IsNullOrEmpty(username)?"Disconnected":username);
                     }
                 }
                 if (!found)
