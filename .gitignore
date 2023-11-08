@@ -67,6 +67,9 @@ crashlytics-build.properties
 # Packed Addressables
 /[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
 
+/ProjetBattleRushClientLauncher/
+/ProjetBattleRushServerLauncher/
+/MasterServerTest/config/dev.js
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
